@@ -5,12 +5,21 @@ import { useEffect, useState } from 'react'
 export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission | null>(null)
   const [subscribed, setSubscribed] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setLoading(false)
+      return
+    }
     setPermission(Notification.permission)
     if (Notification.permission === 'granted') {
-      checkSubscription().then(setSubscribed)
+      checkSubscription().then((s) => {
+        setSubscribed(s)
+        setLoading(false)
+      })
+    } else {
+      setLoading(false)
     }
   }, [])
 
@@ -63,7 +72,7 @@ export function usePushNotifications() {
     }
   }
 
-  return { permission, subscribed, subscribe }
+  return { permission, subscribed, subscribe, loading }
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {

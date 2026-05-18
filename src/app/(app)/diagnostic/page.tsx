@@ -11,6 +11,7 @@ import { LasQuestion } from '@/components/las/LasQuestion'
 import { LasFeedback } from '@/components/las/LasFeedback'
 import { shuffleOptions } from '@/lib/fsrs/engine'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
+import { haptics } from '@/lib/utils/haptics'
 import type { OrdOption } from '@/components/ord/OrdQuestion'
 import type { LasOption } from '@/components/las/LasQuestion'
 
@@ -107,6 +108,7 @@ export default function DiagnosticPage() {
     const word = store.currentOrdWord()
     if (!word || !sessionId) return
     const responseMs = Date.now() - answerStartTime
+    isCorrect ? haptics.correct() : haptics.wrong()
     selectAnswer(label)
     const correctLabel = currentOrdOptions.find((o) => o.isCorrect)?.label ?? 'A'
     submitAnswer({ type: 'ord', wordId: word.id, chosenLabel: label, correctLabel, isCorrect, responseMs })
@@ -118,6 +120,7 @@ export default function DiagnosticPage() {
     const question = article.questions[currentLasQuestionIndex]
     if (!question) return
     const responseMs = Date.now() - answerStartTime
+    isCorrect ? haptics.correct() : haptics.wrong()
     selectAnswer(label)
     const correctLabel = currentLasOptions.find((o) => o.isCorrect)?.label ?? 'A'
     submitAnswer({

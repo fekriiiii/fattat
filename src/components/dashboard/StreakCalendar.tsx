@@ -53,8 +53,8 @@ export function StreakCalendar({ currentStreak, totalDaysStudied, studiedDates }
 
       {/* Day labels */}
       <div className="grid grid-cols-7 gap-0.5 mb-0.5">
-        {dayLabels.map((d) => (
-          <div key={d} className="text-center text-[10px] text-dark/55 font-bold">{d}</div>
+        {dayLabels.map((d, i) => (
+          <div key={i} className="text-center text-[10px] text-dark/55 font-bold">{d}</div>
         ))}
       </div>
 

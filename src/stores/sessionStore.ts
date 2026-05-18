@@ -17,6 +17,7 @@ interface SessionStore {
   weaknessWords: Word[]
   ordWords: Word[]
   articles: Article[]
+  newWordIds: Set<string>
 
   // Responses collected
   responses: SessionResponse[]
@@ -32,6 +33,8 @@ interface SessionStore {
   domainGap: string | null
   catchUpMode: boolean
   catchUpMessage: string | null
+  focusDomain: string | null
+  focusMessage: string | null
 
   // Actions
   initSession: (params: {
@@ -39,9 +42,12 @@ interface SessionStore {
     weaknessWords: Word[]
     ordWords: Word[]
     articles: Article[]
+    newWordIds?: string[]
     isDiagnostic?: boolean
     catchUpMode?: boolean
     catchUpMessage?: string | null
+    focusDomain?: string | null
+    focusMessage?: string | null
   }) => void
   selectAnswer: (label: string) => void
   submitAnswer: (response: SessionResponse) => void
@@ -69,6 +75,7 @@ const initialState = {
   weaknessWords: [],
   ordWords: [],
   articles: [],
+  newWordIds: new Set<string>(),
   responses: [],
   showingFeedback: false,
   selectedLabel: null,
@@ -78,12 +85,14 @@ const initialState = {
   domainGap: null,
   catchUpMode: false,
   catchUpMessage: null,
+  focusDomain: null,
+  focusMessage: null,
 }
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
   ...initialState,
 
-  initSession({ sessionId, weaknessWords, ordWords, articles, isDiagnostic = false, catchUpMode = false, catchUpMessage = null }) {
+  initSession({ sessionId, weaknessWords, ordWords, articles, newWordIds = [], isDiagnostic = false, catchUpMode = false, catchUpMessage = null, focusDomain = null, focusMessage = null }) {
     set({
       ...initialState,
       sessionId,
@@ -91,10 +100,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       weaknessWords,
       ordWords,
       articles,
+      newWordIds: new Set(newWordIds),
       phase: weaknessWords.length > 0 ? 'weakness' : 'ord',
       answerStartTime: Date.now(),
       catchUpMode,
       catchUpMessage,
+      focusDomain,
+      focusMessage,
     })
   },
 

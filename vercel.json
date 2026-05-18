@@ -3,6 +3,10 @@
     {
       "path": "/api/notifications/schedule",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/streak-freeze-reset",
+      "schedule": "5 0 * * 1"
     }
   ],
   "headers": [

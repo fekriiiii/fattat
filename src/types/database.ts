@@ -103,6 +103,9 @@ export interface UserProfile {
   previous_hp_score: number | null
   previous_mek_score: number | null
   previous_elf_score: number | null
+  reported_hp_score: number | null
+  reported_hp_test_date: string | null
+  reported_hp_reported_at: string | null
   preferred_notify_at: string
   study_cue: string | null
   timezone: string
@@ -153,6 +156,7 @@ export interface SessionResponse {
   word_id: string | null
   article_id: string | null
   question_id: string | null
+  las_question_type: string | null
   chosen_label: string
   correct_label: string
   is_correct: boolean

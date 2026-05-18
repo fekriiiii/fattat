@@ -1,0 +1,189 @@
+# Batch Format LÄS Articles — Add Multiple to Database
+
+Process 5–10 LÄS articles in one session. Optimised for speed: databases are read once, coverage tracking updates across the batch, and swap approvals happen in a single round rather than article-by-article.
+
+Use this command when you have multiple pre-generated articles ready. Use `/format-las-article` for careful single-article work with more review checkpoints.
+
+---
+
+## Step 1 — Gather all inputs
+
+Ask the user to paste all articles using this exact separator format:
+
+```
+===ARTIKEL 1===
+TITEL: ...
+BODY: ...
+FRÅGOR:
+1. ...
+   A) ... B) ... C) ... D) ... SVAR: B
+2. ...
+   A) ... B) ... C) ... D) ... SVAR: A
+UNIT: kort/lång
+KÄLLA: (url or blank)
+KÄLLNAMN: (name or blank)
+PAST_HP: (e.g. 2024-H or blank)
+
+===ARTIKEL 2===
+...
+```
+
+Parse all articles before proceeding. Confirm how many were received:
+> "Jag har tagit emot X artiklar. Bearbetar nu..."
+
+**Source-name defaulting:** If `KÄLLNAMN` is blank, default to `"Fattat"` and set `is_designed_content = TRUE`. If a real source is named, keep it and set `is_designed_content = FALSE`.
+
+---
+
+## Step 2 — Read databases once
+
+Read both databases **once** for the entire batch — do not re-read between articles.
+
+**From `las-database.csv`:**
+- Find the current maximum `id` — batch IDs start from `max_id + 1`
+- Build a **coverage map**: for every row, collect all words in `featured_ord_words` and count how many articles each word appears in
+
+**From `ord-database.csv`:**
+- Load every ORD entry: `word`, `correct_synonym`, `accepted_synonyms`, `definition_sv`, `pos`, `domain`
+
+The coverage map is **live** — it updates as each article in the batch commits its words (see Step 4), so later articles in the batch don't repeat the same words as earlier ones.
+
+---
+
+## Step 3 — ORD detection pass (all articles)
+
+Scan every article body for existing ORD-database words in any inflected Swedish form (morphology-aware — see single-article command for rules).
+
+Show a compact summary:
+
+```
+Artikel 1 — "Titel": prognos, diffus (2 ord)
+Artikel 2 — "Titel": inga ORD-ord hittade
+Artikel 3 — "Titel": vördnad, godtycke, premieras (3 ord)
+...
+```
+
+Articles with zero matches are flagged — they need more aggressive swap proposals in Step 4.
+
+---
+
+## Step 4 — Swap proposals (all articles, one approval round)
+
+Process articles **in order**. For each article:
+
+1. **Use the current coverage map** (updated by all previous articles in this batch)
+2. Apply the same priority tiers as in the single-article command:
+   - Tier 1: coverage count 0 (never used anywhere)
+   - Tier 2: coverage count 1–2
+   - Tier 3: coverage count 3–5
+   - Tier 4: coverage count 6+ (deprioritise)
+   - Within each tier, prefer words matching the article's domain
+3. Propose 3–6 natural swap candidates per article (fewer if already vocabulary-rich)
+4. **Tentatively mark proposed words as +1 coverage** in the running map immediately — so the next article in the batch won't propose the same Tier 1 words again
+
+Present all proposals in one block:
+
+```
+━━━ ARTIKEL 1 — "Titel" ━━━
+Förslag 1.1 — bake in: «förskjutning» [Tier 1 — 0 artiklar]
+  Original: "Den gradvisa förändringen skedde över decennier."
+  Förslag:  "Den gradvisa **förskjutningen** skedde över decennier."
+  Varför: Exakt synonymt; akademisk register matchar.
+
+Förslag 1.2 — bake in: «belägga» [Tier 1 — 0 artiklar]
+  Original: "Forskarna kunde bekräfta sambandet."
+  Förslag:  "Forskarna kunde **belägga** sambandet."
+  Varför: Exakt synonymt; vetenskaplig stil matchar.
+
+━━━ ARTIKEL 2 — "Titel" ━━━
+Förslag 2.1 — bake in: «vederlag» [Tier 1 — 0 artiklar]
+  ...
+```
+
+Then ask in one message:
+
+> *"Godkänn förslagen per artikel. Format: 'A1: 1,2 | A2: alla | A3: inga | A4: 1,3' osv. Du kan också skriva 'alla' för alla artiklar."*
+
+### Apply approved swaps
+
+Apply only approved swaps per article. Update the **live coverage map** — remove tentative marks for rejected proposals, keep marks for approved ones.
+
+Do **not** show final bodies one by one. Instead show a single compact confirmation:
+
+```
+Artikel 1: "förskjutning", "belägga" inbakade ✓
+Artikel 2: inga ändringar
+Artikel 3: "vördnad" inbakad ✓
+...
+```
+
+Ask: *"Ser kropparna naturliga ut? Skriv 'ja' för att fortsätta, eller ange vilken artikel du vill justera."*
+
+---
+
+## Step 5 — Silent processing pass
+
+For all articles simultaneously, run Steps 5–9 from the single-article command silently (no output until Step 6):
+
+- **Step 5:** Compile final ORD word list (detected + approved swaps)
+- **Step 6:** Determine domain, genre, word_count, difficulty, question_count
+- **Step 7:** Format questions JSON (type, stem, options, correct, passage_anchor, explanation, distractor_types, notes)
+- **Step 8:** Format vocab_highlights JSON
+- **Step 9:** Set featured_ord_words
+
+Run quality checks silently. If any article fails a check (e.g. a passage_anchor can't be found verbatim in the final body), flag it specifically rather than blocking the whole batch.
+
+---
+
+## Step 6 — Output all CSV rows
+
+Assign IDs sequentially from `max_id + 1`.
+
+Output all rows in one block, clearly separated:
+
+```
+=== CSV-rader (klar att klistra in i las-database.csv) ===
+
+[rad för artikel 1]
+[rad för artikel 2]
+...
+```
+
+Column order:
+`id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`
+
+CSV rules (same as single-article command):
+- Wrap fields with commas, quotes, or newlines in double quotes
+- Escape internal double quotes by doubling them (`""`)
+- `featured_ord_words` as Postgres array literal: `{"ord1","ord2"}`
+- `body` is the final body after approved swaps
+
+Then ask: *"Ser det bra ut? Jag kan lägga till raderna direkt i `las-database.csv`, eller så kopierar du dem."*
+
+If confirmed, append all rows to `las-database.csv` in one write.
+
+---
+
+## Quality checks (per article, flagged individually)
+
+- passage_anchor is a verbatim quote from the **final** body (post-swap)
+- Every wrong option has a distractor_type
+- Every ORD word in vocab_highlights is present in the final body and in ord-database.csv
+- question_count matches actual questions
+- unit_position matches: `kort` = 2 questions, `lång` = 4 questions
+- No article has zero ORD words — flag and suggest the user swap it out or re-generate with more vocabulary surface area
+
+---
+
+## Coverage summary at the end
+
+After all rows are confirmed and appended, show:
+
+```
+Täckningsrapport — denna batch
+Nya ord introducerade (Tier 1): förskjutning, belägga, vördnad ... (N ord)
+Ord som inte fick plats den här gången (Tier 1, ingen naturlig swap hittades): X, Y, Z
+Totalt unika ord täckta i hela databasen nu: N / [total ord i ORD-databasen]
+```
+
+This tells the user which Tier 1 words still need an article home — useful input for what to generate next externally.

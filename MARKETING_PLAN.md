@@ -1,14 +1,100 @@
 # Fattat — Marketing Plan
 
-> Created 2026-05-12. Updated as decisions are made.
+> Created 2026-05-12. Last updated 2026-05-16.
 
 ---
 
 ## Overview
 
-159 days until HP (as of 2026-05-12). The plan is to dogfood Fattat publicly for 140 days — using the app daily to prepare for the real HP exam — and document the journey on social media. The founder's own result becomes the product's proof.
+159 days until HP (as of 2026-05-12). The plan is to dogfood Fattat publicly for 140 days — using the app daily to prepare for the real HP exam — and document the journey on social media. The founder's own *verbal-section delta* becomes the product's proof.
 
-**Content goal before starting:** 600 ORD words + 100 LÄS articles in the database.
+**Content goal before starting:** 1000 ORD words + ~50 LÄS articles in the database (revised down from 100 LÄS so quality doesn't drop in the final 11-day push; remaining articles generated during the series).
+
+---
+
+## Positioning
+
+**Who Fattat is for:** Swedish HP candidates who are strong on the kvantitativa section but where the verbala delen drags their total HP down. This pattern is common — a huge share of HP-takers fit it — and it maps cleanly to what Fattat actually covers (ORD, LÄS — verbal only).
+
+**Why this works as the marketing anchor:**
+- The audience self-identifies in 3 seconds (they recognize their own pattern)
+- It matches Fattat's actual scope, so the story never has to apologize for not covering math
+- The founder's own profile fits the same pattern, so the dogfooding narrative is honest
+
+**What the videos claim — and what they don't:**
+- Claim: *"Här är hur min verbala del utvecklas över 140 dagar med Fattat."* — show the verbal delta. Use ORD accuracy trends, LÄS improvements, Veckans fokus, real diagnostic scores.
+- **Do NOT claim absolute HP score targets before the real result.** No *"jag siktar på 1.5"* in any video. Talk *min plan*, *min utveckling*, *min verbala del* — not a number.
+- After the real exam: lead with the *verbal delta* (diagnostic → real exam on ORD/LÄS), not the total HP. Total is dependent on quant which Fattat doesn't train.
+
+**Why the delta framing is non-negotiable:**
+1. It's honest — no one can predict an absolute HP outcome.
+2. It survives any exam-day variance (bad night, harder verbal section, etc.).
+3. It's exactly what `prediction_calibration` (migration 015) will measure for every other user later — so the founder's marketing claim and the product's analytics are the same metric.
+
+---
+
+## Launch Phases
+
+Decided 2026-05-16 — hybrid signup timing. The 140-day series is split into three phases:
+
+**Phase 1 — Audience build (Day 140 → ~Day 90, May–July '26)**
+- Signups closed. Public app is gated.
+- "Länk i bio" routes to a landing page in *waitlist mode*: email capture only, no full signup flow yet.
+- Goal: build an email list of HP candidates who self-identified through the videos.
+- Founder dogfoods publicly — every video shows real use.
+- LÄS articles continue growing in the background toward ~120 by start of Phase 2.
+
+**Phase 2 — Open with email list first (Day ~90 → Day 0, Aug–Oct '26)**
+- Email list gets first invite ("Du var med från början — så här kommer du igång").
+- Signups open to general public ~1 week later.
+- Free 7-day trial available.
+- Payment infrastructure (Stripe + Klarna, 399 SEK/cycle) live by ~Day 60.
+- Target: 20–50 paying users for Oct '26 cycle. **Proof of concept, not the revenue goal.**
+
+**Phase 3 — Harvest (Day +14 → April '27 exam)**
+
+This is where 10k SEK/month plays out. The Oct '26 cycle is the runway; Phase 3 is the harvest.
+
+*Days 0 → +14 (Oct exam → result wait):*
+- *"Min sista session"*, *"Provdag-känsla"*, *"Nu väntar vi"*
+- Anxiety / anticipation content. Audience invested. **Do not break consistency at the conversion moment.**
+
+*Day +14: Score-reveal video* (around mid-November '26 when results land)
+- Single most important video Fattat will ever post.
+- **Drafted now in three versions** (good, meh, bad outcome) — never written under pressure.
+- Anchored on **verbal delta** (diagnostic → real), never absolute HP.
+
+*Days +14 → +60 (Nov–Dec '26):*
+- *"Det jag skulle ha gjort annorlunda"*
+- Feature deep-dives — one feature, one video. Show the smart parts (FSRS, focus card, calibration loop) to viewers who now believe in the proof.
+- **Secondary conversion window** — April '27 candidates start prep here.
+
+*Days +60 → April '27 exam (Jan–Apr '27):*
+- Pivot to *"Träningen mot vårens prov"* — new dag-X series or thematic mini-series.
+- Featured testimonials from first paying users (real verbal deltas — `prediction_calibration` data finally has rows).
+- Founder is now 17 with a HP score in their pocket. Different credibility curve.
+
+**Why this ordering:**
+- Smaller bug blast radius during Phase 1 — cold viewers can't see the app crash, only see videos.
+- Email list is a higher-conversion channel than cold TikTok traffic — captures intent now, redeems it later.
+- Captures the Oct '26 cycle without depending on it.
+- Buys time to finish LÄS articles and set up payment without rushing either.
+
+**Legal foundation:** See `LEGAL_SETUP.md` for the parallel administrative workstream — Phase 2 monetization can't open without it. Currently in progress (överförmyndare email sent 2026-05-16).
+
+---
+
+## Pre-Launch Checklist (must ship before Day 140)
+
+1. **Public landing page at root** — currently `/` redirects to `/login`. Cold TikTok traffic needs a "what is this?" page in waitlist mode (email capture only, no signup form yet). Same positioning as the bios.
+2. **Founder account fully prepped** — diagnostic completed, exam date set, previous HP scores entered, 7–10 days of FSRS history so the dashboard has real numbers on Day 1. The account is on camera every day.
+3. **GDPR basics** — privacy policy + terms of service, even simple ones. List yourself personally as data controller until legal entity exists. Linked from landing page footer.
+4. **Source tracking in signup/waitlist** — one onboarding question: *"Var hörde du talas om Fattat?"* (TikTok / Instagram / YouTube / Vän/skola). Saved to user profile. Without this you fly blind for 140 days.
+
+**Not needed before Day 140** (postponed to Phase 2):
+- Sentry / error monitoring (no real users hitting bugs yet)
+- Payment integration (Stripe + Klarna — needs ~Day 60, after legal entity)
+- Full signup flow (waitlist only in Phase 1)
 
 ---
 
@@ -30,7 +116,7 @@
 ### TikTok
 - **Handle:** @fattat.se
 - **Display name:** Fattat
-- **Bio:** `Träna till Högskoleprovet – smarter. Landar snart.`
+- **Bio:** `HP-verbala för dig som redan är stark på matten. 140 dagar i min egen app.`
 - **Profile photo:** F mark (favicon)
 - **Login:** Google account
 
@@ -38,14 +124,14 @@
 - **Handle:** @fattathp
 - **Display name:** Fattat
 - **Profile photo:** F mark (favicon)
-- **Description:** *Tränar till Högskoleprovet med min egen app. Dag 1 av 140 — följ resan.*
+- **Description:** *Bygger Fattat — en app för HP-verbala. Matten drar jag redan hem. Det är verbala delen som avgör mitt HP — och tusentals andras. 140 dagar i mitt eget system. Följ resan.*
 
 ### Instagram
 - **Handle:** @fattat.se
 - **Bio:**
   ```
-  Tränar till HP med min egen app
-  Dag 1 av 140 – följer resan live
+  HP-verbala för dig som är stark på matten
+  140 dagar i min egen app – följer resan live
   🔗 Länk i bio
   ```
 - **Profile photo:** F mark (favicon)
@@ -67,13 +153,16 @@
 
 ### Day 0 (first video)
 The trailer. Explains the full premise before the series starts:
-- Who you are
-- What the HP is and why it matters
-- That you built an app to prepare for it
+- Who Fattat is for (strong on matten, verbal pulls HP down) — *and that you fit the same pattern*
+- That the verbal section is where most strong-quant students lose their score
+- That you built an app specifically for the verbal section
 - That you're going to use it every day for 140 days and document everything
-- The stakes: your own HP score is the proof
+- The proof: your own *verbal delta* from diagnostic to real exam
 
-Suggested hook: *"Jag har 140 dagar kvar till HP. Jag byggde en app för att träna — och nu ska jag bevisa att den faktiskt funkar."*
+Suggested hook (audience-first, not founder-first):
+*"Du är förmodligen stark på den kvantitativa delen av HP. Det är verbala som drar ner ditt resultat. Samma här. Så jag byggde en app för det — och nu ska jag visa exakt vad som händer på 140 dagar."*
+
+**What to avoid in the trailer:** any absolute HP target number, any claim about quant. Lead with the audience's pain, anchor on verbal, promise transparency about the delta.
 
 ### Day 1 onwards
 Daily screen recording format. Short, real, unpolished. Example structure:
@@ -159,7 +248,7 @@ From the topic map, the algorithm builds a "fit score" — its prediction of who
 This is why consistent topic selection is so important: the more previous videos the algorithm has to reference, the more confident it is in picking the right 200 people.
 
 ### The Fattat avatar (who every video is for)
-Swedish student, typically 17–25, stressed about the HP verbal section, has tried memorizing words but it doesn't stick. Wants to improve their score without grinding blindly. **Every video should speak to this one person.**
+Swedish student, typically 17–25, **strong on the kvantitativa section** (e.g. consistently 35+/40 on past papers), but where the verbal section (ORD, MEK, LÄS, ELF) drags the total HP score down. Has tried memorizing words but it doesn't stick. Wants their HP to reflect what they actually know. **Every video should speak to this one person** — when in doubt, ask: *"is this useful for someone who's already strong on matten but losing points on verbala?"* If not, recut.
 
 ### The four things that drive engagement
 For the sample group to respond well, videos need all four:

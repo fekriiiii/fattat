@@ -12,6 +12,7 @@ import { LasQuestion } from '@/components/las/LasQuestion'
 import { LasFeedback } from '@/components/las/LasFeedback'
 import { shuffleOptions } from '@/lib/fsrs/engine'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
+import { haptics } from '@/lib/utils/haptics'
 import type { OrdOption } from '@/components/ord/OrdQuestion'
 import type { LasOption } from '@/components/las/LasQuestion'
 
@@ -175,6 +176,7 @@ export default function TestPage() {
     wordId?: string | null
     articleId?: string | null
     questionId?: string | null
+    lasQuestionType?: string | null
     chosenLabel: string
     correctLabel: string
     isCorrect: boolean
@@ -205,6 +207,7 @@ export default function TestPage() {
     const word = store.currentOrdWord()
     if (!word || !sessionId) return
     const responseMs = Date.now() - answerStartTime
+    isCorrect ? haptics.correct() : haptics.wrong()
     selectAnswer(label)
     const correctLabel = currentOrdOptions.find((o) => o.isCorrect)?.label ?? 'A'
     // No FSRS update — this is a test, not a study session
@@ -218,12 +221,14 @@ export default function TestPage() {
     const question = article.questions[currentLasQuestionIndex]
     if (!question) return
     const responseMs = Date.now() - answerStartTime
+    isCorrect ? haptics.correct() : haptics.wrong()
     selectAnswer(label)
     const correctLabel = currentLasOptions.find((o) => o.isCorrect)?.label ?? 'A'
     submitAnswer({
       type: 'las',
       articleId: article.id,
       questionId: String(question.n),
+      lasQuestionType: question.type,
       chosenLabel: label,
       correctLabel,
       isCorrect,
@@ -233,6 +238,7 @@ export default function TestPage() {
       questionType: 'las',
       articleId: article.id,
       questionId: String(question.n),
+      lasQuestionType: question.type,
       chosenLabel: label,
       correctLabel,
       isCorrect,

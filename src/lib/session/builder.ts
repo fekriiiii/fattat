@@ -9,12 +9,25 @@ export interface SessionPlan {
   articles: Article[]
   catchUpMode: boolean
   catchUpMessage: string | null
+  // Focus state — set when the session was launched with a preferred domain
+  // from the Veckans fokus card. focusDomain is non-null only when the bias
+  // was actually applied (i.e. there were due words in that domain). The
+  // message is set whenever a focus was *requested*, even when we fell back.
+  focusDomain: string | null
+  focusMessage: string | null
+  newWordIds: string[]
+}
+
+export interface BuildOptions {
+  preferredDomain?: string
 }
 
 export async function buildDailySession(
   supabase: SupabaseClient,
-  userId: string
+  userId: string,
+  opts: BuildOptions = {}
 ): Promise<SessionPlan> {
+  const { preferredDomain } = opts
   const now = new Date().toISOString()
 
   // ─── Round 1: everything that only needs userId, all in parallel ─────────────
@@ -51,6 +64,7 @@ export async function buildDailySession(
   const ordLimit = activePlan?.daily_ord_quota ?? 20
 
   // ─── Round 2: ORD IDs (needs weakness + catchup) + articles (needs completions) ─
+  let sessionNewIds = new Set<string>()
   const [mainOrdIds, articles] = await Promise.all([
     (async () => {
       if (catchUpResult.catchUpMode) {
@@ -65,10 +79,17 @@ export async function buildDailySession(
           .limit(ordLimit)
         return (priorityCards ?? []).map((r: { word_id: string }) => r.word_id)
       }
-      const rawIds = await selectDueWordIds(supabase, userId, ordLimit)
-      return rawIds.filter((id) => !weaknessIds.includes(id))
+      const { ids, newIds } = await selectDueWordIds(supabase, userId, ordLimit)
+      sessionNewIds = newIds
+      return ids.filter((id) => !weaknessIds.includes(id))
     })(),
-    fetchArticles(supabase, completedArticleIds, recentOrdWordIds),
+    (async () => {
+      const weakTypes = await getWeakLasQuestionTypes(supabase, userId)
+      // Skip domain bias for articles when we're in catch-up mode — catch-up
+      // already overrides ORD selection and doubling up dilutes both signals.
+      const articleFocus = catchUpResult.catchUpMode ? undefined : preferredDomain
+      return fetchArticles(supabase, completedArticleIds, recentOrdWordIds, weakTypes, articleFocus)
+    })(),
   ])
 
   // ─── Round 3: full word data (needs final word ID list) ──────────────────────
@@ -85,7 +106,21 @@ export async function buildDailySession(
 
   const weaknessWords = weaknessIds.map((id) => wordsById[id]).filter(Boolean) as Word[]
   const rawOrdWords  = mainOrdIds.map((id) => wordsById[id]).filter(Boolean) as Word[]
-  const ordWords     = interleaveByDomain(rawOrdWords) as Word[]
+
+  // Focus is suppressed in catch-up mode; otherwise check that the requested
+  // domain actually appears in this session's word pool. If it doesn't, we
+  // fall back to a normal interleave and acknowledge the click with a message.
+  const focusRequested = !catchUpResult.catchUpMode && !!preferredDomain
+  const focusApplied = focusRequested && rawOrdWords.some((w) => w.domain === preferredDomain)
+  const effectiveFocus = focusApplied ? preferredDomain : undefined
+  const ordWords = interleaveByDomain(rawOrdWords, effectiveFocus) as Word[]
+
+  let focusMessage: string | null = null
+  if (focusApplied) {
+    focusMessage = `Fokus: ${capitalize(preferredDomain!)} — ord från det här området kommer först.`
+  } else if (focusRequested) {
+    focusMessage = `Inga ${preferredDomain}-ord väntar idag — kör vanlig session.`
+  }
 
   return {
     sessionId: session.id,
@@ -94,7 +129,14 @@ export async function buildDailySession(
     articles,
     catchUpMode: catchUpResult.catchUpMode,
     catchUpMessage: catchUpResult.catchUpMessage,
+    focusDomain: focusApplied ? preferredDomain! : null,
+    focusMessage,
+    newWordIds: [...sessionNewIds],
   }
+}
+
+function capitalize(s: string): string {
+  return s.length === 0 ? s : s[0].toUpperCase() + s.slice(1)
 }
 
 async function detectCatchUp(
@@ -155,7 +197,9 @@ async function getRecentOrdWordIds(supabase: SupabaseClient, userId: string): Pr
 async function fetchArticles(
   supabase: SupabaseClient,
   doneIds: string[],
-  recentWordIds: Set<string>
+  recentWordIds: Set<string>,
+  weakQuestionTypes: Set<string> = new Set(),
+  preferredDomain?: string,
 ): Promise<Article[]> {
   const buildQuery = (position: string) => {
     let q = supabase.from('articles').select('*').eq('unit_position', position)
@@ -178,8 +222,17 @@ async function fetchArticles(
   ])
 
   const score = (article: Article): number => {
-    if (!article.featured_ord_words?.length || recentWordStrings.size === 0) return 0
-    return article.featured_ord_words.filter(w => recentWordStrings.has(w.toLowerCase())).length
+    const ordScore = article.featured_ord_words?.length && recentWordStrings.size > 0
+      ? article.featured_ord_words.filter(w => recentWordStrings.has(w.toLowerCase())).length
+      : 0
+    const weakTypeScore = weakQuestionTypes.size > 0
+      ? article.questions.filter(q => weakQuestionTypes.has(q.type)).length
+      : 0
+    // Small boost when the article domain matches the user's weekly focus.
+    // Kept at +1 so it acts as a tiebreaker rather than overpowering the
+    // featured-words and weak-types signals.
+    const domainScore = preferredDomain && article.domain === preferredDomain ? 1 : 0
+    return ordScore + weakTypeScore + domainScore
   }
 
   const kortSorted = ([...(kortData ?? [])] as Article[]).sort((a, b) => score(b) - score(a))
@@ -187,8 +240,51 @@ async function fetchArticles(
 
   const results: Article[] = []
   if (kortSorted[0]) results.push(kortSorted[0])
-  results.push(...langSorted.slice(0, 2))
+
+  // Pick lång articles preferring both domain diversity and weak-type interleaving.
+  // Second article avoids the same domain AND avoids repeating weak types already in the first.
+  if (langSorted.length > 0) {
+    results.push(langSorted[0])
+    if (langSorted.length > 1) {
+      const firstDomain = langSorted[0].domain
+      const firstWeakTypes = new Set(langSorted[0].questions.map(q => q.type).filter(t => weakQuestionTypes.has(t)))
+      const second = langSorted.slice(1).find(a =>
+        a.domain !== firstDomain &&
+        (firstWeakTypes.size === 0 || a.questions.some(q => weakQuestionTypes.has(q.type) && !firstWeakTypes.has(q.type)))
+      ) ?? langSorted.slice(1).find(a => a.domain !== firstDomain)
+        ?? langSorted[1]
+      results.push(second)
+    }
+  }
+
   return results
+}
+
+// Returns question types where the user's accuracy is below 50% (min 3 attempts).
+export async function getWeakLasQuestionTypes(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<Set<string>> {
+  const { data } = await supabase
+    .from('session_responses')
+    .select('las_question_type, is_correct')
+    .eq('user_id', userId)
+    .eq('question_type', 'las')
+    .not('las_question_type', 'is', null)
+
+  const counts: Record<string, { correct: number; total: number }> = {}
+  for (const row of data ?? []) {
+    const t = row.las_question_type as string
+    if (!counts[t]) counts[t] = { correct: 0, total: 0 }
+    counts[t].total++
+    if (row.is_correct) counts[t].correct++
+  }
+
+  const weak = new Set<string>()
+  for (const [type, { correct, total }] of Object.entries(counts)) {
+    if (total >= 5 && correct / total < 0.5) weak.add(type)
+  }
+  return weak
 }
 
 // Build diagnostic session (no FSRS, random sampling)

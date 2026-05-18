@@ -28,6 +28,18 @@ export async function POST(req: NextRequest) {
 
   const { sessionId, wordId, isCorrect, responseMs } = parsed.data
 
+  // Verify the session belongs to this user before writing a response into it.
+  // Without this, a client could poison another user's session_responses by
+  // submitting a foreign sessionId. RLS still enforces user_id, but session_id
+  // is client-supplied and previously trusted blindly.
+  const { data: ownedSession } = await supabase
+    .from('study_sessions')
+    .select('id')
+    .eq('id', sessionId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (!ownedSession) return NextResponse.json({ error: 'Session not found' }, { status: 404 })
+
   // Fetch or create the FSRS card for this user+word
   const { data: existingCard } = await supabase
     .from('fsrs_cards')
@@ -50,14 +62,13 @@ export async function POST(req: NextRequest) {
       : (existingCard?.miss_count ?? 0) + 1,
   }
 
-  if (existingCard) {
-    await supabase
-      .from('fsrs_cards')
-      .update(dbUpdate)
-      .eq('id', existingCard.id)
-  } else {
-    await supabase.from('fsrs_cards').insert(dbUpdate)
-  }
+  // Upsert on (user_id, word_id) — the unique constraint from migration 001.
+  // Using upsert (Postgres ON CONFLICT) instead of read-then-insert/update
+  // closes the race where two concurrent answers for the same word both find
+  // no card and both INSERT, causing a 23505 on the loser.
+  await supabase
+    .from('fsrs_cards')
+    .upsert(dbUpdate, { onConflict: 'user_id,word_id' })
 
   // Record the response
   await supabase.from('session_responses').insert({

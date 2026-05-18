@@ -11,7 +11,9 @@ The founder is **non-technical**. They understand the product deeply but don't w
 - **Explain every decision in plain language.** No jargon without a definition.
 - **Before doing anything significant**, say what you're about to do and why.
 - **Summarise changes in plain English** — don't assume they'll read the code.
-- **Act as a personal assistant, not just a builder.** Surface observations proactively mid-session: if you notice a better approach, say so before continuing. If something conflicts with the non-negotiable rules, flag it immediately. If a pattern should become a system, suggest it. Only flag things at decision level — not implementation details.
+- **Be the project manager, not just the builder.** When the founder pitches a feature, don't default to building it — think product-first. Does it serve the North Star (below)? Is there a sharper version that costs the same to ship? Is it competing with an existing surface? Push back when you have reasoning. Propose better alternatives when you see them. When the founder hands you the call ("you decide", "you're the PM", "if you find it helpful"), make it confidently with explicit tradeoffs — don't punt back.
+- **Surface observations proactively.** If you notice a better approach mid-session, say so before continuing. If something conflicts with the non-negotiable rules, flag it immediately. If a pattern should become a system, suggest it. Only flag things at decision level — not implementation details.
+- **After shipping a feature or important update, name how it moves us toward the North Star.** One or two sentences at the end of the summary. Tie it concretely to *best HP prep app* and/or *10k SEK/month*. If you can't make the connection, that's a signal the work may have been scope creep — say so.
 
 ---
 
@@ -25,6 +27,32 @@ Fattat (Swedish slang for "got it") is a **mobile-first web app** for Swedish st
 Product differentiation: **cognitive-science-grounded learning design** — FSRS spaced repetition, retrieval practice only, immediate feedback, enforced ORD→LÄS interleaving, implementation intentions for habit formation.
 
 Full details: `PRODUCT_BRIEF.md`
+
+---
+
+## North Star
+
+Two stacked goals:
+
+1. **Be the best app in Swedish HP prep.** Best = candidates choose Fattat over alternatives. Wins on outcome (real score improvement), feel (mobile-first, low friction), and pedagogy (cognitive science, no passive study).
+2. **10,000 SEK/month in revenue** — the practical signal that #1 is working.
+
+Every feature, copy change, or product decision should serve at least one. If a change can't be tied to either, that's a scope-creep signal — flag it before building.
+
+---
+
+## Strategy Docs (where decisions live)
+
+These files carry the live strategy — read them when planning anything that touches launch, pricing, content, or the legal setup.
+
+- **`MARKETING_PLAN.md`** — positioning, launch phases (1/2/3), pre-launch checklist, Day 141+ content arc, platforms, content rules, algorithm notes.
+- **`LEGAL_SETUP.md`** — minor-as-sole-prop workstream (the founder is 16). Status, timeline, what's blocked, parents' off-ramp.
+
+**Locked decisions worth surfacing here:**
+- **Pricing:** 399 SEK per provomgång (one-time, ~3 months access), 7-dagars gratis prov. Not monthly subscription.
+- **Audience:** Swedish HP candidates strong on kvantitativa where verbala drags HP down — verbal-delta is the marketing metric, never absolute HP score before the real result.
+- **Launch shape:** Phase 1 (email waitlist, Day 140 → ~Day 90, no signups) → Phase 2 (signups + paid, ~Day 90 → exam) → Phase 3 (score reveal + April '27 harvest, where 10k SEK/month plays out).
+- **Legal entity:** Enskild firma in the founder's name (NOT AB, NOT parent-owned) with parent förmyndare consent + överförmyndare samtycke. Target ready by August 2026.
 
 ---
 
@@ -89,6 +117,11 @@ All files in `supabase/migrations/`:
 10. `010_session_payload.sql` — `payload JSONB` on study_sessions (resumable övningsprov)
 11. `011_reschedule_count.sql` — `exam_reschedules_used` on study_plans
 12. `012_score_predictions.sql` — `score_predictions` table (every HP prediction logged for later calibration)
+13. `013_las_question_type.sql` — `las_question_type` on session_responses for LÄS sub-type profiling
+14. `014_exam_mode_unique.sql` — partial unique index preventing concurrent in-progress övningsprov
+15. `015_reported_hp_score.sql` — `reported_hp_score` + test date on user_profiles + `prediction_calibration` view (joins predictions with real HP outcomes)
+16. `016_new_word_ids_fn.sql` — `select_new_word_ids` RPC (avoids URL-length limits when excluding seen words)
+17. `017_waitlist_signups.sql` — Phase 1 email waitlist table with source tracking (TikTok / IG / YouTube / vän-skola / annat)
 
 Table explanations: `IMPLEMENTATION_PLAN.md` → "Database Structure"
 
@@ -139,7 +172,7 @@ Three silent features — no UI toggles, user only sees the friendly result:
 Triggers when away >2 days AND >30 overdue words. Replaces normal FSRS order with the 20 most fragile words (most lapses, lowest stability). Blue banner explains.
 
 **Fatigue Detection** (`src/stores/sessionStore.ts`)
-Triggers when 3+ wrong out of last 5 ORD answers, OR avg response time >8s over last 3. Full-screen overlay offers to end session or continue.
+Triggers after an 8-answer ORD warmup, when either 5+ wrong in the last 7 ORD answers OR avg response time >12s over the last 3. Full-screen overlay offers to end session or continue.
 
 **Domain Gap Detection** (`src/stores/sessionStore.ts`)
 Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber banner names the domain. LÄS article selection already prefers matching domain.
@@ -147,6 +180,37 @@ Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber b
 ---
 
 ## Recent Fixes
+
+**Phase 1 landing page + bug-fix pass (2026-05-17)** — landing page shipped, plus an 8-item bug sweep across the app.
+
+*Landing page (waitlist mode for Phase 1):*
+1. **Public landing at `/`** — replaced the old `/login` redirect. Hero with form above the fold, second waitlist surface at page bottom, problem/features/dogfooding sections in between. Brand-anchored design (teal F-mark, animated live chip, dark dogfooding block).
+2. **Waitlist signup endpoint** — `/api/waitlist` with email validation, 1-req/min/IP rate limit, dup-email-as-success behavior.
+3. **Source attribution** — required dropdown captures which platform (TikTok/IG/YouTube/vän-skola/annat) brought each lead. Pre-launch checklist item #4 done.
+4. **Middleware update** — `/`, `/privacy`, `/terms` now public; logged-in users still get `/` → `/dashboard` redirect so the app surface is unaffected.
+5. **Boilerplate `/privacy` and `/terms`** — GDPR basics with founder as data controller until enskild firma is registered. Real legal review needed before Phase 2 monetization (see `LEGAL_SETUP.md`).
+
+*Bug sweep:*
+1. **P0 — fsrs/review IDOR** — route trusted client-supplied `sessionId`. Now verifies session belongs to authed user before writing.
+2. **P1 — Diagnostic re-runs dropped session_responses** for already-seeded words, silently breaking `prediction_calibration`. Now logs all answers; only the FSRS-card insert respects the seeded filter.
+3. **P1 — Övningsprov resume non-determinism** — `buildPool` queries now use `.order()` so a payload-less resume reconstructs the same pool.
+4. **P1 — Daily session orphan rows** — session/build now closes the orphan (created without payload after a build crash) before inserting a fresh session.
+5. **P1 — Planner formula bug** — `targetOrdAcc` used raw/80 instead of raw/120; was inflating quota for high-target / short-timeline users.
+6. **P1 — FSRS new-word reservation** — small quotas hit `reviewLimit ≤ 0`; reservation now scales with quota via `Math.floor(limit/4)`.
+7. **P2 — Streak freeze never replenished** — once burnt, every future missed day broke the streak. Added ISO-week rollover that resets `freeze_available` and `freeze_used_this_week`.
+
+Files: `src/app/page.tsx`, `src/components/landing/WaitlistForm.tsx`, `src/app/api/waitlist/route.ts`, `src/app/privacy/page.tsx`, `src/app/terms/page.tsx`, `src/middleware.ts`, `supabase/migrations/017_waitlist_signups.sql`, `src/app/api/fsrs/review/route.ts`, `src/app/api/diagnostic/complete/route.ts`, `src/app/api/test/build/route.ts`, `src/app/api/session/build/route.ts`, `src/lib/session/planner.ts`, `src/lib/fsrs/engine.ts`, `src/lib/streak/manager.ts`, `src/app/(app)/session/page.tsx`, `src/app/(app)/diagnostic/page.tsx`, `src/app/(app)/test/page.tsx`, `src/lib/utils/haptics.ts`, `src/app/(app)/profile/ProfileForm.tsx`, `src/app/(app)/session/complete/page.tsx`, `src/hooks/usePushNotifications.ts`.
+
+*Also in this session:* haptic feedback on every ORD/LÄS answer (via `src/lib/utils/haptics.ts`); profile notification status no longer lies when browser permission is granted but no push subscription exists.
+
+**Score prediction honesty pass (2026-05-15)** — the predicted HP number was unvalidated and quietly leaned on three guesses. Five changes:
+1. **UI demotion** — dashboard and diagnostic now lead with verbal träffprocent (what we measure). The HP number is shown smaller, with a `beta` tag and "kalibreras mot verkliga HP-resultat" caveat. `ScoreGauge` is no longer used.
+2. **ELF hardcode replaced** — `estimateVerbalHp` now falls back to `previous_hp_score` for missing ELF (not the constant 1.0). ELF uncertainty halved (0.08 → 0.04) when HP is available.
+3. **Difficulty-weighted retention** — `computeAvgRetention` now weights cards by FSRS difficulty (`0.5 + difficulty / 10`). Dashboard, plan, and study-plan/refresh now SELECT `difficulty`.
+4. **Shared band helper** — extracted `buildScoreBand` + `estimateDiagnosticBand` in `scoring.ts`. The diagnostic route no longer duplicates the prediction formula inline; it shares math with `predictScore`.
+5. **Calibration loop** — migration 015 adds `reported_hp_score` to `user_profiles` (collected via profile form) and a `prediction_calibration` view joining predictions with real outcomes. Until ~5–10 real scores accumulate, the band labels stay `beta` and constants stay frozen.
+
+Files: `src/lib/session/scoring.ts`, `src/app/(app)/dashboard/page.tsx`, `src/app/(app)/diagnostic/results/page.tsx`, `src/app/api/diagnostic/complete/route.ts`, `src/app/(app)/profile/ProfileForm.tsx`, `src/app/(app)/onboarding/page.tsx`, `supabase/migrations/015_reported_hp_score.sql`.
 
 **Diagnostic calibration (2026-05-11)** — four bugs fixed:
 1. Sample increased from 10 → 20 ORD words (8 easy + 8 medium + 4 hard, matching HP's difficulty curve)
@@ -162,9 +226,11 @@ Files: `src/lib/session/builder.ts`, `src/app/api/diagnostic/complete/route.ts`,
 
 | What | Where | Priority |
 |---|---|---|
+| Calibrate HP prediction against `prediction_calibration` view once ~5–10 users report real scores | `src/lib/session/scoring.ts` | High (waiting on data) |
 | Push notification 24h before each övningsprov | `src/app/api/notifications/schedule/route.ts` | Medium |
 | Performance-adaptive exam scheduling (v2) | `src/lib/session/planner.ts` | Low |
-| Haptic feedback on correct answers | `src/lib/utils/haptics.ts` + session page | Medium |
+| Founder account fully prepped for Day 0 (diagnostic done, exam date set, 7–10 days FSRS history) | manual | High (pre-launch) |
+| Session payload bloat — daily session stores full article bodies in JSONB; should mirror övningsprov and store IDs only | `src/app/api/session/build/route.ts` | Low |
 | Study partner pages | `src/app/(app)/partner/` | Low |
 
 ---

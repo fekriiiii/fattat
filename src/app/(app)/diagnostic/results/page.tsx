@@ -51,12 +51,19 @@ function ResultsContent() {
       .then((r) => r.json())
       .then(setResult)
       .catch(() => {
-        // Non-fatal — show results without plan data
+        // Non-fatal — show results without plan data. The API would otherwise
+        // return a personalized band (using previous HP/MEK/ELF); here we fall
+        // back to a generic ±0.20 band around the raw-score estimate.
         const hp = rawToHp(
           Math.round((ordCorrect / ordTotal) * 40) +
           Math.round((lasCorrect / lasTotal) * 40) + 40
         )
-        setResult({ baselineHp: hp, gap: null })
+        setResult({
+          baselineHp: hp,
+          hpLow: Math.max(0, hp - 0.2),
+          hpHigh: Math.min(2.0, hp + 0.2),
+          gap: null,
+        })
       })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -77,8 +84,12 @@ function ResultsContent() {
 
   function handleContinue() {
     reset()
-    router.push('/dashboard')
+    router.push('/session')
   }
+
+  const verbalPct = ordTotal + lasTotal > 0
+    ? Math.round(((ordCorrect + lasCorrect) / (ordTotal + lasTotal)) * 100)
+    : 0
 
   return (
     <div className="flex flex-col gap-5 px-4 py-8 max-w-sm mx-auto">
@@ -88,17 +99,17 @@ function ResultsContent() {
         </p>
         <h1 className="text-2xl font-bold text-dark">Ditt startresultat</h1>
         <p className="text-sm text-dark/65 mt-1 leading-relaxed">
-          Det här är din uppskattade startnivå — inte ett exakt HP-resultat.
+          Så här presterade du på diagnosprovet.
         </p>
       </div>
 
-      {/* Baseline HP score */}
+      {/* Primary: measured accuracy (what we actually know) */}
       <div className="bg-primary text-cream rounded-card px-6 py-6 text-center">
         <p className="text-xs font-bold uppercase tracking-widest text-cream/60 mb-1">
-          Beräknat startresultat
+          Verbal träffprocent
         </p>
-        <p className="text-5xl font-bold">{baselineHp.toFixed(2)}</p>
-        <p className="text-sm text-cream/60 mt-1">{hpLow.toFixed(2)} – {hpHigh.toFixed(2)} HP</p>
+        <p className="text-5xl font-bold">{verbalPct}%</p>
+        <p className="text-sm text-cream/60 mt-1">{ordCorrect + lasCorrect} / {ordTotal + lasTotal} rätt totalt</p>
       </div>
 
       {/* ORD / LÄS breakdown */}
@@ -107,21 +118,42 @@ function ResultsContent() {
         <ModuleCard label="Läsförståelse" correct={lasCorrect} total={lasTotal} pct={lasPct} />
       </div>
 
+      {/* Secondary: HP estimate, demoted with a beta tag because the model
+          hasn't been calibrated against real HP outcomes yet (see migration 015). */}
+      <div className="bg-white border border-dark/8 rounded-card px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-dark/45">
+              Beräknat HP
+            </p>
+            <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-dark/8 text-dark/55">
+              beta
+            </span>
+          </div>
+          <p className="text-sm text-dark/65">
+            <span className="font-bold text-dark">{baselineHp.toFixed(2)}</span>
+            <span className="text-dark/45"> ({hpLow.toFixed(2)}–{hpHigh.toFixed(2)})</span>
+          </p>
+        </div>
+        <p className="text-[11px] text-dark/45 mt-1.5 leading-relaxed">
+          Grov uppskattning baserad på antal rätt. Exakt HP beror på provets svårighetsgrad och
+          våra prognoser kalibreras mot verkliga HP-resultat över tid.
+        </p>
+      </div>
+
       {/* Gap plan — shown once API responds */}
       {gap ? (
         <div className={`rounded-card px-4 py-4 border ${gap.isHeavy ? 'bg-amber-50 border-amber-200' : 'bg-white border-dark/8'}`}>
           <p className="text-sm font-bold text-dark mb-1">Din studieplan</p>
-          <p className="text-sm text-dark/65 leading-relaxed">{gap.message}</p>
-          {gap.daysLeft > 0 && (
-            <div className="mt-3 flex gap-4">
-              <Stat label="Min per dag"  value={`${gap.estimatedMinutesPerDay} min`} />
-              <Stat label="Nya ord/dag"  value={String(gap.dailyNewWords)} />
-              <Stat label="Dagar kvar"   value={String(gap.daysLeft)} />
-            </div>
-          )}
-          {gap.isHeavy && (
-            <p className="text-xs text-amber-700 mt-3 leading-relaxed">
-              Vid ett lugnare tempo (10 ord/dag) kan du nå {gap.achievableHp.toFixed(2)} HP.
+          {gap.newWordsNeeded === 0 ? (
+            <p className="text-sm text-dark/65 leading-relaxed">
+              Du är redan på rätt nivå. Fortsätt med dagliga sessioner för att hålla dig i form.
+            </p>
+          ) : (
+            <p className="text-sm text-dark/65 leading-relaxed">
+              {gap.isHeavy
+                ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar — ett ambitiöst mål som kräver konsekvent daglig träning.`
+                : `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar. Studerar du varje dag når du målet med god marginal.`}
             </p>
           )}
         </div>
@@ -150,7 +182,7 @@ function ResultsContent() {
       )}
 
       <Button fullWidth size="lg" onClick={handleContinue}>
-        Gå till studiedashboard
+        Starta din första träningssession →
       </Button>
     </div>
   )

@@ -7,15 +7,16 @@ import { createServerClient } from '@/lib/supabase/server'
 // No FSRS update — exam_mode never touches the spaced-repetition queue.
 
 const schema = z.object({
-  sessionId:    z.string().uuid(),
-  questionType: z.enum(['ord', 'las']),
-  wordId:       z.string().uuid().nullable().optional(),
-  articleId:    z.string().uuid().nullable().optional(),
-  questionId:   z.string().nullable().optional(),
-  chosenLabel:  z.string(),
-  correctLabel: z.string(),
-  isCorrect:    z.boolean(),
-  responseMs:   z.number().int().min(0),
+  sessionId:       z.string().uuid(),
+  questionType:    z.enum(['ord', 'las']),
+  wordId:          z.string().uuid().nullable().optional(),
+  articleId:       z.string().uuid().nullable().optional(),
+  questionId:      z.string().nullable().optional(),
+  lasQuestionType: z.string().nullable().optional(),
+  chosenLabel:     z.string(),
+  correctLabel:    z.string(),
+  isCorrect:       z.boolean(),
+  responseMs:      z.number().int().min(0),
 })
 
 export async function POST(req: Request) {
@@ -38,16 +39,17 @@ export async function POST(req: Request) {
   }
 
   const { error: insertError } = await supabase.from('session_responses').insert({
-    session_id:    a.sessionId,
-    user_id:       user.id,
-    question_type: a.questionType,
-    word_id:       a.wordId ?? null,
-    article_id:    a.articleId ?? null,
-    question_id:   a.questionId ?? null,
-    chosen_label:  a.chosenLabel,
-    correct_label: a.correctLabel,
-    is_correct:    a.isCorrect,
-    response_ms:   a.responseMs,
+    session_id:        a.sessionId,
+    user_id:           user.id,
+    question_type:     a.questionType,
+    word_id:           a.wordId ?? null,
+    article_id:        a.articleId ?? null,
+    question_id:       a.questionId ?? null,
+    las_question_type: a.lasQuestionType ?? null,
+    chosen_label:      a.chosenLabel,
+    correct_label:     a.correctLabel,
+    is_correct:        a.isCorrect,
+    response_ms:       a.responseMs,
   })
 
   if (insertError) {

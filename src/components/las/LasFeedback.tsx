@@ -16,16 +16,27 @@ interface Props {
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  huvudtanke: 'Huvudtanke',
-  detalj: 'Detalj',
-  syfte: 'Syfte',
-  slutledning: 'Slutledning',
-  jämförande: 'Jämförande',
-  ståndpunkt: 'Ståndpunkt',
+  huvudtanke:    'Huvudtanke',
+  detalj_fakta:  'Detalj',
+  detalj_kausal: 'Detalj',
+  syfte_funktion:'Syfte',
+  slutledning:   'Slutledning',
+  jämförande:    'Jämförande',
+  ståndpunkt:    'Ståndpunkt',
+}
+
+const DISTRACTOR_HINTS: Record<string, string> = {
+  går_för_långt:        'Ditt svar gick längre än vad texten faktiskt säger.',
+  ytlig_läsning:        'Svaret låter rimligt vid en snabb läsning, men stämmer inte riktigt med texten.',
+  rätt_fakta_fel_fråga: 'Det du valde stämmer med texten — men svarar inte på just den här frågan.',
+  nära_men_inte_riktigt:'Nära! Men svaret missar något viktigt.',
 }
 
 export function LasFeedback({ question, options, chosenLabel, isCorrect, isLastQuestion, onNext, onReadAgain }: Props) {
   const correctLabel = options.find((o) => o.isCorrect)?.label ?? ''
+  const distractorHint = !isCorrect && chosenLabel
+    ? DISTRACTOR_HINTS[question.distractor_types?.[chosenLabel as 'A'|'B'|'C'|'D'] ?? ''] ?? null
+    : null
 
   return (
     <div className="flex flex-col gap-4 px-5 py-6">
@@ -41,6 +52,11 @@ export function LasFeedback({ question, options, chosenLabel, isCorrect, isLastQ
           <span className="text-[11px] text-dark/60 font-medium">{TYPE_LABELS[question.type]}</span>
         )}
       </div>
+
+      {/* Distractor hint — only on wrong answers */}
+      {distractorHint && (
+        <p className="text-[13px] text-dark/55 leading-snug">{distractorHint}</p>
+      )}
 
       {/* Explanation card */}
       {question.explanation && (

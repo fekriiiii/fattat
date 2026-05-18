@@ -62,7 +62,25 @@ If zero matches, say so explicitly — that's a signal the article may need more
 
 Now actively look for places where a non-ORD-database word in the body could be **naturally replaced** with an ORD-database word (or one of its synonyms). The goal is to weave more ORD-database vocabulary into the article so students encounter recently-practiced words in reading context.
 
-### Rules for proposing swaps
+### 4a — Build a coverage map before proposing
+
+Before generating any proposals, compute word coverage across the existing database:
+
+1. Read all rows in `las-database.csv` and collect every word listed in each row's `featured_ord_words` column.
+2. Count how many articles each ORD word already appears in. Call this its **coverage count**.
+3. Build a **priority list** for this article:
+   - **Tier 1 (prefer strongly):** ORD words with coverage count 0 — never used in any article yet
+   - **Tier 2 (prefer):** ORD words with coverage count 1–2
+   - **Tier 3 (neutral):** ORD words with coverage count 3–5
+   - **Tier 4 (deprioritize):** ORD words with coverage count 6+ — already well-covered
+
+4. Within each tier, **prefer words whose `domain` matches the article's domain** (determined in Step 6 — if not yet known, infer from the body). A Tier 1 word in a matching domain beats a Tier 1 word in a mismatched domain.
+
+The priority list does not override quality — a Tier 1 word that produces a forced or unnatural swap should still be dropped. But when two swap candidates are equally natural, always pick the higher-priority word.
+
+> **Why this matters:** Without coverage tracking, the same 20 common words get baked into every article while 900 domain-specific words never appear. This spreads vocabulary exposure intentionally across the whole database.
+
+### 4b — Rules for proposing swaps
 
 A good swap must satisfy **all** of these:
 - **Meaning preserved exactly** — not "close enough", actually the same.
@@ -72,16 +90,16 @@ A good swap must satisfy **all** of these:
 - **Doesn't break a passage_anchor** — if the sentence is the answer-anchor for a question, the swap must not change what makes the answer correct.
 - **Natural, not crammed** — if a swap feels forced, drop it.
 
-### How many to propose
+### 4c — How many to propose
 
 Aim for **3–6 swap candidates**, not more. Quality over volume. If the article already has 8+ ORD words from Step 3, propose only 1–2 (or zero) — it's already vocabulary-rich.
 
-### How to present swaps to the user
+### 4d — How to present swaps to the user
 
 For each candidate, show:
 
 ```
-Förslag #N — bake in: «<ord-word>»
+Förslag #N — bake in: «<ord-word>» [Tier X — coverage: Y artiklar]
 
 Original mening:
 "<full sentence as written>"
@@ -92,9 +110,11 @@ Förslag:
 Varför: <one short sentence — meaning equivalence + why it fits>
 ```
 
+The `[Tier X — coverage: Y artiklar]` tag is shown so the user understands why a particular word was chosen over others.
+
 Then ask: *"Vilka av förslagen vill du behålla? Skriv numren (t.ex. '1, 3, 4'), 'alla', eller 'inga'."*
 
-### Apply approved swaps
+### 4e — Apply approved swaps
 
 Apply only the swaps the user approves. The result is the **final article body** that all subsequent steps work from. Show the final body briefly so the user can confirm it reads naturally before proceeding.
 

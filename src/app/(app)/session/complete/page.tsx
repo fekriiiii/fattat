@@ -10,7 +10,7 @@ export default function SessionCompletePage() {
   const router = useRouter()
   const { responses, reset } = useSessionStore()
   const [streak, setStreak] = useState<number | null>(null)
-  const { permission, subscribed, subscribe } = usePushNotifications()
+  const { permission, subscribed, subscribe, loading: pushLoading } = usePushNotifications()
   const [notifLoading, setNotifLoading] = useState(false)
   const [notifDone, setNotifDone] = useState(false)
 
@@ -114,7 +114,7 @@ export default function SessionCompletePage() {
       </div>
 
       {/* Push notification prompt */}
-      {permission !== 'granted' && !subscribed && !notifDone && (
+      {!pushLoading && !subscribed && permission !== 'denied' && !notifDone && (
         <div className="bg-white rounded-card shadow-card px-4 py-4 flex items-start gap-3">
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F766E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

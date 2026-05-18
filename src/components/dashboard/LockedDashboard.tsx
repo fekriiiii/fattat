@@ -20,7 +20,7 @@ export function LockedDashboard({ displayName }: { displayName: string | null })
           <div className="flex-1">
             <h2 className="text-[17px] font-bold text-dark leading-tight">Gör diagnostiken</h2>
             <p className="text-[13px] text-dark/65 mt-1 leading-relaxed">
-              Ett kort prov (~20 min) som kalibrerar FSRS, sätter din baslinje och bygger din studieplan. Utan det kan vi inte rekommendera ord eller artiklar åt dig.
+              Ett kort prov (~30 min) som kalibrerar FSRS, sätter din baslinje och bygger din studieplan. Utan det kan vi inte rekommendera ord eller artiklar åt dig.
             </p>
           </div>
         </div>
@@ -28,7 +28,7 @@ export function LockedDashboard({ displayName }: { displayName: string | null })
         <div className="flex flex-col gap-2 text-[12px] text-dark/55 leading-relaxed pl-[52px]">
           <div className="flex gap-2">
             <span className="text-primary">•</span>
-            <span>10 ORD-frågor + 1 läsförståelsetext</span>
+            <span>20 ORD-frågor + 2 läsförståelsetexter</span>
           </div>
           <div className="flex gap-2">
             <span className="text-primary">•</span>

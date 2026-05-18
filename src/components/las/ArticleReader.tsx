@@ -136,6 +136,10 @@ export function ArticleReader({ article, onDoneReading }: Props) {
       <div className="px-5 py-5 flex flex-col gap-4">
         {renderSegmentsAsParagraphs(segments, (h) => setActiveHighlight(h))}
 
+        <p className="text-[11px] text-dark/40 italic">
+          Namn, personer, statistik och händelser i texten är påhittade och används enbart i övningssyfte.
+        </p>
+
         {article.vocab_highlights.length > 0 && (
           <p className="text-[11px] text-dark/55 italic">
             Tryck på understrukna ord för definition

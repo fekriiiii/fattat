@@ -540,8 +540,8 @@ function RevealStep({ onNext }: { onNext: () => void }) {
           <p className="text-xs font-bold text-dark/40 uppercase tracking-wide mb-1">
             Traditionellt
           </p>
-          {['Läs', 'Läs igen', 'Läs igen', 'Läs igen'].map((t) => (
-            <p key={t} className="text-sm text-dark/40">{t}</p>
+          {['Läs', 'Läs igen', 'Läs igen', 'Läs igen'].map((t, i) => (
+            <p key={i} className="text-sm text-dark/40">{t}</p>
           ))}
           <p className="text-xs text-dark/30 mt-2 border-t border-dark/10 pt-2">
             Glöms snabbt
@@ -555,8 +555,8 @@ function RevealStep({ onNext }: { onNext: () => void }) {
           <p className="text-xs font-bold text-primary uppercase tracking-wide mb-1">
             Fattat
           </p>
-          {['Testa →', 'Feedback', 'Testa →', 'Feedback'].map((t) => (
-            <p key={t} className="text-sm text-primary/80">{t}</p>
+          {['Testa →', 'Feedback', 'Testa →', 'Feedback'].map((t, i) => (
+            <p key={i} className="text-sm text-primary/80">{t}</p>
           ))}
           <p className="text-xs text-primary/60 mt-2 border-t border-primary/20 pt-2">
             Fastnar
@@ -754,9 +754,11 @@ function PredictionBand({
 }) {
   // Mirrors predictScore() with sessionCount = 0:
   //   sessionUnc = 0.05 + 0.15 * exp(0) = 0.20
+  // ELF uncertainty is halved when previousHp is available (it serves as a
+  // proxy in estimateVerbalHp), matching buildScoreBand in scoring.ts.
   const sessionUnc = 0.20
   const mekUnc = hasMek ? 0 : 0.05
-  const elfUnc = hasElf ? 0 : 0.08
+  const elfUnc = hasElf ? 0 : 0.04
   const uncertainty = sessionUnc + mekUnc + elfUnc
 
   const mid = previousHp
@@ -880,28 +882,14 @@ function GapPreview({
 
       {alreadyThere ? (
         <p className="text-sm text-dark/70 leading-relaxed">
-          Du är redan på den nivån. <strong>{gap.estimatedMinutesPerDay} min/dag</strong>{' '}
-          räcker för att hålla minnet i form.
+          Du är redan på rätt nivå. Dagliga sessioner håller dig i form inför provet.
         </p>
       ) : (
-        <>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-3 mb-3">
-            <Stat label="Nya ord totalt" value={`~${gap.newWordsNeeded}`} />
-            <Stat label="Per dag" value={`${gap.dailyNewWords} nya`} />
-            <Stat label="Daglig kvot" value={`${gap.dailyOrdQuota} ord`} />
-            <Stat label="Tid per dag" value={`~${gap.estimatedMinutesPerDay} min`} />
-          </div>
-          <div
-            className={cn(
-              'pt-3 border-t border-dark/8 text-xs leading-relaxed',
-              gap.isHeavy ? 'text-gold' : 'text-primary'
-            )}
-          >
-            {gap.isHeavy
-              ? `⚠ Ambitiöst tempo. Vid 10 ord/dag landar du runt ${gap.achievableHp.toFixed(2)} HP — fortfarande en stor förbättring.`
-              : '✓ Realistiskt tempo. Du når dit i lugn takt.'}
-          </div>
-        </>
+        <p className={`text-sm leading-relaxed ${gap.isHeavy ? 'text-dark/70' : 'text-dark/70'}`}>
+          {gap.isHeavy
+            ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar — ett ambitiöst mål som kräver daglig träning utan längre avbrott.`
+            : `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar. Ett realistiskt tempo om du studerar varje dag.`}
+        </p>
       )}
 
       {noExam && (
@@ -947,6 +935,7 @@ function SummaryStep({
   error: string
   onStart: () => void
 }) {
+  const router = useRouter()
   const days = examDate
     ? Math.max(0, Math.floor((new Date(examDate).getTime() - Date.now()) / 86_400_000))
     : null
@@ -1004,9 +993,9 @@ function SummaryStep({
           }
         />
         <SummaryRow
-          label="Daglig plan"
-          value={`${gap.dailyOrdQuota} ord + 1 artikel`}
-          sub={`~${gap.estimatedMinutesPerDay} min/dag`}
+          label="Ord att lära sig"
+          value={`${gap.newWordsNeeded} ord`}
+          sub={`på ${gap.daysLeft} dagar`}
         />
       </div>
 
@@ -1015,7 +1004,7 @@ function SummaryStep({
           Nästa steg → Diagnosprov
         </p>
         <p className="text-sm text-dark/70 leading-relaxed mb-3">
-          Ett kort kalibreringspass på <strong>~10 minuter</strong>. 10 ordfrågor + 1 läsförståelse.
+          Ett kort kalibreringspass på <strong>~30 minuter</strong>. 20 ordfrågor + 2 läsförståelsetexter.
           Algoritmen lär sig dig — och din prognos låser sig till verkligheten.
         </p>
         <ul className="text-xs text-dark/60 space-y-1">
@@ -1025,16 +1014,24 @@ function SummaryStep({
         </ul>
       </div>
 
-      {/* Step 17 — constructed-content disclosure (one-time, plain Swedish, no "AI" framing) */}
-      <p className="text-[11px] text-dark/45 leading-relaxed text-center px-2">
-        Texterna i Fattat är skrivna i HP-stil för läsförståelseträning. Studier, källor och namn är ibland konstruerade för pedagogiska syften — använd dem inte som faktakällor.
-      </p>
+      <div className="bg-dark/[0.04] rounded-card px-4 py-3">
+        <p className="text-xs text-dark/60 leading-relaxed text-center">
+          Texterna i Fattat är skrivna i HP-stil för läsförståelseträning. Namn, personer, statistik och händelser är påhittade och används enbart i övningssyfte.
+        </p>
+      </div>
 
       {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
       <Button fullWidth loading={saving} onClick={onStart}>
         Starta diagnosprov
       </Button>
+
+      <button
+        onClick={() => router.push('/dashboard')}
+        className="text-sm text-dark/40 underline underline-offset-2 text-center w-full"
+      >
+        Gör det senare
+      </button>
     </div>
   )
 }

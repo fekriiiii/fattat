@@ -11,13 +11,14 @@ import {
 } from '@/lib/session/scoring'
 import { calculateGap } from '@/lib/session/planner'
 import { logScorePrediction } from '@/lib/session/predictionLog'
-import { ScoreGauge } from '@/components/dashboard/ScoreGauge'
 import { StreakCalendar } from '@/components/dashboard/StreakCalendar'
 import { DomainMap } from '@/components/dashboard/DomainMap'
 import { StudyPlanCard } from '@/components/dashboard/StudyPlanCard'
 import { ExamCountdown } from '@/components/dashboard/ExamCountdown'
 import { LockedDashboard } from '@/components/dashboard/LockedDashboard'
 import { ResumeExamCard } from '@/components/dashboard/ResumeExamCard'
+import { LasTypeBreakdown } from '@/components/dashboard/LasTypeBreakdown'
+import type { LasTypeStat } from '@/components/dashboard/LasTypeBreakdown'
 import { Button } from '@/components/ui/Button'
 import { getOnboardingState } from '@/lib/onboarding/state'
 
@@ -30,6 +31,8 @@ export default async function DashboardPage() {
 
   // Fetch everything in parallel
   const examResumeCutoff = new Date(Date.now() - EXAM_DURATION_MS).toISOString()
+  const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0)
+  const todayStartIso = todayStart.toISOString()
   const [
     { data: profile },
     { data: streak },
@@ -40,14 +43,19 @@ export default async function DashboardPage() {
     { data: activePlan },
     { count: totalWords },
     { count: wordsLearned },
+    { data: allUserWordIds },
     { count: completedSessionCount },
+    { count: completedDailyCount },
+    { data: sessionDoneToday },
     { data: inProgressExam },
+    { data: inProgressDaily },
+    { data: lasTypeResponses },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
     supabase.from('user_streaks').select('*').eq('user_id', user.id).single(),
     supabase
       .from('fsrs_cards')
-      .select('stability, elapsed_days, reps')
+      .select('stability, elapsed_days, reps, difficulty')
       .eq('user_id', user.id)
       .gt('reps', 0)
       .limit(500),
@@ -86,7 +94,10 @@ export default async function DashboardPage() {
       .maybeSingle(),
     supabase.from('words').select('*', { count: 'exact', head: true }),
     supabase.from('fsrs_cards').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gt('reps', 0),
+    supabase.from('fsrs_cards').select('word_id').eq('user_id', user.id),
     supabase.from('study_sessions').select('*', { count: 'exact', head: true }).eq('user_id', user.id).not('completed_at', 'is', null),
+    supabase.from('study_sessions').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('session_type', 'daily').not('completed_at', 'is', null),
+    supabase.from('study_sessions').select('id').eq('user_id', user.id).eq('session_type', 'daily').not('completed_at', 'is', null).gte('completed_at', todayMidnightUTC()).limit(1).maybeSingle(),
     // In-progress övningsprov for the resume CTA: started within the last 30 min,
     // not yet completed. Timer keeps running against `started_at` regardless of
     // whether the user is on /test or somewhere else.
@@ -100,6 +111,23 @@ export default async function DashboardPage() {
       .order('started_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
+    // In-progress daily session from today
+    supabase
+      .from('study_sessions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('session_type', 'daily')
+      .is('completed_at', null)
+      .gte('started_at', todayStartIso)
+      .order('started_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from('session_responses')
+      .select('las_question_type, is_correct')
+      .eq('user_id', user.id)
+      .eq('question_type', 'las')
+      .not('las_question_type', 'is', null),
   ])
 
   // Fetch domains for all word_ids in recentResponses
@@ -172,17 +200,17 @@ export default async function DashboardPage() {
 
   // Study plan gap analysis
   const avgRetention = computeAvgRetention(cards)
+  const seenWordIds = new Set((allUserWordIds ?? []).map((r: { word_id: string }) => r.word_id))
+  const unseenWords = Math.max(0, (totalWords ?? 0) - seenWordIds.size)
   const examDate = profile?.exam_date ? new Date(profile.exam_date) : null
-  const targetVerbalHp = previousHpScore !== null
-    ? Math.min(2.0, Math.max(0, 2 * (profile?.target_score ?? 1.3) - previousHpScore))
-    : (profile?.target_score ?? 1.3)
+  const targetVerbalHp = profile?.target_score ?? 1.3
   const gap = examDate
     ? calculateGap({
         baselineOrdAcc: avgRetention,
         baselineLasAcc: lasAccuracy,
         targetHp: targetVerbalHp,
         examDate,
-        totalWords: totalWords ?? 0,
+        totalWords: unseenWords,
       })
     : null
 
@@ -214,8 +242,14 @@ export default async function DashboardPage() {
     previousElfScore,
   })
 
+  const isFirstTimer = (completedDailyCount ?? 0) === 0
+  const isDoneToday = !!sessionDoneToday
+
   // Domain accuracy map
   const domainStats = computeDomainStats(recentResponses ?? [], wordDomains ?? [])
+
+  // LÄS question-type breakdown
+  const lasTypeStats = computeLasTypeStats(lasTypeResponses ?? [])
 
   // Study calendar dates (days this month with completed sessions)
   const studiedDatesThisMonth = Array.from(
@@ -225,6 +259,46 @@ export default async function DashboardPage() {
   ) as string[]
 
 
+  if (isFirstTimer) {
+    return (
+      <div className="flex flex-col gap-4 px-4 pt-5 pb-6">
+        <div>
+          <h1 className="text-[22px] font-bold text-dark leading-tight">
+            Bra jobbat{profile?.display_name ? `, ${profile.display_name.split(' ')[0]}` : ''}!
+          </h1>
+          <p className="text-[13px] text-dark/65 mt-1">Nu börjar den riktiga träningen.</p>
+        </div>
+
+        <div className="bg-white shadow-card rounded-card p-5 flex flex-col gap-3">
+          <p className="text-[13px] font-bold text-dark">Så här funkar en session</p>
+          <div className="flex flex-col gap-2 text-[13px] text-dark/65 leading-relaxed">
+            <div className="flex gap-2"><span className="text-primary">•</span><span>FSRS väljer rätt ord baserat på din nivå</span></div>
+            <div className="flex gap-2"><span className="text-primary">•</span><span>ORD-frågor först, sedan en läsförståelsetext</span></div>
+            <div className="flex gap-2"><span className="text-primary">•</span><span>Direkt feedback efter varje fråga</span></div>
+            <div className="flex gap-2"><span className="text-primary">•</span><span>Ca 10–15 minuter per dag räcker</span></div>
+          </div>
+        </div>
+
+        {gap && (
+          <div className={`rounded-card px-4 py-4 border ${gap.isHeavy ? 'bg-amber-50 border-amber-200' : 'bg-white border-dark/8'}`}>
+            <p className="text-sm font-bold text-dark mb-1">Din studieplan</p>
+            <p className="text-sm text-dark/65 leading-relaxed">
+              {gap.newWordsNeeded === 0
+                ? 'Du är redan på rätt nivå. Fortsätt med dagliga sessioner för att hålla dig i form.'
+                : gap.isHeavy
+                  ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar — ett ambitiöst mål som kräver konsekvent daglig träning.`
+                  : `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar. Studerar du varje dag når du målet med god marginal.`}
+            </p>
+          </div>
+        )}
+
+        <Link href="/session">
+          <Button fullWidth size="lg">Starta dagens session</Button>
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-[14px] px-4 pt-5 pb-6">
       {/* Greeting + streak badge */}
@@ -233,7 +307,9 @@ export default async function DashboardPage() {
           <h1 className="text-[22px] font-bold text-dark leading-tight">
             {greeting()}{profile?.display_name ? `, ${profile.display_name.split(' ')[0]}` : ''}
           </h1>
-          <p className="text-[13px] text-dark/65 mt-1">Redo för dagens session?</p>
+          <p className="text-[13px] text-dark/65 mt-1">
+            {isDoneToday ? 'Du har studerat idag. Bra jobbat!' : inProgressDaily ? 'Du har en session på gång' : 'Redo för dagens session?'}
+          </p>
         </div>
         {streak?.current_streak ? (
           <div className="flex items-center gap-1.5 bg-gold/10 rounded-full px-3 py-1.5 shrink-0">
@@ -248,11 +324,23 @@ export default async function DashboardPage() {
       {inProgressExam && <ResumeExamCard startedAt={inProgressExam.started_at} />}
 
       {/* CTA — primary action */}
-      <Link href="/session">
-        <Button fullWidth size="lg">
-          Starta dagens session
-        </Button>
-      </Link>
+      {isDoneToday ? (
+        <div className="bg-primary/[0.06] border border-primary/20 rounded-card px-4 py-[14px] flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F766E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-dark">Dagens session klar</p>
+            <p className="text-[11px] text-dark/65 mt-0.5">Kom tillbaka imorgon för nästa session.</p>
+          </div>
+        </div>
+      ) : (
+        <Link href="/session">
+          <Button fullWidth size="lg">
+            {inProgressDaily ? 'Fortsätt dagens session' : 'Starta dagens session'}
+          </Button>
+        </Link>
+      )}
 
       {/* Övningsprov CTA — visible only when an exam is due (today or overdue, or legacy 7-day rule) */}
       {testAvailable && (
@@ -295,58 +383,79 @@ export default async function DashboardPage() {
         targetScore={profile?.target_score ?? null}
       />
 
-      {/* Score gauge — only when previous HP is known */}
-      {score ? (
-        <div className="flex flex-col gap-2">
-          <ScoreGauge
-            low={score.low}
-            high={score.high}
-            mid={score.mid}
-            target={profile?.target_score ?? null}
-          />
-          {subsectionsIncomplete && (
-            <Link
-              href="/profile"
-              className="text-xs text-dark/55 px-3 py-2 bg-primary/[0.04] border border-primary/15 rounded-card leading-relaxed hover:bg-primary/[0.07] transition-colors"
-            >
-              Lägg till dina tidigare {previousMekScore === null && previousElfScore === null
-                ? 'MEK- och ELF-resultat'
-                : previousMekScore === null
-                  ? 'MEK-resultat'
-                  : 'ELF-resultat'}{' '}
-              i profilen för att smalna av intervallet ovan →
-            </Link>
-          )}
+      {/* Verbal accuracy — primary, measurable signal. The HP prediction below
+          is shown as a small "beta" line because it's unvalidated against real
+          HP outcomes (see audit in CLAUDE.md / migration 015). Lead with what
+          we actually measure, not what we estimate. */}
+      <div className="bg-white shadow-card rounded-card px-4 py-4">
+        <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+          Verbal träffprocent
+        </p>
+        <div className="flex items-baseline gap-1.5 mb-1">
+          <span className="text-4xl font-bold text-dark">
+            {Math.round(verbalAccuracy * 100)}
+          </span>
+          <span className="text-sm text-dark/65">% ORD + LÄS</span>
         </div>
-      ) : (
-        <div className="bg-white shadow-card rounded-card px-4 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
-            Verbal träffprocent
-          </p>
-          <div className="flex items-baseline gap-1.5 mb-1">
-            <span className="text-4xl font-bold text-dark">
-              {Math.round(verbalAccuracy * 100)}
-            </span>
-            <span className="text-sm text-dark/65">% ORD + LÄS</span>
+        <p className="text-xs text-dark/65 leading-relaxed">
+          Andel rätt på dina senaste ord- och läsförståelsefrågor.
+        </p>
+
+        {score ? (
+          <div className="mt-4 pt-3 border-t border-dark/8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-dark/45">
+                  Beräknat HP
+                </p>
+                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-dark/8 text-dark/55">
+                  beta
+                </span>
+              </div>
+              <p className="text-sm text-dark/65">
+                <span className="font-bold text-dark">{score.mid.toFixed(2)}</span>
+                <span className="text-dark/45"> ({score.low.toFixed(2)}–{score.high.toFixed(2)})</span>
+              </p>
+            </div>
+            <p className="text-[11px] text-dark/45 mt-1 leading-relaxed">
+              Grov uppskattning — kalibreras mot verkliga HP-resultat när tillräckligt med data finns.
+            </p>
+            {subsectionsIncomplete && (
+              <Link
+                href="/profile"
+                className="mt-2 block text-[11px] text-primary/80 hover:text-primary transition-colors"
+              >
+                Lägg till {previousMekScore === null && previousElfScore === null
+                  ? 'MEK- och ELF-resultat'
+                  : previousMekScore === null
+                    ? 'MEK-resultat'
+                    : 'ELF-resultat'} i profilen för att smalna av intervallet →
+              </Link>
+            )}
           </div>
-          <p className="text-xs text-dark/65 leading-relaxed">
-            Lägg till ditt tidigare HP-resultat i profilen för att se ett beräknat HP-betyg.
+        ) : (
+          <p className="text-[11px] text-dark/45 mt-3 leading-relaxed">
+            Lägg till ditt tidigare HP-resultat i profilen för att se en grov uppskattning av ditt nuvarande HP.
           </p>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Study plan card */}
       <StudyPlanCard
-        minutesPerDay={gap?.estimatedMinutesPerDay ?? 0}
-        dailyNewWords={gap?.dailyNewWords ?? 0}
+        newWordsNeeded={gap?.newWordsNeeded ?? 0}
+        daysLeft={gap?.daysLeft ?? 0}
         wordsLearned={wordsLearned ?? 0}
-        totalWords={totalWords ?? 0}
+        totalWords={unseenWords}
         isHeavy={gap?.isHeavy ?? false}
         noExamDate={!profile?.exam_date}
+        goalWords={gap?.newWordsNeeded}
       />
 
       {/* Domain map */}
       <DomainMap stats={domainStats} />
+
+      {/* LÄS question-type breakdown */}
+      <LasTypeBreakdown stats={lasTypeStats} />
 
       {/* Streak calendar */}
       <StreakCalendar
@@ -373,7 +482,25 @@ function firstDayOfMonth(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
 }
 
+function todayMidnightUTC(): string {
+  const d = new Date()
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}T00:00:00Z`
+}
+
 type ResponseRow = { is_correct: boolean; question_type: string; word_id: string | null }
+
+function computeLasTypeStats(
+  responses: { las_question_type: string | null; is_correct: boolean }[]
+): LasTypeStat[] {
+  const stats: Record<string, { correct: number; total: number }> = {}
+  for (const r of responses) {
+    if (!r.las_question_type) continue
+    if (!stats[r.las_question_type]) stats[r.las_question_type] = { correct: 0, total: 0 }
+    stats[r.las_question_type].total++
+    if (r.is_correct) stats[r.las_question_type].correct++
+  }
+  return Object.entries(stats).map(([type, s]) => ({ type, ...s }))
+}
 
 function computeDomainStats(
   responses: ResponseRow[],

@@ -1,23 +1,26 @@
 import Link from 'next/link'
 
 interface Props {
-  minutesPerDay: number
-  dailyNewWords: number
+  newWordsNeeded: number
+  daysLeft: number
   wordsLearned: number
   totalWords: number
   isHeavy: boolean
   noExamDate: boolean
+  goalWords?: number
 }
 
 export function StudyPlanCard({
-  minutesPerDay,
-  dailyNewWords,
+  newWordsNeeded,
+  daysLeft,
   wordsLearned,
   totalWords,
   isHeavy,
   noExamDate,
+  goalWords,
 }: Props) {
-  const progressPct = totalWords > 0 ? Math.round((wordsLearned / totalWords) * 100) : 0
+  const displayTotal = goalWords ?? totalWords
+  const progressPct = displayTotal > 0 ? Math.round((wordsLearned / displayTotal) * 100) : 0
 
   if (noExamDate) {
     return (
@@ -35,6 +38,12 @@ export function StudyPlanCard({
     )
   }
 
+  const message = newWordsNeeded === 0
+    ? 'Du är på rätt nivå — håll tempot.'
+    : isHeavy
+      ? `${newWordsNeeded} ord kvar på ${daysLeft} dagar — ambitiöst mål.`
+      : `${newWordsNeeded} ord kvar på ${daysLeft} dagar.`
+
   return (
     <Link href="/plan" className="block">
       <div className={`rounded-card px-4 py-4 transition-colors ${isHeavy ? 'bg-amber-50 shadow-card' : 'bg-white shadow-card'}`}>
@@ -43,23 +52,12 @@ export function StudyPlanCard({
           <span className="text-xs text-primary font-bold">Se allt →</span>
         </div>
 
-        {/* Key numbers */}
-        <div className="flex items-end gap-5 mb-4">
-          <div>
-            <p className="text-4xl font-bold text-dark leading-none">{minutesPerDay}</p>
-            <p className="text-xs text-dark/65 mt-1">min per dag</p>
-          </div>
-          <div className="pb-0.5">
-            <p className="text-lg font-bold text-dark leading-none">{dailyNewWords} nya ord</p>
-            <p className="text-xs text-dark/65 mt-1">+ LÄS-artikel varje session</p>
-          </div>
-        </div>
+        <p className="text-sm font-bold text-dark mb-3">{message}</p>
 
-        {/* Word progress */}
-        {totalWords > 0 && (
+        {displayTotal > 0 && (
           <div>
             <div className="flex justify-between text-xs text-dark/65 mb-1.5">
-              <span>{wordsLearned} av {totalWords} ord påbörjade</span>
+              <span>{wordsLearned} av {displayTotal} {goalWords ? 'målet' : 'ord'}</span>
               <span>{progressPct}%</span>
             </div>
             <div className="w-full h-[5px] bg-dark/[0.06] rounded-full overflow-hidden">
@@ -69,12 +67,6 @@ export function StudyPlanCard({
               />
             </div>
           </div>
-        )}
-
-        {isHeavy && (
-          <p className="text-xs text-amber-700 mt-3 leading-relaxed">
-            Ambitiöst mål — se hela planen för ett alternativt tempo.
-          </p>
         )}
       </div>
     </Link>

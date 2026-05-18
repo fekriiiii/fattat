@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createServerClient } from '@/lib/supabase/server'
 import { getOnboardingState } from '@/lib/onboarding/state'
+import { getWeakLasQuestionTypes } from '@/lib/session/builder'
 import type { Word, Article, SessionPayload } from '@/types/database'
 
 const EXAM_DURATION_MS = 30 * 60 * 1000
@@ -24,113 +25,43 @@ export async function POST() {
   // timeout from the test page). This is what stops "back to question 1"
   // glitches mid-test if the page remounts for any reason.
   const cutoff = new Date(Date.now() - EXAM_DURATION_MS).toISOString()
-  const { data: inProgress, error: inProgressError } = await supabase
-    .from('study_sessions')
-    .select('id, started_at, payload')
-    .eq('user_id', user.id)
-    .eq('session_type', 'exam_mode')
-    .is('completed_at', null)
-    .gte('started_at', cutoff)
-    .order('started_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  const inProgress = await findInProgressExam(supabase, user.id, cutoff)
 
-  if (!inProgressError && inProgress) {
-    const payload = (inProgress.payload ?? {}) as SessionPayload
-    let wordIds = payload.ord_word_ids ?? []
-    let articleIds = payload.article_ids ?? []
-
-    // If the session has no usable payload yet (created by an older code path,
-    // or migration 010 hadn't run when it was created so the UPDATE silently
-    // failed), reconstruct the pool. We FIRST look at session_responses for
-    // this session and derive the pool from any answers already given —
-    // otherwise the user's prior answers would reference word/article IDs
-    // that aren't in the regenerated pool, the resume filter would drop them
-    // all, and the test would silently restart at question 1.
-    if (wordIds.length === 0 || articleIds.length === 0) {
-      const { data: existingResponses } = await supabase
-        .from('session_responses')
-        .select('question_type, word_id, article_id')
-        .eq('session_id', inProgress.id)
-        .order('answered_at', { ascending: true })
-
-      const answeredWordIds: string[] = []
-      const answeredArticleIds: string[] = []
-      for (const r of existingResponses ?? []) {
-        if (r.question_type === 'ord' && r.word_id && !answeredWordIds.includes(r.word_id)) {
-          answeredWordIds.push(r.word_id)
-        }
-        if (r.question_type === 'las' && r.article_id && !answeredArticleIds.includes(r.article_id)) {
-          answeredArticleIds.push(r.article_id)
-        }
-      }
-
-      // Pull a fresh pool, then use it to top up the answered IDs to the
-      // required counts (10 ORD words, 3 articles = 1 kort + 2 långa).
-      const pool = await buildPool(supabase, user.id)
-
-      const usedWordIds = new Set(answeredWordIds)
-      const fillWords = pool.wordIds.filter((id) => !usedWordIds.has(id))
-      wordIds = [...answeredWordIds, ...fillWords].slice(0, 10)
-
-      const usedArticleIds = new Set(answeredArticleIds)
-      const fillArticles = pool.articleIds.filter((id) => !usedArticleIds.has(id))
-      articleIds = [...answeredArticleIds, ...fillArticles].slice(0, 3)
-
-      // Best-effort persist so future resumes don't have to redo this work.
-      await supabase
-        .from('study_sessions')
-        .update({ payload: { ord_word_ids: wordIds, article_ids: articleIds } })
-        .eq('id', inProgress.id)
-    }
-
-    const [{ data: wordsData }, { data: articlesData }, { data: priorResponses }] =
-      await Promise.all([
-        supabase.from('words').select('*').in('id', wordIds),
-        supabase.from('articles').select('*').in('id', articleIds),
-        supabase
-          .from('session_responses')
-          .select('question_type, word_id, article_id, question_id, chosen_label, correct_label, is_correct, response_ms')
-          .eq('session_id', inProgress.id)
-          .order('answered_at', { ascending: true }),
-      ])
-
-    const orderedWords = wordIds
-      .map((id) => (wordsData ?? []).find((w: Word) => w.id === id))
-      .filter((w): w is Word => !!w)
-    const orderedArticles = articleIds
-      .map((id) => (articlesData ?? []).find((a: Article) => a.id === id))
-      .filter((a): a is Article => !!a)
-
-    // Filter prior responses to ones that match the current pool. This matters
-    // when the pool was just regenerated (rare): orphaned responses from a
-    // previous pool would otherwise corrupt the replay.
-    const validWordIds = new Set(orderedWords.map((w) => w.id))
-    const validArticleIds = new Set(orderedArticles.map((a) => a.id))
-    const validResponses = (priorResponses ?? []).filter((r) => {
-      if (r.question_type === 'ord') return r.word_id && validWordIds.has(r.word_id)
-      if (r.question_type === 'las') return r.article_id && validArticleIds.has(r.article_id)
-      return false
-    })
-
-    return NextResponse.json({
-      sessionId: inProgress.id,
-      startedAt: inProgress.started_at,
-      ordWords: orderedWords,
-      articles: orderedArticles,
-      priorResponses: validResponses,
-      resumed: true,
-    })
+  if (inProgress) {
+    return NextResponse.json(await resumeExam(supabase, user.id, inProgress))
   }
 
   // ── Fresh test ─────────────────────────────────────────────────────────────
+  // Migration 014 enforces "one in-progress exam_mode session per user" via a
+  // partial unique index. Before inserting, close any stale in-progress
+  // sessions (older than the 30-min exam window) so the index doesn't block
+  // a legitimate new test. If a concurrent request also beats us to the
+  // INSERT, the unique index raises 23505 — we recover by re-fetching and
+  // resuming that session instead of silently creating a duplicate.
+  await supabase
+    .from('study_sessions')
+    .update({ completed_at: new Date().toISOString() })
+    .eq('user_id', user.id)
+    .eq('session_type', 'exam_mode')
+    .is('completed_at', null)
+    .lt('started_at', cutoff)
+
   const { data: session, error: sessionError } = await supabase
     .from('study_sessions')
     .insert({ user_id: user.id, session_type: 'exam_mode' })
     .select('id, started_at')
     .single()
 
-  if (sessionError || !session) {
+  if (sessionError) {
+    if (sessionError.code === '23505') {
+      const concurrent = await findInProgressExam(supabase, user.id, cutoff)
+      if (concurrent) {
+        return NextResponse.json(await resumeExam(supabase, user.id, concurrent))
+      }
+    }
+    return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
+  }
+  if (!session) {
     return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
   }
 
@@ -153,6 +84,108 @@ export async function POST() {
   })
 }
 
+type InProgressRow = { id: string; started_at: string; payload: SessionPayload | null }
+
+async function findInProgressExam(
+  supabase: SupabaseClient,
+  userId: string,
+  cutoffIso: string
+): Promise<InProgressRow | null> {
+  const { data } = await supabase
+    .from('study_sessions')
+    .select('id, started_at, payload')
+    .eq('user_id', userId)
+    .eq('session_type', 'exam_mode')
+    .is('completed_at', null)
+    .gte('started_at', cutoffIso)
+    .order('started_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  return (data as InProgressRow | null) ?? null
+}
+
+async function resumeExam(supabase: SupabaseClient, userId: string, inProgress: InProgressRow) {
+  const payload = (inProgress.payload ?? {}) as SessionPayload
+  let wordIds = payload.ord_word_ids ?? []
+  let articleIds = payload.article_ids ?? []
+
+  // If the session has no usable payload yet (created by an older code path,
+  // or migration 010 hadn't run when it was created so the UPDATE silently
+  // failed), reconstruct the pool. We FIRST look at session_responses for
+  // this session and derive the pool from any answers already given —
+  // otherwise the user's prior answers would reference word/article IDs
+  // that aren't in the regenerated pool, the resume filter would drop them
+  // all, and the test would silently restart at question 1.
+  if (wordIds.length === 0 || articleIds.length === 0) {
+    const { data: existingResponses } = await supabase
+      .from('session_responses')
+      .select('question_type, word_id, article_id')
+      .eq('session_id', inProgress.id)
+      .order('answered_at', { ascending: true })
+
+    const answeredWordIds: string[] = []
+    const answeredArticleIds: string[] = []
+    for (const r of existingResponses ?? []) {
+      if (r.question_type === 'ord' && r.word_id && !answeredWordIds.includes(r.word_id)) {
+        answeredWordIds.push(r.word_id)
+      }
+      if (r.question_type === 'las' && r.article_id && !answeredArticleIds.includes(r.article_id)) {
+        answeredArticleIds.push(r.article_id)
+      }
+    }
+
+    const pool = await buildPool(supabase, userId)
+
+    const usedWordIds = new Set(answeredWordIds)
+    const fillWords = pool.wordIds.filter((id) => !usedWordIds.has(id))
+    wordIds = [...answeredWordIds, ...fillWords].slice(0, 10)
+
+    const usedArticleIds = new Set(answeredArticleIds)
+    const fillArticles = pool.articleIds.filter((id) => !usedArticleIds.has(id))
+    articleIds = [...answeredArticleIds, ...fillArticles].slice(0, 3)
+
+    await supabase
+      .from('study_sessions')
+      .update({ payload: { ord_word_ids: wordIds, article_ids: articleIds } })
+      .eq('id', inProgress.id)
+  }
+
+  const [{ data: wordsData }, { data: articlesData }, { data: priorResponses }] =
+    await Promise.all([
+      supabase.from('words').select('*').in('id', wordIds),
+      supabase.from('articles').select('*').in('id', articleIds),
+      supabase
+        .from('session_responses')
+        .select('question_type, word_id, article_id, question_id, chosen_label, correct_label, is_correct, response_ms')
+        .eq('session_id', inProgress.id)
+        .order('answered_at', { ascending: true }),
+    ])
+
+  const orderedWords = wordIds
+    .map((id) => (wordsData ?? []).find((w: Word) => w.id === id))
+    .filter((w): w is Word => !!w)
+  const orderedArticles = articleIds
+    .map((id) => (articlesData ?? []).find((a: Article) => a.id === id))
+    .filter((a): a is Article => !!a)
+
+  const validWordIds = new Set(orderedWords.map((w) => w.id))
+  const validArticleIds = new Set(orderedArticles.map((a) => a.id))
+  const validResponses = (priorResponses ?? []).filter((r) => {
+    if (r.question_type === 'ord') return r.word_id && validWordIds.has(r.word_id)
+    if (r.question_type === 'las') return r.article_id && validArticleIds.has(r.article_id)
+    return false
+  })
+
+  return {
+    sessionId: inProgress.id,
+    startedAt: inProgress.started_at,
+    ordWords: orderedWords,
+    articles: orderedArticles,
+    priorResponses: validResponses,
+    resumed: true,
+  }
+}
+
 // Builds the question pool for a fresh övningsprov: 10 ORD + 1 kort + 2 långa
 // articles, mirroring the verbal-provpass structure (LÄS = 2 + 4 + 4 = 10).
 // Returns both the ID arrays (for payload persistence) and the materialized
@@ -161,11 +194,16 @@ async function buildPool(
   supabase: SupabaseClient,
   userId: string
 ): Promise<{ wordIds: string[]; articleIds: string[]; ordWords: Word[]; articles: Article[] }> {
+  // Deterministic ordering matters: this same function is called both on the
+  // initial test build AND when reconstructing a payload-less resume. Without
+  // .order(), the two calls can return different rows, causing the resume to
+  // mis-match the user's already-answered word IDs.
   const { data: reviewedCards } = await supabase
     .from('fsrs_cards')
     .select('word_id')
     .eq('user_id', userId)
     .gt('reps', 0)
+    .order('word_id', { ascending: true })
     .limit(10)
 
   const wordIds: string[] = (reviewedCards ?? []).map((r: { word_id: string }) => r.word_id)
@@ -179,6 +217,7 @@ async function buildPool(
       .from('words')
       .select('id')
       .not('id', 'in', excluded)
+      .order('id', { ascending: true })
       .limit(10 - wordIds.length)
 
     wordIds.push(...(newWords ?? []).map((r: { id: string }) => r.id))
@@ -193,33 +232,50 @@ async function buildPool(
     .map((id) => (wordsData ?? []).find((w: Word) => w.id === id))
     .filter((w): w is Word => !!w)
 
-  const { data: completions } = await supabase
-    .from('article_completions')
-    .select('article_id')
-    .eq('user_id', userId)
+  const [{ data: completions }, weakTypes, { data: allKort }, { data: allLang }] = await Promise.all([
+    supabase.from('article_completions').select('article_id').eq('user_id', userId),
+    getWeakLasQuestionTypes(supabase, userId),
+    supabase.from('articles').select('*').eq('unit_position', 'kort'),
+    supabase.from('articles').select('*').eq('unit_position', 'lång'),
+  ])
   const completedIds = new Set(
     (completions ?? []).map((c: { article_id: string }) => c.article_id)
   )
 
-  const [{ data: allKort }, { data: allLang }] = await Promise.all([
-    supabase.from('articles').select('*').eq('unit_position', 'kort'),
-    supabase.from('articles').select('*').eq('unit_position', 'lång'),
-  ])
+  const shuffle = <T,>(pool: T[]): T[] => [...pool].sort(() => Math.random() - 0.5)
 
-  const pickRandom = <T,>(pool: T[], n: number): T[] => {
-    const shuffled = [...pool].sort(() => Math.random() - 0.5)
-    return shuffled.slice(0, n)
-  }
-
-  const pickArticles = (all: Article[] | null, count: number): Article[] => {
+  const pickKort = (all: Article[] | null): Article[] => {
     const pool = all ?? []
     const unseen = pool.filter((a) => !completedIds.has(a.id))
-    return pickRandom(unseen.length >= count ? unseen : pool, count)
+    const candidates = unseen.length >= 1 ? unseen : pool
+    return shuffle(candidates).slice(0, 1)
+  }
+
+  // Score articles by how many questions match the user's weak question types
+  const weakScore = (a: Article): number =>
+    weakTypes.size > 0 ? a.questions.filter(q => weakTypes.has(q.type)).length : 0
+
+  // Pick 2 lång articles: sort by weak-type score, then prefer domain diversity
+  // and avoid repeating the same weak type in both articles (prevents blocked practice)
+  const pickLang = (all: Article[] | null): Article[] => {
+    const pool = all ?? []
+    const unseen = pool.filter((a) => !completedIds.has(a.id))
+    const candidates = shuffle(unseen.length >= 2 ? unseen : pool)
+      .sort((a, b) => weakScore(b) - weakScore(a))
+    if (candidates.length === 0) return []
+    const first = candidates[0]
+    const firstWeakTypes = new Set(first.questions.map(q => q.type).filter(t => weakTypes.has(t)))
+    const second = candidates.slice(1).find((a) =>
+      a.domain !== first.domain &&
+      (firstWeakTypes.size === 0 || a.questions.some(q => weakTypes.has(q.type) && !firstWeakTypes.has(q.type)))
+    ) ?? candidates.slice(1).find((a) => a.domain !== first.domain)
+      ?? candidates[1]
+    return second ? [first, second] : [first]
   }
 
   const articles = [
-    ...pickArticles(allKort as Article[] | null, 1),
-    ...pickArticles(allLang as Article[] | null, 2),
+    ...pickKort(allKort as Article[] | null),
+    ...pickLang(allLang as Article[] | null),
   ]
 
   return {

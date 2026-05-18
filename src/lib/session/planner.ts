@@ -100,11 +100,13 @@ export function calculateGap(params: {
 
   const daysLeft = Math.max(0, Math.floor((examDate.getTime() - Date.now()) / 86_400_000))
 
-  // Convert target HP → required ORD accuracy
-  // HP = (ordRaw + lasRaw + quantRaw) / 80, quantRaw ≈ 40 (national avg)
-  // Assuming ORD and LÄS share verbal score equally:
-  //   targetOrdAcc = (targetHp * 80 - 40) / 80
-  const targetOrdAcc = Math.min(1, Math.max(0, (targetHp * 80 - 40) / 80))
+  // Convert target HP → required ORD accuracy.
+  // rawToHp() in scoring.ts uses raw/120 (raw max = 40 ORD + 40 LÄS + 40 Quant),
+  // so targetRaw = targetHp * 60. Assuming quantRaw ≈ 40 (our audience is
+  // strong on quant per positioning) and ORD/LÄS split the verbal pool of 80
+  // equally:
+  //   targetOrdAcc = (targetHp * 60 - 40) / 80
+  const targetOrdAcc = Math.min(1, Math.max(0, (targetHp * 60 - 40) / 80))
 
   const ordGap = Math.max(0, targetOrdAcc - baselineOrdAcc)
   const newWordsNeeded = Math.ceil(ordGap * Math.max(totalWords, 1))
@@ -112,8 +114,9 @@ export function calculateGap(params: {
   // Exact daily new words — no artificial cap; we tell the user what it takes
   const dailyNewWords = daysLeft > 0 ? Math.ceil(newWordsNeeded / daysLeft) : newWordsNeeded
 
-  // Total session size: new words are ~40% of session, reviews fill the rest
-  const dailyOrdQuota = Math.max(10, Math.ceil(dailyNewWords / NEW_WORD_FRACTION))
+  // Total session size: new words are ~40% of session, reviews fill the rest.
+  // Floor is 20 — matches the actual minimum session (15 reviews + 5 new words).
+  const dailyOrdQuota = Math.max(20, Math.ceil(dailyNewWords / NEW_WORD_FRACTION))
 
   // How long will a session take?
   const estimatedMinutesPerDay = Math.round(dailyOrdQuota * (SECONDS_PER_ORD / 60) + LAS_MINUTES)

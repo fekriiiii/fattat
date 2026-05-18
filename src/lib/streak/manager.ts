@@ -34,6 +34,13 @@ export async function updateStreak(
     }
   }
 
+  // Replenish the freeze on week rollover. Without this, once a user burns
+  // their freeze the flag stays set forever and every future missed day breaks
+  // the streak — undermining the habit-formation pillar.
+  const weekRollover = !last || isoWeekStart(today) !== isoWeekStart(last)
+  const freezeAvailable = weekRollover ? true : streakRow.freeze_available
+  const freezeUsedThisWeek = weekRollover ? false : streakRow.freeze_used_this_week
+
   let newStreak = streakRow.current_streak
   let freezeUsed = false
 
@@ -43,8 +50,8 @@ export async function updateStreak(
   } else if (
     last &&
     daysBetween(last, today) === 2 &&
-    streakRow.freeze_available &&
-    !streakRow.freeze_used_this_week
+    freezeAvailable &&
+    !freezeUsedThisWeek
   ) {
     // Missed exactly one day — auto-apply freeze
     newStreak = streakRow.current_streak + 1
@@ -64,8 +71,8 @@ export async function updateStreak(
       longest_streak: newLongest,
       last_activity_date: today,
       total_days_studied: newTotal,
-      freeze_used_this_week: freezeUsed ? true : streakRow.freeze_used_this_week,
-      freeze_available: freezeUsed ? false : streakRow.freeze_available,
+      freeze_used_this_week: freezeUsed ? true : freezeUsedThisWeek,
+      freeze_available: freezeUsed ? false : freezeAvailable,
       updated_at: new Date().toISOString(),
     })
     .eq('user_id', userId)
@@ -82,4 +89,14 @@ function daysBetween(dateStr1: string, dateStr2: string): number {
   const d1 = new Date(dateStr1 + 'T00:00:00Z')
   const d2 = new Date(dateStr2 + 'T00:00:00Z')
   return Math.round(Math.abs(d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24))
+}
+
+// ISO week start (Monday) for a YYYY-MM-DD date. Used to detect week rollover
+// so the streak freeze replenishes once per week.
+function isoWeekStart(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00Z')
+  const day = d.getUTCDay() // 0=Sun, 1=Mon, ..., 6=Sat
+  const diff = day === 0 ? -6 : 1 - day
+  d.setUTCDate(d.getUTCDate() + diff)
+  return d.toISOString().slice(0, 10)
 }

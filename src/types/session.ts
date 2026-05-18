@@ -22,9 +22,10 @@ export interface LasQuestionData {
 export interface SessionResponse {
   type: 'ord' | 'las'
   wordId?: string
-  domain?: string   // ORD only — used for domain gap detection
+  domain?: string          // ORD only — used for domain gap detection
   articleId?: string
   questionId?: string
+  lasQuestionType?: LasQuestion['type']  // LÄS only — for question-type profiling
   chosenLabel: string
   correctLabel: string
   isCorrect: boolean

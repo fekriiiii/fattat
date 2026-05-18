@@ -37,18 +37,26 @@ function mekProxyAcc(ordRetention: number): number {
 
 // Estimate verbal HP as the average of all four subsection HPs (ORD, MEK, LÄS, ELF).
 // Each subsection is treated as accuracy × 2.0 (50% accuracy → 1.0 HP).
-// Missing MEK falls back to an ORD-driven proxy. Missing ELF falls back to a
-// neutral 1.0 HP — there's no honest proxy for English from Swedish reading.
+// Missing MEK falls back to an ORD-driven proxy.
+// Missing ELF falls back to the user's previous HP score when we have one
+// (English ability correlates with overall HP), and to a neutral 1.0 only
+// when we know nothing. Previously this defaulted to 1.0 unconditionally,
+// which pulled every prediction toward the middle.
 function estimateVerbalHp(
   ordRetention: number,
   lasAccuracy: number,
   previousMekHp: number | null,
   previousElfHp: number | null,
+  previousHpScore: number | null = null,
 ): number {
   const ordHp = clampHp(ordRetention * 2.0)
   const lasHp = clampHp(lasAccuracy * 2.0)
   const mekHp = previousMekHp !== null ? previousMekHp : clampHp(mekProxyAcc(ordRetention) * 2.0)
-  const elfHp = previousElfHp !== null ? previousElfHp : 1.0
+  const elfHp = previousElfHp !== null
+    ? previousElfHp
+    : previousHpScore !== null
+      ? clampHp(previousHpScore)
+      : 1.0
   return clampHp((ordHp + mekHp + lasHp + elfHp) / 4)
 }
 
@@ -56,16 +64,67 @@ function clampHp(n: number): number {
   return Math.min(2.0, Math.max(0, n))
 }
 
-// Predict total HP.
-// Returns null when no previousHpScore is available — the caller should
-// display verbal accuracy instead of a total-HP number.
+// Shared band-builder used by both predictScore (post-onboarding, FSRS-driven)
+// and estimateDiagnosticBand (pre-onboarding, no FSRS yet). Centralizing this
+// math means the dashboard and the diagnostic stay consistent — previously the
+// diagnostic duplicated the formula inline and drifted (e.g. hardcoded unc).
+//
+// When previousHpScore is null we still produce a band using the verbal HP
+// alone (which is what the diagnostic needs); predictScore guards against that
+// case separately because the dashboard uses null as a signal to switch UI.
+function buildScoreBand({
+  ordRetention,
+  lasAccuracy,
+  previousHpScore,
+  previousMekScore,
+  previousElfScore,
+  sessionCount,
+}: {
+  ordRetention: number
+  lasAccuracy: number
+  previousHpScore: number | null
+  previousMekScore: number | null
+  previousElfScore: number | null
+  sessionCount: number
+}): ScoreRange {
+  const verbalHp = estimateVerbalHp(
+    ordRetention,
+    lasAccuracy,
+    previousMekScore,
+    previousElfScore,
+    previousHpScore,
+  )
+  const quantHp = previousHpScore ?? 1.0
+  const mid = (verbalHp + quantHp) / 2
+
+  // Session-driven uncertainty: shrinks as we accumulate trained data.
+  // At sessionCount=0 this is 0.20 (diagnostic state); at ~60 sessions it's ≈0.05.
+  const sessionUnc = 0.05 + 0.15 * Math.exp(-sessionCount / 20)
+
+  // Subsection uncertainty: penalize predictions whose ELF / MEK we had to guess.
+  // MEK has a decent ORD-based proxy → small penalty (0.05).
+  // ELF has only previousHpScore as a proxy → half the penalty when we have HP (0.04),
+  // full penalty when we know nothing (0.08).
+  const mekUnc = previousMekScore !== null ? 0 : 0.05
+  const elfUnc = previousElfScore !== null
+    ? 0
+    : previousHpScore !== null
+      ? 0.04
+      : 0.08
+  const uncertainty = sessionUnc + mekUnc + elfUnc
+
+  return {
+    low: Math.max(0, toHpStep(mid - uncertainty)),
+    mid: Math.min(2.0, toHpStep(mid)),
+    high: Math.min(2.0, toHpStep(mid + uncertainty)),
+  }
+}
+
+// Predict total HP. Returns null when no previousHpScore is available — the
+// caller should display verbal accuracy instead of a total-HP number.
 // When previousHpScore is known we use it as the quant proxy:
 //   HP = (verbalHp + quantHp) / 2,  quantHp ≈ previousHpScore
-// The uncertainty band reflects three sources:
-//   • how much trained data we have (sessionCount)
-//   • whether the user gave us their previous MEK score
-//   • whether the user gave us their previous ELF score
-// Floor: ±0.05 (real-world test variance). Ceiling: ~±0.38 with no data at all.
+// Uncertainty band logic lives in buildScoreBand.
 export function predictScore({
   fsrsCards,
   lasAccuracy,
@@ -80,25 +139,41 @@ export function predictScore({
   sessionCount?: number
 }): ScoreRange | null {
   if (previousHpScore === null) return null
-
   const ordRetention = computeAvgRetention(fsrsCards)
-  const verbalHp = estimateVerbalHp(ordRetention, lasAccuracy, previousMekScore, previousElfScore)
-  const mid = (verbalHp + previousHpScore) / 2
+  return buildScoreBand({
+    ordRetention,
+    lasAccuracy,
+    previousHpScore,
+    previousMekScore,
+    previousElfScore,
+    sessionCount,
+  })
+}
 
-  // Session-driven uncertainty: shrinks as we accumulate trained data.
-  const sessionUnc = 0.05 + 0.15 * Math.exp(-sessionCount / 20)
-  // Add honest uncertainty for the subsections we're guessing on.
-  // MEK has a decent ORD-based proxy → small penalty.
-  // ELF has no proxy at all → larger penalty.
-  const mekUnc = previousMekScore !== null ? 0 : 0.05
-  const elfUnc = previousElfScore !== null ? 0 : 0.08
-  const uncertainty = sessionUnc + mekUnc + elfUnc
-
-  return {
-    low: Math.max(0, toHpStep(mid - uncertainty)),
-    mid: Math.min(2.0, toHpStep(mid)),
-    high: Math.min(2.0, toHpStep(mid + uncertainty)),
-  }
+// Diagnostic variant: takes raw accuracies directly (no FSRS cards exist yet)
+// and always returns a band, even when previousHpScore is null. The diagnostic
+// always owes the user a number after they finish the 20 ORD + LÄS questions.
+export function estimateDiagnosticBand({
+  baselineOrdAcc,
+  baselineLasAcc,
+  previousHpScore,
+  previousMekScore = null,
+  previousElfScore = null,
+}: {
+  baselineOrdAcc: number
+  baselineLasAcc: number
+  previousHpScore: number | null
+  previousMekScore?: number | null
+  previousElfScore?: number | null
+}): ScoreRange {
+  return buildScoreBand({
+    ordRetention: baselineOrdAcc,
+    lasAccuracy: baselineLasAcc,
+    previousHpScore,
+    previousMekScore,
+    previousElfScore,
+    sessionCount: 0,
+  })
 }
 
 // Compute verbal accuracy (ORD + LÄS combined) for display when no HP prediction.
@@ -106,14 +181,29 @@ export function computeVerbalAccuracy(ordRetention: number, lasAccuracy: number)
   return (ordRetention + lasAccuracy) / 2
 }
 
-export function computeAvgRetention(cards: FsrsCard[]): number {
+export function computeAvgRetention(cards: Pick<FsrsCard, 'stability' | 'elapsed_days' | 'reps' | 'difficulty'>[]): number {
   if (!cards.length) return 0.3
-  const reviewed = cards.filter((c) => c.reps > 0)
-  if (!reviewed.length) return 0.3
-  const retentions = reviewed.map((c) =>
-    Math.exp(-c.elapsed_days / Math.max(c.stability, 0.001))
-  )
-  return retentions.reduce((a, b) => a + b, 0) / retentions.length
+  // Only count cards that have aged since their last review (elapsed_days > 0).
+  // Cards with elapsed_days = 0 were just answered and give exp(0) = 1.0, which
+  // makes the plan think the user already knows everything right after the diagnostic.
+  const aged = cards.filter((c) => c.reps > 0 && c.elapsed_days > 0)
+  if (!aged.length) return 0.3
+  // Weight by FSRS difficulty so harder cards count more toward the average.
+  // ts-fsrs difficulty ranges roughly 1–10. We use `0.5 + difficulty / 10` to
+  // produce a modest re-weighting (0.6×–1.5× of equal weighting). Defaults to
+  // 1.0 when difficulty isn't set, which keeps existing rows behaving sanely.
+  // Rationale: HP-grade items skew medium-hard, so retention on hard cards is
+  // a better predictor of exam performance than retention on easy ones.
+  let weightedSum = 0
+  let totalWeight = 0
+  for (const c of aged) {
+    const retention = Math.exp(-c.elapsed_days / Math.max(c.stability, 0.001))
+    const difficulty = typeof c.difficulty === 'number' && c.difficulty > 0 ? c.difficulty : 5
+    const weight = 0.5 + difficulty / 10
+    weightedSum += retention * weight
+    totalWeight += weight
+  }
+  return totalWeight > 0 ? weightedSum / totalWeight : 0.3
 }
 
 export function computeLasAccuracy(
@@ -190,7 +280,7 @@ export function projectScoreTrajectory({
   function scoreAtDay(d: number): number {
     const ordProj = 1 - (1 - avgRetention) * Math.exp(-studyConsistency * d / 25)
     const lasProj = 1 - (1 - lasAccuracy) * Math.exp(-studyConsistency * d / 50)
-    const verbalHp = estimateVerbalHp(ordProj, lasProj, previousMekScore, previousElfScore)
+    const verbalHp = estimateVerbalHp(ordProj, lasProj, previousMekScore, previousElfScore, previousHpScore)
     return Math.min(2.0, toHpStep((verbalHp + quantHp) / 2))
   }
 

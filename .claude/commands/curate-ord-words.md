@@ -19,14 +19,72 @@ If the user just says "do the next batch" without specifying, recommend a domain
 
 ## Step 2 — Load reference materials
 
-Read these three files, in order:
+Read these files, in order:
 
-1. **`STYLE_PROFILE_ORD.md`** at project root — the empirical fingerprint. The new batch must converge on these distributions.
-2. **`ord-database.csv`** at project root. From it:
+1. **`STYLE_PROFILE_ORD.md`** at project root — the structural fingerprint (POS, difficulty, lengths). The new batch must converge on these distributions.
+2. **`STYLE_PROFILE_ORD_SEMANTICS.md`** at project root — the semantic/formation fingerprint (loanword bias, fixed phrases, archaic register, native Swedish). **Critical: see Section "Semantic balance — what HP actually tests" below.**
+3. **`ord-database.csv`** at project root. From it:
    - Find the **current maximum `id`** — new rows continue from here.
    - Build a **dedup set** of every `word` (lowercased, trimmed) — Phase 2 must never propose a word that already exists in any form.
    - Read 8–12 recent high-quality entries from the target domain (if any exist) to anchor the writing voice for that domain.
-3. **`scripts/analyze-ord-style.mjs`** — only if the style profile is missing or stale; re-run it to regenerate.
+4. **`scripts/analyze-ord-style.mjs`** and **`scripts/analyze-ord-semantics.mjs`** — only if profiles are missing or stale; re-run to regenerate.
+
+---
+
+## Semantic balance — what HP actually tests (mandatory)
+
+The structural profile alone is not enough. Empirical comparison of past-exam (Phase 1) vs first 170 curated words (early Phase 2) revealed a serious blind spot: **Phase 2 over-produces academic loanwords and under-produces the native-Swedish, idiomatic, archaic-literary, and figurative flavor that HP actually loves.**
+
+Concretely, in the past-exam corpus:
+- **7.8%** are fixed phrases / multi-word idiomatic entries (e.g. *i sin linda*, *på måfå*, *av hävd*, *i ottan*).
+- **8.9%** have a *Formellt register* note.
+- **5.0%** have an idiom note (*Fast uttryck*).
+- **3.9%** are flagged *Ålderdomligt / Arkaiskt / Litterärt*.
+- **1.5%** are tagged as figurative/metaphorical extensions of common stems (e.g. *hårdragen* = literally "dragged hard," meaning "over-stretched argument").
+- **30%** contain å/ä/ö in the stem (Swedish-native indicator) — Phase 2 was at 24%.
+- Only **2.4%** end in `-tion` (Phase 2 was at 7.1% — overproduced).
+- Only **1.3%** end in `-isk` (Phase 2 was at 7.6% — overproduced).
+
+### Mandatory composition rules for every batch
+
+**For each batch of ≥30 words, regardless of domain:**
+
+1. **Include at least 1 fixed phrase or idiomatic expression** as `pos = annat`. Examples of the format:
+   - *i sin linda* → *i sin början* (fixed_phrase)
+   - *slå mynt av* (vb fixed phrase) → *utnyttja för vinst*
+   - *på måfå* (adv fixed phrase) → *slumpmässigt*
+   - Even specialist domains have these — juridik has *ex officio*, *ad acta*; medicin has *in vivo*, *per oralt*.
+
+2. **Include at least 1 word with `Formellt register` note** — a Swedish-native word that's elevated but not loaned. Examples: *enträgen*, *aktad*, *eftermäle*, *vedertagen*.
+
+3. **Bias toward Swedish-native compounds over Romance loanwords.** When you have a choice between `behandla` (Swedish-native verb) and `prosekutera` (Latin verb), pick `behandla`-style words. Aim for **≥30% of single-word entries to contain å/ä/ö in the stem**.
+
+4. **Avoid over-using `-tion`, `-isk`, `-era`, `-iv` endings.** These are over-represented in Phase 2. As a rule of thumb: **no more than 5 of any 50-word batch should end with `-tion`** (or `-ation`, `-sion`); same cap for `-isk` (or `-iskt`).
+
+### Domain-specific guidance
+
+- **`allmän` batches** are the most important for semantic recalibration. They should be **dominated by**:
+  - Fixed phrases / idioms (target ≥15% of an allmän batch)
+  - Swedish-native literary register words (e.g. *enträgen*, *enveten*, *sårbar*, *omsorgsfull*)
+  - Figurative/metaphorical extensions of common stems
+  - Archaic/literary register entries (target ≥10% of an allmän batch)
+  - Reflexive verbs (e.g. *freda sig*, *bemöda sig*)
+  - Concrete cultural objects (e.g. *parkas*, *kandelaber*, *koffert*, *galosch*)
+- **`kultur` batches** should include **literary/aesthetic terminology with etymological richness** — *parafras*, *pastisch*, *allegori* — but balanced with native-register words like *gestalta*, *kröna*, *målande*.
+- **`samhälle` batches** should include **everyday formal Swedish about social structures** — not just abstract policy nouns. Mix *koalition* with *gemene man*, *jämkning* with *såta vänner*.
+- **`juridik`, `medicin`, `vetenskap`, `ekonomi`** are inherently more loanword-heavy and academic — that's OK, but each batch must still include the one fixed phrase + one formal-register slot above.
+
+### How to write good notes (rebalanced)
+
+The Phase 2 batches over-used `Latinskt lånord` style notes. Going forward:
+
+- **Skip `Latinskt lånord` / `Grekiskt lånord` notes** when the word's form makes the origin obvious (`-tion`, `-isk`, `-era`, `-iv`, `-us`, `-um`).
+- **Keep origin notes** only when the etymology is surprising or pedagogically valuable (e.g. `karantän` Italian, `parkas` Inuit/Russian, `tariff` Arabic).
+- **Add `Formellt register` notes** when the word is Swedish-native but elevated — this is the biggest under-used note category.
+- **Add `Fast uttryck` notes** to all fixed phrases.
+- **Add `Ålderdomligt` / `Litterärt register`** when a word is real but rarely used in modern everyday Swedish (*arla*, *grift*, *eftermäle*).
+- **Add `Bildlig användning vanligast`** when the figurative meaning is the tested one (*hårdragen*, *trollbinda*).
+- **Add etymology like "linda är bindel som spädbarn lindas i"** for fixed phrases — teach the picture, not just the origin.
 
 ---
 
@@ -178,6 +236,13 @@ Before showing results, verify each row programmatically:
 - Multi-word `correct_synonym` rate is within 20–40%.
 - `accepted_synonyms` fill rate is ≥85%.
 - `notes` fill rate is between 30% and 55%.
+- **Semantic-balance checks** (new — see Section "Semantic balance"):
+  - At least 1 fixed phrase / idiomatic entry per 30 words.
+  - At least 1 `Formellt register` note per 30 words.
+  - `-tion` endings ≤10% of single-word entries.
+  - `-isk` endings ≤10% of single-word entries.
+  - At least 30% of single-word entries contain å/ä/ö in stem (relax for inherently loanword-heavy specialist domains like medicin/vetenskap).
+  - **For `allmän` batches**: fixed phrase rate ≥15% AND archaic-literary register rate ≥10%.
 
 If any row fails a per-row check, **fix it before output** — do not ask the user to fix manually.
 If any batch-level check is significantly off, regenerate the offending subset.
