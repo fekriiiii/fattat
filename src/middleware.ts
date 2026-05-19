@@ -98,5 +98,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|fonts|icons|sw.js|manifest.json).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|fonts|icons|sw.js|manifest.json|Fattat_Logo.png).*)'],
 }
