@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { WaitlistForm } from '@/components/landing/WaitlistForm'
 
 export default function LandingPage() {
@@ -7,9 +8,7 @@ export default function LandingPage() {
       {/* Top bar */}
       <header className="px-5 sm:px-8 py-5 flex items-center justify-between max-w-6xl mx-auto">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-cream font-bold text-[15px] leading-none">F</span>
-          </div>
+          <Image src="/Fattat_Logo.png" alt="Fattat" width={32} height={32} className="rounded-lg" />
           <span className="text-[17px] font-bold tracking-tight">Fattat</span>
         </div>
         <Link
@@ -147,9 +146,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="px-5 sm:px-8 py-10 max-w-6xl mx-auto border-t border-dark/8 mt-8 text-sm text-dark/45 flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-cream font-bold text-[10px] leading-none">F</span>
-          </div>
+          <Image src="/Fattat_Logo.png" alt="Fattat" width={20} height={20} className="rounded-md" />
           <span>© Fattat 2026</span>
         </div>
         <div className="flex flex-wrap gap-x-5 gap-y-2">

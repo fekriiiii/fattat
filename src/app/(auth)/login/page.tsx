@@ -130,9 +130,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <p className="text-center mt-5 text-[11px] text-dark/60">
-          Gratis för alla användare till 18 oktober 2026
-        </p>
       </div>
     </div>
   )
