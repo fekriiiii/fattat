@@ -181,6 +181,8 @@ Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber b
 
 ## Recent Fixes
 
+**Phase 1 deployment (2026-05-18)** — code went from localhost to https://fattat.se in one session. GitHub repo `fekriiiii/fattat` (private), Vercel auto-deploys on push to `main`, domain via Strato pointing at Vercel with Let's Encrypt SSL. Two build fixes shipped: `next.config.mjs` bypasses ESLint (accumulated repo-wide warning debt, tracked), `tsconfig.json` excludes `scripts/` (seed.ts uses dotenv which isn't a runtime dep). Notifications cron removed from `vercel.json` — Hobby plan limits crons to daily; re-add on Pro upgrade in Phase 2. Email forwarding via **ImprovMX** (free tier, 2 MX + 1 SPF TXT records at Strato): `hej@fattat.se`, `info@fattat.se`, `contact@fattat.se` all forward to founder's Gmail. Chose ImprovMX over Cloudflare Email Routing to avoid moving DNS off Strato (CF Routing requires CF nameservers).
+
 **Phase 1 landing page + bug-fix pass (2026-05-17)** — landing page shipped, plus an 8-item bug sweep across the app.
 
 *Landing page (waitlist mode for Phase 1):*
@@ -230,6 +232,9 @@ Files: `src/lib/session/builder.ts`, `src/app/api/diagnostic/complete/route.ts`,
 | Push notification 24h before each övningsprov | `src/app/api/notifications/schedule/route.ts` | Medium |
 | Performance-adaptive exam scheduling (v2) | `src/lib/session/planner.ts` | Low |
 | Founder account fully prepped for Day 0 (diagnostic done, exam date set, 7–10 days FSRS history) | manual | High (pre-launch) |
+| ESLint cleanup pass — currently bypassed in build via `next.config.mjs`; clear unused vars, `any` types, and missing useEffect deps | repo-wide | Medium (post-launch) |
+| Apply migrations 013–017 to production Supabase DB | Supabase dashboard | High (blocks waitlist + calibration in prod) |
+| Reserve TikTok / IG / YouTube handles (`@fattat.se`, `@fattat.se`, `@fattathp`) — anti-squatter | external | High (pre-launch) |
 | Session payload bloat — daily session stores full article bodies in JSONB; should mirror övningsprov and store IDs only | `src/app/api/session/build/route.ts` | Low |
 | Study partner pages | `src/app/(app)/partner/` | Low |
 

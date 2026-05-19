@@ -65,11 +65,10 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo / brand */}
         <div className="text-center mb-10">
-          <div className="flex items-center justify-center mb-3">
-            <Image src="/Fattat_Logo.png" alt="Fattat" width={48} height={48} className="rounded-xl" />
+          <div className="flex items-center justify-center mb-4">
+            <Image src="/Fattat_Logo.png" alt="Fattat" width={140} height={93} priority />
           </div>
-          <h1 className="text-[28px] font-bold text-dark tracking-tight">Fattat</h1>
-          <p className="text-[13px] text-dark/65 mt-1">Din väg till ett högre HP.</p>
+          <p className="text-[14px] text-dark/65">Din väg till ett högre HP.</p>
         </div>
 
         {/* Form card */}

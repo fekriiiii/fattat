@@ -86,10 +86,20 @@ This is where 10k SEK/month plays out. The Oct '26 cycle is the runway; Phase 3 
 
 ## Pre-Launch Checklist (must ship before Day 140)
 
-1. **Public landing page at root** — currently `/` redirects to `/login`. Cold TikTok traffic needs a "what is this?" page in waitlist mode (email capture only, no signup form yet). Same positioning as the bios.
-2. **Founder account fully prepped** — diagnostic completed, exam date set, previous HP scores entered, 7–10 days of FSRS history so the dashboard has real numbers on Day 1. The account is on camera every day.
-3. **GDPR basics** — privacy policy + terms of service, even simple ones. List yourself personally as data controller until legal entity exists. Linked from landing page footer.
-4. **Source tracking in signup/waitlist** — one onboarding question: *"Var hörde du talas om Fattat?"* (TikTok / Instagram / YouTube / Vän/skola). Saved to user profile. Without this you fly blind for 140 days.
+1. ✅ **Public landing page at root** — shipped 2026-05-17. Live at https://fattat.se. Hero with waitlist form above the fold, second waitlist surface at page bottom, dogfooding callout linking to TikTok/IG/YouTube. Code in `src/app/page.tsx`, waitlist component at `src/components/landing/WaitlistForm.tsx`, API at `/api/waitlist`.
+2. ❌ **Founder account fully prepped** — diagnostic completed, exam date set, previous HP scores entered, 7–10 days of FSRS history so the dashboard has real numbers on Day 1. The account is on camera every day. **Only the founder can do this; start asap.**
+3. ⚠️ **GDPR basics** — boilerplate `/privacy` and `/terms` shipped with founder listed as data controller. Needs Swedish lawyer review before Phase 2 monetization opens (paired with `LEGAL_SETUP.md` enskild firma workstream).
+4. ✅ **Source tracking in waitlist** — required dropdown on the signup form: TikTok / Instagram / YouTube / Vän eller skola / Annat. Stored in `waitlist_signups.source` (migration 017). Queryable via Supabase dashboard for per-platform conversion counts.
+
+**Infrastructure shipped 2026-05-18 (Day 158):**
+- GitHub repo: `fekriiiii/fattat` (private)
+- Vercel deploy: auto-build on push to `main`
+- Domain: `fattat.se` registered at Strato (renewal ~112 SEK/yr from year 2). DNS points at Vercel (A record + www CNAME), HTTPS via Let's Encrypt
+- Email forwarding: `hej@`, `info@`, `contact@` `fattat.se` all forward to founder's Gmail via **ImprovMX** (free tier, 2 MX + 1 SPF TXT records at Strato). Receive-only — outbound app emails still go through Resend.
+
+**Known tech debt to clear before scale:**
+- ESLint warnings ignored in build via `next.config.mjs` — clean up after Day 0
+- Supabase migrations 013–017 must be applied to the production DB (Supabase dashboard SQL editor) — otherwise waitlist signups + diagnostic calibration break
 
 **Not needed before Day 140** (postponed to Phase 2):
 - Sentry / error monitoring (no real users hitting bugs yet)
