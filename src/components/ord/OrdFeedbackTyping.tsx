@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/Button'
 import type { Word } from '@/types/database'
@@ -12,6 +13,17 @@ interface Props {
 }
 
 export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props) {
+  const [flagged, setFlagged] = useState(false)
+
+  function handleFlag() {
+    setFlagged(true)
+    fetch('/api/words/flag-synonym', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wordId: word.id, typedAnswer: typedText }),
+    }).catch(() => {})
+  }
+
   return (
     <div className="flex flex-col gap-7 px-5 pt-8 pb-6">
       {/* Word + result indicator */}
@@ -43,6 +55,21 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
           </p>
         )}
       </div>
+
+      {!isCorrect && (
+        <div className="text-center">
+          {flagged ? (
+            <p className="text-xs text-dark/40">Tack — vi kollar på det.</p>
+          ) : (
+            <button
+              onClick={handleFlag}
+              className="text-xs text-dark/40 hover:text-dark/60 transition-colors underline underline-offset-2"
+            >
+              Synonymen saknades?
+            </button>
+          )}
+        </div>
+      )}
 
       <Button fullWidth onClick={onNext}>Nästa</Button>
     </div>

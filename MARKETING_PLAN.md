@@ -1,6 +1,6 @@
 # Fattat — Marketing Plan
 
-> Created 2026-05-12. Last updated 2026-05-16.
+> Created 2026-05-12. Last updated 2026-05-20.
 
 ---
 
@@ -87,7 +87,7 @@ This is where 10k SEK/month plays out. The Oct '26 cycle is the runway; Phase 3 
 ## Pre-Launch Checklist (must ship before Day 140)
 
 1. ✅ **Public landing page at root** — shipped 2026-05-17. Live at https://fattat.se. Hero with waitlist form above the fold, second waitlist surface at page bottom, dogfooding callout linking to TikTok/IG/YouTube. Code in `src/app/page.tsx`, waitlist component at `src/components/landing/WaitlistForm.tsx`, API at `/api/waitlist`.
-2. ❌ **Founder account fully prepped** — diagnostic completed, exam date set, previous HP scores entered, 7–10 days of FSRS history so the dashboard has real numbers on Day 1. The account is on camera every day. **Only the founder can do this; start asap.**
+2. ❌ **Founder account — Day 0 live setup** — account created on camera during the Day 0 video. Diagnostic run live. Exam date set live. **No previous HP scores entered** (founder has none — staying transparent; diagnostic result is the baseline). No pre-seeded FSRS history — the dashboard builds up publicly over the series. Day 0 = **2026-05-31** (Day 140 of 159-day countdown from 2026-05-12).
 3. ⚠️ **GDPR basics** — boilerplate `/privacy` and `/terms` shipped with founder listed as data controller. Needs Swedish lawyer review before Phase 2 monetization opens (paired with `LEGAL_SETUP.md` enskild firma workstream).
 4. ✅ **Source tracking in waitlist** — required dropdown on the signup form: TikTok / Instagram / YouTube / Vän eller skola / Annat. Stored in `waitlist_signups.source` (migration 017). Queryable via Supabase dashboard for per-platform conversion counts.
 
@@ -99,7 +99,7 @@ This is where 10k SEK/month plays out. The Oct '26 cycle is the runway; Phase 3 
 
 **Known tech debt to clear before scale:**
 - ESLint warnings ignored in build via `next.config.mjs` — clean up after Day 0
-- Supabase migrations 013–017 must be applied to the production DB (Supabase dashboard SQL editor) — otherwise waitlist signups + diagnostic calibration break
+- Supabase migrations 013–018 must be applied to the production DB (Supabase dashboard SQL editor) — otherwise waitlist signups, diagnostic calibration, and synonym flagging break
 
 **Not needed before Day 140** (postponed to Phase 2):
 - Sentry / error monitoring (no real users hitting bugs yet)
@@ -162,15 +162,20 @@ This is where 10k SEK/month plays out. The Oct '26 cycle is the runway; Phase 3 
 ## Video Plan
 
 ### Day 0 (first video)
-The trailer. Explains the full premise before the series starts:
+The trailer. Explains the full premise — **filmed live while creating the account for the first time.** No pre-seeded history, no pre-run diagnostic. The cold start is part of the story.
+
+What to cover:
 - Who Fattat is for (strong on matten, verbal pulls HP down) — *and that you fit the same pattern*
 - That the verbal section is where most strong-quant students lose their score
 - That you built an app specifically for the verbal section
-- That you're going to use it every day for 140 days and document everything
-- The proof: your own *verbal delta* from diagnostic to real exam
+- Running the diagnostic live on camera — this becomes the Day 0 baseline
+- That you'll use it every day for 140 days and document everything
+- The proof will be: verbal delta from this diagnostic to the real exam result
 
 Suggested hook (audience-first, not founder-first):
 *"Du är förmodligen stark på den kvantitativa delen av HP. Det är verbala som drar ner ditt resultat. Samma här. Så jag byggde en app för det — och nu ska jag visa exakt vad som händer på 140 dagar."*
+
+**Transparency note:** Founder has no previous HP scores — do not enter any. The app handles no-baseline gracefully; the diagnostic result is the starting point. This is honest and relatable for the majority of the audience who also have no previous HP.
 
 **What to avoid in the trailer:** any absolute HP target number, any claim about quant. Lead with the audience's pain, anchor on verbal, promise transparency about the delta.
 

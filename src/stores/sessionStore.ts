@@ -48,6 +48,7 @@ interface SessionStore {
     catchUpMessage?: string | null
     focusDomain?: string | null
     focusMessage?: string | null
+    priorResponses?: SessionResponse[]
   }) => void
   selectAnswer: (label: string) => void
   submitAnswer: (response: SessionResponse) => void
@@ -92,21 +93,61 @@ const initialState = {
 export const useSessionStore = create<SessionStore>((set, get) => ({
   ...initialState,
 
-  initSession({ sessionId, weaknessWords, ordWords, articles, newWordIds = [], isDiagnostic = false, catchUpMode = false, catchUpMessage = null, focusDomain = null, focusMessage = null }) {
-    set({
-      ...initialState,
-      sessionId,
-      isDiagnostic,
-      weaknessWords,
-      ordWords,
-      articles,
-      newWordIds: new Set(newWordIds),
-      phase: weaknessWords.length > 0 ? 'weakness' : 'ord',
-      answerStartTime: Date.now(),
-      catchUpMode,
-      catchUpMessage,
-      focusDomain,
-      focusMessage,
+  initSession({ sessionId, weaknessWords, ordWords, articles, newWordIds = [], isDiagnostic = false, catchUpMode = false, catchUpMessage = null, focusDomain = null, focusMessage = null, priorResponses }) {
+    set(() => {
+      const base = {
+        ...initialState,
+        sessionId,
+        isDiagnostic,
+        weaknessWords,
+        ordWords,
+        articles,
+        newWordIds: new Set(newWordIds),
+        phase: (weaknessWords.length > 0 ? 'weakness' : 'ord') as SessionPhase,
+        answerStartTime: Date.now(),
+        catchUpMode,
+        catchUpMessage,
+        focusDomain,
+        focusMessage,
+      }
+      if (!priorResponses || priorResponses.length === 0) return base
+
+      // Restore position from prior responses in the same update to avoid a
+      // flash of question 1 between initSession and a separate restoreResponses call.
+      const allOrd = [...weaknessWords, ...ordWords]
+      const ordCount = priorResponses.filter((r) => r.type === 'ord').length
+      const lasCount = priorResponses.filter((r) => r.type === 'las').length
+
+      let lasIndex = 0
+      let lasQuestionIndex = 0
+      let remaining = lasCount
+      for (let i = 0; i < articles.length; i++) {
+        const qCount = articles[i].questions.length
+        if (remaining < qCount) { lasIndex = i; lasQuestionIndex = remaining; remaining = 0; break }
+        remaining -= qCount
+        lasIndex = i + 1
+        lasQuestionIndex = 0
+      }
+
+      let phase: SessionPhase
+      if (ordCount < allOrd.length) {
+        phase = ordCount < weaknessWords.length ? 'weakness' : 'ord'
+      } else if (lasCount < articles.reduce((sum, a) => sum + a.questions.length, 0)) {
+        phase = 'las'
+      } else {
+        phase = 'complete'
+      }
+
+      return {
+        ...base,
+        responses: priorResponses,
+        currentOrdIndex: Math.min(ordCount, allOrd.length),
+        currentLasIndex: lasIndex,
+        currentLasQuestionIndex: lasQuestionIndex,
+        phase,
+        showingFeedback: false,
+        selectedLabel: null,
+      }
     })
   },
 

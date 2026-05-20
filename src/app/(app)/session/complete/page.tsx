@@ -1,18 +1,26 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useSessionStore } from '@/stores/sessionStore'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
 import { Button } from '@/components/ui/Button'
+import { createClient } from '@/lib/supabase/client'
 
 export default function SessionCompletePage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { responses, reset } = useSessionStore()
   const [streak, setStreak] = useState<number | null>(null)
   const { permission, subscribed, subscribe, loading: pushLoading } = usePushNotifications()
   const [notifLoading, setNotifLoading] = useState(false)
   const [notifDone, setNotifDone] = useState(false)
+
+  const [ordCorrect, setOrdCorrect] = useState(0)
+  const [ordTotal, setOrdTotal] = useState(0)
+  const [lasCorrect, setLasCorrect] = useState(0)
+  const [lasTotal, setLasTotal] = useState(0)
+  const [loaded, setLoaded] = useState(false)
 
   async function handleEnableNotifications() {
     setNotifLoading(true)
@@ -21,14 +29,39 @@ export default function SessionCompletePage() {
     if (ok) setNotifDone(true)
   }
 
-  const ordResponses = responses.filter((r) => r.type === 'ord')
-  const lasResponses = responses.filter((r) => r.type === 'las')
-  const ordCorrect = ordResponses.filter((r) => r.isCorrect).length
-  const lasCorrect = lasResponses.filter((r) => r.isCorrect).length
-  const ordTotal = ordResponses.length
-  const lasTotal = lasResponses.length
-  const ordPct = ordTotal > 0 ? Math.round((ordCorrect / ordTotal) * 100) : 0
-  const lasPct = lasTotal > 0 ? Math.round((lasCorrect / lasTotal) * 100) : 0
+  useEffect(() => {
+    if (responses.length > 0) {
+      const ord = responses.filter((r) => r.type === 'ord')
+      const las = responses.filter((r) => r.type === 'las')
+      setOrdCorrect(ord.filter((r) => r.isCorrect).length)
+      setOrdTotal(ord.length)
+      setLasCorrect(las.filter((r) => r.isCorrect).length)
+      setLasTotal(las.length)
+      setLoaded(true)
+      return
+    }
+
+    // Store was cleared (tab switch on mobile) — fetch from DB using session ID in URL
+    const sid = searchParams.get('sid')
+    if (!sid) { setLoaded(true); return }
+
+    const supabase = createClient()
+    supabase
+      .from('session_responses')
+      .select('question_type, is_correct')
+      .eq('session_id', sid)
+      .then(({ data }) => {
+        if (data) {
+          const ord = data.filter((r) => r.question_type === 'ord')
+          const las = data.filter((r) => r.question_type === 'las')
+          setOrdCorrect(ord.filter((r) => r.is_correct).length)
+          setOrdTotal(ord.length)
+          setLasCorrect(las.filter((r) => r.is_correct).length)
+          setLasTotal(las.length)
+        }
+        setLoaded(true)
+      })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetch('/api/streak/update', { method: 'POST' })
@@ -42,6 +75,8 @@ export default function SessionCompletePage() {
     router.push('/dashboard')
   }
 
+  const ordPct = ordTotal > 0 ? Math.round((ordCorrect / ordTotal) * 100) : 0
+  const lasPct = lasTotal > 0 ? Math.round((lasCorrect / lasTotal) * 100) : 0
   const avg = (ordPct + lasPct) / 2
   const bothHigh = ordPct >= 80 && lasPct >= 80
   const bothLow = ordPct < 60 && lasPct < 60
@@ -68,6 +103,8 @@ export default function SessionCompletePage() {
   const pool = bothHigh ? excellentMessages : (bothLow || avg < 50) ? toughMessages : goodMessages
   const motivational = pool[Math.floor(Math.random() * pool.length)]
 
+  if (!loaded) return null
+
   return (
     <div className="flex flex-col gap-6 px-6 py-8">
       {/* Success header */}
@@ -82,7 +119,7 @@ export default function SessionCompletePage() {
           <p className="text-[14px] text-dark/65 mt-1.5">
             {streak === 1 ? 'Bra start — kom igen imorgon!' : `Du är inne på dag ${streak} i rad`}
           </p>
-)}
+        )}
       </div>
 
       {/* Streak celebration */}

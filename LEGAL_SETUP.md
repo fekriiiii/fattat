@@ -8,7 +8,13 @@ This is the workstream for setting up the legal entity needed to accept payments
 
 ## Current Status
 
-- **2026-05-16:** Initial email sent to Linköpings kommun's Kontakt centrala (mailto behind the "För generella frågor via Kontakt Linköping" link on Överförmyndarenheten's page). Asked for: blankett name, what to bifoga, handläggningstid, parent signature requirements. **Awaiting reply (expected 1–5 business days).**
+- **2026-05-16:** Initial email sent to Linköpings kommun's Kontakt centrala. Asked for: blankett name, what to bifoga, handläggningstid, parent signature requirements.
+- **2026-05-19:** Reply received from Kontakt Linköping. Key answers:
+  - Application can be submitted via **e-tjänst** on linkoping.se, or by **blankett** (see link below).
+  - **Båda vårdnadshavare** (both parents) must sign — not just one.
+  - No confirmed handläggningstid — they process as cases arrive.
+  - Link: [linkoping.se — Samtycke från Överförmyndarnämnden](https://www.linkoping.se/omsorg-och-stod/ekonomi-och-radgivning/god-man-forvaltare-och-formyndare/for-dig-som-ar-god-man-och-forvaltare/samtycke-fran-overformyndarnamnden#h-Sarskildafall)
+- **Next action: visit the link, complete the e-tjänst (or download blankett), get both parents to sign, submit.**
 
 ---
 
@@ -50,8 +56,9 @@ Sources: bolagsverket.se (page on minor sole proprietors), skatteverket.se (page
 | Date | Milestone |
 |---|---|
 | 2026-05-16 | Email sent to Linköping kommun |
-| 2026-05-21 to 25 | Expected first reply |
-| 2026-06 to 2026-07 | Expected samtycke approval |
+| 2026-05-19 | Reply received — e-tjänst/blankett confirmed, both parents required |
+| **Now** | **Submit application via e-tjänst (or blankett) with both parents signing** |
+| TBD | Samtycke approval (no published handläggningstid for Linköping) |
 | 2026-07 | Skatteverket registration |
 | **2026-08** | **Legal entity ready for payment (Phase 2 of MARKETING_PLAN)** |
 | Post-April '27 | AB upgrade decision based on revenue + cash |
@@ -96,17 +103,17 @@ Framing the parents agreed on: *"If we haven't hit X paying users by April 2027,
 
 ---
 
-## To draft once the blankett arrives
+## To draft before submitting
 
 - **Företagsbeskrivning (one-pager)** — what Fattat is, the 140-day marketing plan in summary, financial expectations, why a 16-year-old can realistically run this. Will accompany the samtycke application.
-- **Parental consent letter** — short, signed by förmyndare(s) per the kommun's instructions (one or both — depends on the reply).
+- **Parental consent letter** — short, signed by **both** förmyndare (confirmed by Linköping). Draft once you've seen the e-tjänst form to know exactly what format they expect.
 
 ---
 
-## Open questions (until överförmyndare replies)
+## Open questions
 
-1. Exact blankett name and number
-2. What to bifoga (likely: parental letter, business description, ID)
-3. Handläggningstid for Linköping kommun specifically
-4. One vs both vårdnadshavare signatures
-5. Can the application be submitted in person at S:t Larsgatan 41 or only by post (skipped from email but worth following up)
+1. ~~Exact blankett name and number~~ — available via e-tjänst or blankett at the link above
+2. What to bifoga (likely: parental letter, business description, ID) — check the e-tjänst form for exact requirements
+3. ~~Handläggningstid for Linköping~~ — no fixed time published; they process in order received
+4. ~~One vs both vårdnadshavare~~ — **both must sign**
+5. Whether digital e-tjänst submission is faster than postal blankett — check when you open the form

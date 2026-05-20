@@ -177,7 +177,7 @@ export default function SessionPage() {
       }),
       fetch('/api/streak/update', { method: 'POST' }),
     ])
-    router.push('/session/complete')
+    router.push(`/session/complete?sid=${sessionId}`)
   }, [phase]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle ORD answer (typing version — review words)
@@ -308,7 +308,7 @@ export default function SessionPage() {
                   })
                   fetch('/api/streak/update', { method: 'POST' })
                 }
-                router.push('/session/complete')
+                router.push(`/session/complete?sid=${sessionId}`)
               }}
             >
               Avsluta för idag

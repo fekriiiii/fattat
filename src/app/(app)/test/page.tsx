@@ -66,15 +66,7 @@ export default function TestPage() {
       const data = await res.json()
       setSessionIdForComplete(data.sessionId)
       setStartedAt(data.startedAt ?? new Date().toISOString())
-      initSession({
-        sessionId: data.sessionId,
-        weaknessWords: [],
-        ordWords: data.ordWords,
-        articles: data.articles,
-      })
 
-      // Resume: replay any responses already recorded so the user lands on
-      // the first unanswered question instead of restarting from the top.
       const prior = (data.priorResponses ?? []) as Array<{
         question_type: 'ord' | 'las'
         word_id: string | null
@@ -85,20 +77,34 @@ export default function TestPage() {
         is_correct: boolean
         response_ms: number | null
       }>
-      if (prior.length > 0) {
-        restoreResponses(
-          prior.map((r) => ({
-            type:         r.question_type,
-            wordId:       r.word_id ?? undefined,
-            articleId:    r.article_id ?? undefined,
-            questionId:   r.question_id ?? undefined,
-            chosenLabel:  r.chosen_label,
-            correctLabel: r.correct_label,
-            isCorrect:    r.is_correct,
-            responseMs:   r.response_ms ?? 0,
-          }))
-        )
-      }
+
+      const mappedPrior = prior.map((r) => ({
+        type:         r.question_type,
+        wordId:       r.word_id ?? undefined,
+        articleId:    r.article_id ?? undefined,
+        questionId:   r.question_id ?? undefined,
+        chosenLabel:  r.chosen_label,
+        correctLabel: r.correct_label,
+        isCorrect:    r.is_correct,
+        responseMs:   r.response_ms ?? 0,
+      }))
+
+      // Init and restore in one store update — avoids a flash of question 1
+      // between two separate set() calls when resuming mid-test.
+      initSession({
+        sessionId: data.sessionId,
+        weaknessWords: [],
+        ordWords: data.ordWords,
+        articles: data.articles,
+        priorResponses: mappedPrior,
+      })
+
+      // Pre-populate readArticleIds so resumed LÄS phase skips the article
+      // reader for articles already seen (any article with ≥1 answered question).
+      const answeredArticleIds = new Set(
+        prior.filter((r) => r.question_type === 'las' && r.article_id).map((r) => r.article_id as string)
+      )
+      if (answeredArticleIds.size > 0) setReadArticleIds(answeredArticleIds)
     }
     start()
   }, [initSession, restoreResponses, router])

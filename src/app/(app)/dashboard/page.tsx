@@ -433,11 +433,7 @@ export default async function DashboardPage() {
               </Link>
             )}
           </div>
-        ) : (
-          <p className="text-[11px] text-dark/45 mt-3 leading-relaxed">
-            Lägg till ditt tidigare HP-resultat i profilen för att se en grov uppskattning av ditt nuvarande HP.
-          </p>
-        )}
+        ) : null}
       </div>
 
       {/* Study plan card */}

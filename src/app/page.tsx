@@ -8,8 +8,7 @@ export default function LandingPage() {
       {/* Top bar */}
       <header className="px-5 sm:px-8 py-5 flex items-center justify-between max-w-6xl mx-auto">
         <div className="flex items-center gap-2.5">
-          <Image src="/Fattat_Logo.png" alt="Fattat" width={32} height={32} className="rounded-lg" />
-          <span className="text-[17px] font-bold tracking-tight">Fattat</span>
+          <Image src="/Fattat_Logo.png" alt="Fattat" width={100} height={80} />
         </div>
         <Link
           href="/login"
@@ -27,18 +26,17 @@ export default function LandingPage() {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/15 mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
-                Bygger live · 140 dagar mot HP
+                Pluggar HP med Fattat live · 140 dagar
               </span>
             </div>
 
             <h1 className="text-[44px] sm:text-[60px] lg:text-[68px] font-bold leading-[0.98] tracking-[-0.025em] mb-6">
-              <span className="text-primary">Verbala delen</span>
-              <br />drar ner ditt HP.
+              <span className="text-primary">ORD och LÄS.</span>
+              <br />Byggt för att fastna.
             </h1>
 
             <p className="text-[18px] sm:text-[20px] text-dark/70 leading-[1.45] max-w-xl">
-              Du är stark på matten. Det är ORD och LÄS som äter upp poäng.
-              Fattat är byggd för exakt det problemet — och bara det.
+              Fattat tränar dig på ORD och LÄS med tekniken som fungerar. Frågan alltid före svaret. Algoritmen håller reda på vad du behöver öva mer på, så du slipper göra det själv.
             </p>
           </div>
 
@@ -66,13 +64,11 @@ export default function LandingPage() {
           Problemet
         </p>
         <h2 className="text-[28px] sm:text-[40px] font-bold leading-[1.1] tracking-[-0.02em] mb-5">
-          Tusentals studenter kan matten utantill.<br />
-          <span className="text-dark/55">HP-resultatet säger inte det.</span>
+          Du pluggar. Det fastnar inte.<br />
+          <span className="text-dark/55">Det är inte ditt fel.</span>
         </h2>
         <p className="text-[17px] sm:text-[19px] text-dark/70 leading-[1.55] max-w-2xl">
-          När halva provet är ord du aldrig sett och texter du knappt hinner
-          läsa — då drar verbala ner dig oavsett hur snabbt du räknar. Det är
-          inte ett intelligensproblem. Det är ett träningsproblem.
+          Att läsa en ordlista är inte träning. Hjärnan behöver försöka komma ihåg något den nästan glömt. Det är då det fastnar. De flesta pluggar på fel sätt, inte för lite.
         </p>
       </section>
 
@@ -82,29 +78,29 @@ export default function LandingPage() {
           Vad Fattat gör annorlunda
         </p>
         <h2 className="text-[28px] sm:text-[40px] font-bold leading-[1.1] tracking-[-0.02em] mb-12 max-w-3xl">
-          Inga hint-knappar. Ingen passiv läsning. Bara träning som faktiskt fastnar.
+          Det handlar inte om hur mycket du pluggar. Det handlar om hur.
         </h2>
 
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
           <FeatureCard
             number="01"
-            title="Ordförråd som fastnar"
-            body="FSRS — samma minnesteknik som högpresterande språkstudenter använder. Algoritmen bestämmer när du ser varje ord igen, inte slumpen."
+            title="Algoritmen minns åt dig"
+            body="Fattat räknar ut exakt när du behöver se varje ord igen. Det är det som gör att det fastnar."
           />
           <FeatureCard
             number="02"
-            title="LÄS med direkt feedback"
-            body="Efter varje fråga ser du varför rätt svar är rätt — och varför fel svar luras. Inga generiska förklaringar."
+            title="Du förstår varför, inte bara vad"
+            body="Efter varje LÄS-fråga ser du exakt varför rätt svar är rätt. Och varför de andra alternativen lockar."
           />
           <FeatureCard
             number="03"
-            title="Tvingar dig att tänka först"
-            body="Hjärnan lär sig av att försöka komma ihåg — inte av att läsa om samma sak. Frågan kommer alltid före svaret."
+            title="Aldrig svaret innan frågan"
+            body="Hjärnan lär sig av att försöka komma ihåg, inte av att läsa om samma sak. Frågan kommer alltid före svaret."
           />
           <FeatureCard
             number="04"
             title="Byggd för bussen"
-            body="Mobilt först. Sessionen är klar när du är klar — vanligtvis 15 minuter. Inget krångel att starta, inget att avsluta."
+            body="Mobilt först. Sessionen är klar när du är klar, vanligtvis 15 minuter. Inget krångel att starta, inget att avsluta."
           />
         </div>
       </section>
@@ -116,11 +112,10 @@ export default function LandingPage() {
             Följ resan
           </p>
           <h2 className="text-[28px] sm:text-[40px] lg:text-[48px] font-bold leading-[1.05] tracking-[-0.02em] mb-5 max-w-3xl">
-            Jag bygger Fattat live — och pluggar HP samtidigt.
+            Jag skriver HP i höst. Och gör allt öppet.
           </h2>
           <p className="text-[17px] sm:text-[19px] text-cream/65 leading-[1.55] mb-8 max-w-2xl">
-            Skärminspelning varje dag i 140 dagar. Min verbala utveckling,
-            mina svaga domäner, vad som funkar och vad som inte gör det.
+            Jag är 16 och skriver HP i höst. Varje dag spelar jag in min session, visar hur min verbala del utvecklas och vad Fattat säger om mina svaga punkter.
           </p>
           <div className="flex flex-wrap gap-3">
             <SocialLink href="https://tiktok.com/@fattat.se" label="TikTok" />
@@ -133,10 +128,10 @@ export default function LandingPage() {
       {/* FINAL CTA — second waitlist surface for people who scrolled past */}
       <section className="px-5 sm:px-8 py-24 max-w-3xl mx-auto text-center">
         <h2 className="text-[32px] sm:text-[44px] font-bold leading-[1.05] tracking-[-0.02em] mb-4">
-          Var med från början.
+          Öppnar i höst.
         </h2>
         <p className="text-[17px] text-dark/65 mb-8">
-          Vi mejlar dig en gång — när Fattat öppnar.
+          Anmäl dig nu och få ett mejl när det är dags. Inget mer än så.
         </p>
         <div className="max-w-md mx-auto text-left bg-white rounded-2xl border border-dark/8 shadow-[0_4px_24px_-8px_rgba(31,41,55,0.08)] p-6">
           <WaitlistForm />

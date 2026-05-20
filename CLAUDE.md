@@ -122,6 +122,7 @@ All files in `supabase/migrations/`:
 15. `015_reported_hp_score.sql` — `reported_hp_score` + test date on user_profiles + `prediction_calibration` view (joins predictions with real HP outcomes)
 16. `016_new_word_ids_fn.sql` — `select_new_word_ids` RPC (avoids URL-length limits when excluding seen words)
 17. `017_waitlist_signups.sql` — Phase 1 email waitlist table with source tracking (TikTok / IG / YouTube / vän-skola / annat)
+18. `018_flagged_synonyms.sql` — `flagged_synonyms` table; stores user-flagged synonym candidates (word_id, user_id, typed_answer) for founder review via Supabase dashboard
 
 Table explanations: `IMPLEMENTATION_PLAN.md` → "Database Structure"
 
@@ -181,6 +182,20 @@ Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber b
 
 ## Recent Fixes
 
+**Pre-dogfooding UX fixes (2026-05-20)**
+
+5. **Övningsprov resume — question flash + LÄS article reader reset fixed** — on remount, `initSession` reset `currentOrdIndex: 0` then `restoreResponses` advanced it in a second React update, causing a visible flash of question 1. Also, `readArticleIds` (local state) reset on remount so resumed LÄS sessions showed the article reader again instead of the user's question. Fix: `initSession` now accepts optional `priorResponses` and restores position in a single `set()` call; test page pre-populates `readArticleIds` from the DB-returned prior responses. `src/stores/sessionStore.ts`, `src/app/(app)/test/page.tsx`
+
+1. **Dashboard "previous HP" nudge removed** — the text "Lägg till ditt tidigare HP-resultat i profilen…" was permanently visible for users with no previous HP score. Removed. Dashboard falls back to verbal träffprocent silently. `src/app/(app)/dashboard/page.tsx`
+2. **Session complete 0/0 bug fixed** — results showed 0/0 after switching tabs because they relied solely on Zustand in-memory state. Fix: session ID is now passed as `?sid=` in the URL on navigation; complete page fetches stats from `session_responses` as fallback if store is empty. `src/app/(app)/session/page.tsx`, `src/app/(app)/session/complete/page.tsx`
+3. **Typo tolerance in ORD typing** — one-character typo forgiven for any accepted answer 6+ characters long; 5 characters and under stays strict. Uses Levenshtein distance 1. `src/lib/utils/levenshtein.ts`, `src/components/ord/OrdTyping.tsx`
+4. **"Synonymen saknades?" flag button** — shows below wrong-answer feedback in typing mode. Tap saves `(word_id, typed_answer)` to `flagged_synonyms` table for founder review; confirmed with "Tack — vi kollar på det." Kept post-launch as a content improvement signal. `src/components/ord/OrdFeedbackTyping.tsx`, `src/app/api/words/flag-synonym/route.ts`, `supabase/migrations/018_flagged_synonyms.sql`
+
+**Dogfooding strategy decisions (2026-05-20):**
+- Day 140 = **2026-05-31** (159 − 140 = 19 days after 2026-05-12)
+- Founder creates account **live on camera** for Day 0 video — no pre-seeded history
+- Founder has no previous HP scores — enter nothing, stay transparent; diagnostic becomes the Day 0 baseline
+
 **Phase 1 deployment (2026-05-18)** — code went from localhost to https://fattat.se in one session. GitHub repo `fekriiiii/fattat` (private), Vercel auto-deploys on push to `main`, domain via Strato pointing at Vercel with Let's Encrypt SSL. Two build fixes shipped: `next.config.mjs` bypasses ESLint (accumulated repo-wide warning debt, tracked), `tsconfig.json` excludes `scripts/` (seed.ts uses dotenv which isn't a runtime dep). Notifications cron removed from `vercel.json` — Hobby plan limits crons to daily; re-add on Pro upgrade in Phase 2. Email forwarding via **ImprovMX** (free tier, 2 MX + 1 SPF TXT records at Strato): `hej@fattat.se`, `info@fattat.se`, `contact@fattat.se` all forward to founder's Gmail. Chose ImprovMX over Cloudflare Email Routing to avoid moving DNS off Strato (CF Routing requires CF nameservers).
 
 **Phase 1 landing page + bug-fix pass (2026-05-17)** — landing page shipped, plus an 8-item bug sweep across the app.
@@ -231,10 +246,10 @@ Files: `src/lib/session/builder.ts`, `src/app/api/diagnostic/complete/route.ts`,
 | Calibrate HP prediction against `prediction_calibration` view once ~5–10 users report real scores | `src/lib/session/scoring.ts` | High (waiting on data) |
 | Push notification 24h before each övningsprov | `src/app/api/notifications/schedule/route.ts` | Medium |
 | Performance-adaptive exam scheduling (v2) | `src/lib/session/planner.ts` | Low |
-| Founder account fully prepped for Day 0 (diagnostic done, exam date set, 7–10 days FSRS history) | manual | High (pre-launch) |
+| Founder creates account live on Day 0 video (diagnostic on camera, no pre-seeded history, no previous HP scores) | manual | High (pre-launch, Day 0 = 2026-05-31) |
+| Review `flagged_synonyms` table periodically and promote valid entries to `accepted_synonyms` in CSV + DB | Supabase dashboard + ord-database.csv | Ongoing |
 | ESLint cleanup pass — currently bypassed in build via `next.config.mjs`; clear unused vars, `any` types, and missing useEffect deps | repo-wide | Medium (post-launch) |
-| Apply migrations 013–017 to production Supabase DB | Supabase dashboard | High (blocks waitlist + calibration in prod) |
-| Reserve TikTok / IG / YouTube handles (`@fattat.se`, `@fattat.se`, `@fattathp`) — anti-squatter | external | High (pre-launch) |
+| Diagnostic resume — leaving mid-diagnostic restarts it from scratch. Same fix pattern as övningsprov: persist pool in session payload, restore on remount. Not a Day 0 blocker (founder is the only user and diagnostic happens once on camera). | `src/app/api/diagnostic/build/route.ts`, `src/app/(app)/diagnostic/page.tsx` | Medium (before Phase 2) |
 | Session payload bloat — daily session stores full article bodies in JSONB; should mirror övningsprov and store IDs only | `src/app/api/session/build/route.ts` | Low |
 | Study partner pages | `src/app/(app)/partner/` | Low |
 

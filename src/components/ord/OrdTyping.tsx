@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
+import { isAcceptedAnswer } from '@/lib/utils/levenshtein'
 import type { Word } from '@/types/database'
 
 interface Props {
@@ -20,7 +21,7 @@ export function OrdTyping({ word, onAnswer }: Props) {
       word.correct_synonym,
       ...(word.accepted_synonyms ? word.accepted_synonyms.split(',').map(s => s.trim()) : []),
     ]
-    const isCorrect = accepted.some(s => s.toLowerCase() === typed)
+    const isCorrect = isAcceptedAnswer(typed, accepted)
     onAnswer(trimmed, isCorrect)
   }
 
