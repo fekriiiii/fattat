@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       friend_school: 'Vän/skola', other: 'Annat',
     }
     resend.emails.send({
-      from: 'Fattat <hej@fattat.se>',
+      from: 'Fattat <onboarding@resend.dev>',
       to: 'thelittelstars7@gmail.com',
       subject: 'Ny anmälan till väntelistan',
       text: `${parsed.data.email} har anmält sig.\n\nKälla: ${sourceLabel[parsed.data.source ?? ''] ?? 'okänd'}`,
