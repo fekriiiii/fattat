@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 import { createHash } from 'crypto'
+import { Resend } from 'resend'
 
 const VALID_SOURCES = ['tiktok', 'instagram', 'youtube', 'friend_school', 'other'] as const
 
@@ -41,6 +42,14 @@ export async function POST(req: Request) {
   const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 16)
   const userAgent = req.headers.get('user-agent')?.slice(0, 500) ?? null
 
+  const { count } = await supabase
+    .from('waitlist_signups')
+    .select('*', { count: 'exact', head: true })
+    .eq('ip_hash', ipHash)
+  if ((count ?? 0) >= 3) {
+    return NextResponse.json({ ok: true })
+  }
+
   const { error } = await supabase.from('waitlist_signups').insert({
     email: parsed.data.email,
     source: parsed.data.source ?? null,
@@ -53,6 +62,21 @@ export async function POST(req: Request) {
   if (error && error.code !== '23505') {
     console.error('waitlist insert failed:', error)
     return NextResponse.json({ error: 'Något gick fel, försök igen.' }, { status: 500 })
+  }
+
+  // Notify founder on new signup (not on duplicates)
+  if (!error) {
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const sourceLabel: Record<string, string> = {
+      tiktok: 'TikTok', instagram: 'Instagram', youtube: 'YouTube',
+      friend_school: 'Vän/skola', other: 'Annat',
+    }
+    resend.emails.send({
+      from: 'Fattat <hej@fattat.se>',
+      to: 'thelittelstars7@gmail.com',
+      subject: 'Ny anmälan till väntelistan',
+      text: `${parsed.data.email} har anmält sig.\n\nKälla: ${sourceLabel[parsed.data.source ?? ''] ?? 'okänd'}`,
+    }).catch(() => {})
   }
 
   return NextResponse.json({ ok: true })
