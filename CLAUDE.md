@@ -196,13 +196,15 @@ Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber b
 - Founder creates account **live on camera** for Day 0 video — no pre-seeded history
 - Founder has no previous HP scores — enter nothing, stay transparent; diagnostic becomes the Day 0 baseline
 
+**Landing copy rewrite + waitlist hardening (2026-05-20)** — dropped "strong on matten" niche framing, went broad. New hero ("ORD och LÄS. Byggt för att fastna."), problem section, features H2, feature card copy, dogfooding section, and final CTA all rewritten. Waitlist route hardened: IP-hash DB check (max 3 signups per IP) added on top of existing in-memory rate limit. Founder notification email via Resend fires on every new signup. `src/app/page.tsx`, `src/app/api/waitlist/route.ts`.
+
 **Phase 1 deployment (2026-05-18)** — code went from localhost to https://fattat.se in one session. GitHub repo `fekriiiii/fattat` (private), Vercel auto-deploys on push to `main`, domain via Strato pointing at Vercel with Let's Encrypt SSL. Two build fixes shipped: `next.config.mjs` bypasses ESLint (accumulated repo-wide warning debt, tracked), `tsconfig.json` excludes `scripts/` (seed.ts uses dotenv which isn't a runtime dep). Notifications cron removed from `vercel.json` — Hobby plan limits crons to daily; re-add on Pro upgrade in Phase 2. Email forwarding via **ImprovMX** (free tier, 2 MX + 1 SPF TXT records at Strato): `hej@fattat.se`, `info@fattat.se`, `contact@fattat.se` all forward to founder's Gmail. Chose ImprovMX over Cloudflare Email Routing to avoid moving DNS off Strato (CF Routing requires CF nameservers).
 
 **Phase 1 landing page + bug-fix pass (2026-05-17)** — landing page shipped, plus an 8-item bug sweep across the app.
 
 *Landing page (waitlist mode for Phase 1):*
 1. **Public landing at `/`** — replaced the old `/login` redirect. Hero with form above the fold, second waitlist surface at page bottom, problem/features/dogfooding sections in between. Brand-anchored design (teal F-mark, animated live chip, dark dogfooding block).
-2. **Waitlist signup endpoint** — `/api/waitlist` with email validation, 1-req/min/IP rate limit, dup-email-as-success behavior.
+2. **Waitlist signup endpoint** — `/api/waitlist` with email validation, 1-req/min/IP rate limit, max-3-signups-per-IP-hash DB check, dup-email-as-success behavior. Founder gets a Resend notification email (from `onboarding@resend.dev`) on every new signup showing email + source platform.
 3. **Source attribution** — required dropdown captures which platform (TikTok/IG/YouTube/vän-skola/annat) brought each lead. Pre-launch checklist item #4 done.
 4. **Middleware update** — `/`, `/privacy`, `/terms` now public; logged-in users still get `/` → `/dashboard` redirect so the app surface is unaffected.
 5. **Boilerplate `/privacy` and `/terms`** — GDPR basics with founder as data controller until enskild firma is registered. Real legal review needed before Phase 2 monetization (see `LEGAL_SETUP.md`).

@@ -1,6 +1,6 @@
 # Fattat — Marketing Plan
 
-> Created 2026-05-12. Last updated 2026-05-20.
+> Created 2026-05-12. Last updated 2026-05-20 (second pass).
 
 ---
 
@@ -14,7 +14,7 @@
 
 ## Positioning
 
-**Who Fattat is for:** Swedish HP candidates who are strong on the kvantitativa section but where the verbala delen drags their total HP down. This pattern is common — a huge share of HP-takers fit it — and it maps cleanly to what Fattat actually covers (ORD, LÄS — verbal only).
+**Who Fattat is for:** Any Swedish HP candidate who wants to improve their verbal score (ORD + LÄS). Positioning was updated 2026-05-20 to go broad — the previous "strong on matten, weak on verbal" niche framing excluded valid users and was dropped. The founder's own profile still fits the verbal-improvement story, so the dogfooding narrative stays honest without requiring the math angle.
 
 **Why this works as the marketing anchor:**
 - The audience self-identifies in 3 seconds (they recognize their own pattern)
