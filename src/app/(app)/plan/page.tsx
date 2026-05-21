@@ -15,8 +15,6 @@ export default async function PlanPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Cutoff for the 14-day trend window. We pull all responses since then so we
-  // can split into "this week" vs "prior week" client-side without a second query.
   const fourteenDaysAgo = new Date(Date.now() - 14 * 86_400_000).toISOString()
   const sevenDaysAgo = new Date(Date.now() - 7 * 86_400_000).toISOString()
 
@@ -31,11 +29,10 @@ export default async function PlanPage() {
     { data: sessionsThisWeek },
   ] = await Promise.all([
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
-    supabase.from('fsrs_cards').select('stability, elapsed_days, reps, difficulty').eq('user_id', user.id).limit(1000),
-    // Pull last 14 days of responses (no count limit) for trend + domain stats.
+    supabase.from('fsrs_cards').select('stability, elapsed_days, reps, difficulty, lapses, miss_count, word_id').eq('user_id', user.id).limit(2000),
     supabase
       .from('session_responses')
-      .select('is_correct, question_type, word_id, answered_at')
+      .select('is_correct, question_type, word_id, answered_at, las_question_type')
       .eq('user_id', user.id)
       .gte('answered_at', fourteenDaysAgo)
       .order('answered_at', { ascending: false }),
@@ -43,7 +40,6 @@ export default async function PlanPage() {
     supabase.from('words').select('*', { count: 'exact', head: true }),
     supabase.from('fsrs_cards').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gt('reps', 0),
     supabase.from('fsrs_cards').select('word_id').eq('user_id', user.id),
-    // Sessions completed in the last 7 days — drives the "veckans plan" card.
     supabase
       .from('study_sessions')
       .select('id, session_type, completed_at')
@@ -52,8 +48,7 @@ export default async function PlanPage() {
       .gte('completed_at', sevenDaysAgo),
   ])
 
-  // Fetch domains for ORD word_ids seen in the response window, for the
-  // weakest-domain focus card.
+  // ORD domains for response window — used by domain map
   const ordWordIds = Array.from(
     new Set(
       (recentResponses ?? [])
@@ -65,17 +60,26 @@ export default async function PlanPage() {
     ? await supabase.from('words').select('id, domain').in('id', ordWordIds)
     : { data: [] }
 
+  // Fragile words: cards with lapses, sorted worst first, fetch word text
+  const cards = (fsrsCards ?? []) as FsrsCard[]
+  const fragileCardIds = cards
+    .filter((c) => c.lapses > 0)
+    .sort((a, b) => b.lapses - a.lapses || a.stability - b.stability)
+    .slice(0, 8)
+    .map((c) => c.word_id)
+
+  const { data: fragileWordsData } = fragileCardIds.length
+    ? await supabase.from('words').select('id, word, domain').in('id', fragileCardIds)
+    : { data: [] }
+
   if (!profile?.onboarded_at) redirect('/onboarding')
 
-  // Soft-gate: Plan is meaningless without a baseline — bounce to /dashboard,
-  // which renders the diagnostic CTA when the diagnostic isn't done yet.
   const { diagnosticCompleted } = await getOnboardingState(supabase, user.id)
   if (!diagnosticCompleted) redirect('/dashboard')
 
   const seenWordIds = new Set((allUserWordIds ?? []).map((r: { word_id: string }) => r.word_id))
   const unseenWords = Math.max(0, (totalWords ?? 0) - seenWordIds.size)
 
-  const cards = (fsrsCards ?? []) as FsrsCard[]
   const ordRetention = computeAvgRetention(cards)
   const lasAccuracy = computeLasAccuracy(recentResponses ?? [])
   const previousHpScore = profile?.previous_hp_score ?? null
@@ -96,17 +100,24 @@ export default async function PlanPage() {
     ? examDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' })
     : null
 
-  // Weekly trend — accuracy this week vs prior week (both windows from the
-  // same 14-day fetch). We require ≥5 responses in the current week before
-  // showing anything; below that, the number swings too much to be useful.
   const trend = computeWeeklyTrend(recentResponses ?? [])
+  const allDomains = computeAllDomains(recentResponses ?? [], wordDomains ?? [])
 
-  // Weakest ORD domain over the last 14 days, ignoring domains with too few
-  // samples to be honest (<5 responses).
-  const weakestDomain = computeWeakestDomain(recentResponses ?? [], wordDomains ?? [])
+  const fragileWordsList = (fragileWordsData ?? [])
+    .map((w) => {
+      const card = cards.find((c) => c.word_id === w.id)
+      return {
+        word: w.word,
+        domain: w.domain,
+        lapses: card?.lapses ?? 0,
+        stability: card?.stability ?? 0,
+      }
+    })
+    .sort((a, b) => b.lapses - a.lapses || a.stability - b.stability)
 
-  // Weekly rhythm — how many sessions are done, how many remain, and what
-  // övningsprov fall inside the next 7 days.
+  const lasSubtypes = computeLasSubtypes(recentResponses ?? [])
+  const coachInsight = generateCoachInsight(allDomains, fragileWordsList, lasSubtypes)
+
   const sessionsDoneThisWeek = (sessionsThisWeek ?? []).filter((s) => s.session_type === 'daily').length
   const examsDoneThisWeek = (sessionsThisWeek ?? []).filter((s) => s.session_type === 'exam_mode').length
   const dailyQuota = studyPlan?.daily_ord_quota ?? null
@@ -118,6 +129,8 @@ export default async function PlanPage() {
     })
     .filter((d) => d.getTime() >= today.getTime() && d.getTime() < inSevenDays.getTime())
     .sort((a, b) => a.getTime() - b.getTime())
+
+  const hasCoachData = allDomains.length > 0 || fragileWordsList.length > 0 || lasSubtypes.length > 0
 
   return (
     <div className="flex flex-col gap-4 px-4 pt-4 pb-8 max-w-sm mx-auto">
@@ -159,7 +172,7 @@ export default async function PlanPage() {
         </div>
       )}
 
-      {/* Weekly trend — measured progress, not predicted */}
+      {/* Weekly trend */}
       {trend && (
         <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
           <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-2">
@@ -188,33 +201,7 @@ export default async function PlanPage() {
         </div>
       )}
 
-      {/* Weekly focus — names the weakest domain so the silent intelligence
-          (FSRS + domain-aware article selection) becomes visible to the user.
-          CTA below launches a session weighted toward this domain. */}
-      {weakestDomain && (
-        <div className="bg-primary/[0.06] border border-primary/15 rounded-card px-4 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-1">
-            Veckans fokus
-          </p>
-          <p className="text-base font-bold text-dark capitalize">
-            {weakestDomain.domain}
-          </p>
-          <p className="text-sm text-dark/65 mt-1 leading-relaxed">
-            Din svagaste domän just nu — {Math.round(weakestDomain.accuracy * 100)}% rätt
-            på senaste {weakestDomain.total} ord. Fattat visar fler ord och texter från
-            det här området så att du tränar där det behövs mest.
-          </p>
-          <Link
-            href={`/session?focus=${encodeURIComponent(weakestDomain.domain)}`}
-            className="mt-3 inline-block text-sm font-bold text-primary hover:text-primary/80 transition-colors"
-          >
-            Träna {weakestDomain.domain} nu →
-          </Link>
-        </div>
-      )}
-
-      {/* Weekly rhythm — concrete shape of the next 7 days. Replaces abstract
-          "X words in Y days" framing with something a student can hold onto. */}
+      {/* Weekly rhythm */}
       {studyPlan && (
         <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
           <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
@@ -296,7 +283,7 @@ export default async function PlanPage() {
         </div>
       )}
 
-      {/* Inplanerade övningsprov (Step 16b) — with reschedule buttons */}
+      {/* Exam schedule */}
       {Array.isArray(studyPlan?.exam_schedule) && studyPlan.exam_schedule.length > 0 && (() => {
         const today = new Date(); today.setHours(0, 0, 0, 0)
         const upcoming = (studyPlan.exam_schedule as string[])
@@ -308,10 +295,109 @@ export default async function PlanPage() {
         return <ExamScheduleList upcoming={upcoming} rescheduleRemaining={remaining} />
       })()}
 
+      {/* ── Tränarens analys ──────────────────────────────────────────────────── */}
+      <div className="pt-2">
+        <h2 className="text-lg font-bold text-dark mb-3">Tränarens analys</h2>
+
+        {!hasCoachData ? (
+          <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
+            <p className="text-sm text-dark/65 leading-relaxed">
+              Gör ditt första pass för att aktivera tränaranalysen.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+
+            {/* Coach insight — the interpretation, not just the numbers */}
+            {coachInsight && (
+              <div className="border-l-4 border-primary bg-primary/[0.04] rounded-r-card px-4 py-4">
+                <p className="text-sm leading-relaxed text-dark">{coachInsight}</p>
+              </div>
+            )}
+
+            {/* Domain map */}
+            {allDomains.length > 0 && (
+              <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+                  Domänkarta — ORD
+                </p>
+                <div className="flex flex-col gap-3">
+                  {allDomains.map((d) => (
+                    <div key={d.domain}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="capitalize text-dark">{d.domain}</span>
+                        <span className={`font-bold ${d.accuracy < 0.6 ? 'text-red-500' : d.accuracy < 0.75 ? 'text-amber-500' : 'text-primary'}`}>
+                          {Math.round(d.accuracy * 100)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-dark/8 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${d.accuracy < 0.6 ? 'bg-red-400' : d.accuracy < 0.75 ? 'bg-amber-400' : 'bg-primary'}`}
+                          style={{ width: `${Math.round(d.accuracy * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Fragile words */}
+            {fragileWordsList.length > 0 && (
+              <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+                  Dina svagaste ord
+                </p>
+                <div className="flex flex-col divide-y divide-dark/6">
+                  {fragileWordsList.map((w) => (
+                    <div key={w.word} className="flex items-center justify-between py-2 first:pt-0 last:pb-0">
+                      <div>
+                        <span className="text-sm font-bold text-dark">{w.word}</span>
+                        <span className="text-xs text-dark/45 ml-2 capitalize">{w.domain}</span>
+                      </div>
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${w.lapses >= 3 ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600'}`}>
+                        {w.lapses} {w.lapses === 1 ? 'laps' : 'lapsar'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* LÄS breakdown */}
+            {lasSubtypes.length > 0 && (
+              <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+                  LÄS-analys
+                </p>
+                <div className="flex flex-col gap-3">
+                  {lasSubtypes.map((s) => (
+                    <div key={s.type}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-dark">{LAS_TYPE_LABELS[s.type] ?? s.type}</span>
+                        <span className={`font-bold ${s.accuracy < 0.5 ? 'text-red-500' : s.accuracy < 0.7 ? 'text-amber-500' : 'text-primary'}`}>
+                          {Math.round(s.accuracy * 100)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-dark/8 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${s.accuracy < 0.5 ? 'bg-red-400' : s.accuracy < 0.7 ? 'bg-amber-400' : 'bg-primary'}`}
+                          style={{ width: `${Math.round(s.accuracy * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+        )}
+      </div>
+
       {/* Disclaimer */}
       <p className="text-xs text-dark/60 text-center leading-relaxed px-2">
-        Planen uppdateras automatiskt när du studerar. Veckans utveckling och fokus
-        bygger på dina senaste svar.
+        Planen och tränaranalysen uppdateras automatiskt när du studerar.
       </p>
 
     </div>
@@ -319,6 +405,16 @@ export default async function PlanPage() {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const LAS_TYPE_LABELS: Record<string, string> = {
+  huvudtanke: 'Huvudtanke',
+  detalj_fakta: 'Detaljfrågor',
+  detalj_kausal: 'Orsakssamband',
+  syfte_funktion: 'Syfte & funktion',
+  slutledning: 'Slutledning',
+  jämförande: 'Jämförande',
+  ståndpunkt: 'Ståndpunkt',
+}
 
 type TrendResponse = { is_correct: boolean; answered_at: string; question_type: string }
 
@@ -336,8 +432,6 @@ function computeWeeklyTrend(
     else if (age < 14 * day) priorWeek.push(r)
   }
 
-  // Need at least 5 responses this week before showing — below that the
-  // percentage swings too wildly to be honest.
   if (thisWeek.length < 5) return null
 
   const thisAcc = thisWeek.filter((r) => r.is_correct).length / thisWeek.length
@@ -355,11 +449,11 @@ function computeWeeklyTrend(
 
 type DomainResponse = { is_correct: boolean; question_type: string; word_id: string | null }
 
-function computeWeakestDomain(
+function computeAllDomains(
   responses: DomainResponse[],
   wordDomains: { id: string; domain: string }[]
-): { domain: string; accuracy: number; total: number } | null {
-  if (responses.length === 0 || wordDomains.length === 0) return null
+): { domain: string; accuracy: number; total: number }[] {
+  if (responses.length === 0 || wordDomains.length === 0) return []
   const domainOf = new Map(wordDomains.map((w) => [w.id, w.domain]))
   const stats: Record<string, { correct: number; total: number }> = {}
 
@@ -372,14 +466,91 @@ function computeWeakestDomain(
     if (r.is_correct) stats[domain].correct++
   }
 
-  // Ignore domains with <5 responses (too noisy). Pick the one with lowest
-  // accuracy among the rest. If nothing qualifies, return null.
-  const eligible = Object.entries(stats)
+  return Object.entries(stats)
     .filter(([, s]) => s.total >= 5)
     .map(([domain, s]) => ({ domain, accuracy: s.correct / s.total, total: s.total }))
-
-  if (eligible.length === 0) return null
-  eligible.sort((a, b) => a.accuracy - b.accuracy)
-  return eligible[0]
+    .sort((a, b) => a.accuracy - b.accuracy)
 }
 
+function generateCoachInsight(
+  allDomains: { domain: string; accuracy: number; total: number }[],
+  fragileWordsList: { word: string; domain: string; lapses: number; stability: number }[],
+  lasSubtypes: { type: string; accuracy: number; total: number }[]
+): string | null {
+  const weakestDomain = allDomains[0]
+  const topFragile = fragileWordsList.slice(0, 3)
+  const weakestLas = lasSubtypes[0]
+
+  const parts: string[] = []
+
+  const joinWords = (words: string[]) =>
+    words.length === 1
+      ? words[0]
+      : words.length === 2
+      ? `${words[0]} och ${words[1]}`
+      : `${words.slice(0, -1).join(', ')} och ${words[words.length - 1]}`
+
+  if (topFragile.length > 0) {
+    const wordStr = joinWords(topFragile.map((w) => w.word))
+    if (weakestDomain && weakestDomain.accuracy < 0.75) {
+      parts.push(
+        `Du tappar mest på ${weakestDomain.domain}-ord — ${Math.round(weakestDomain.accuracy * 100)}% rätt. ` +
+        `De ord som fastnat minst är ${wordStr}. FSRS schemalägger dem tätare tills de sitter.`
+      )
+    } else {
+      parts.push(
+        `${joinWords(topFragile.map((w) => w.word))} ${topFragile.length === 1 ? 'är det ord som' : 'är de ord som'} lappat flest gånger. ` +
+        `De dyker upp igen snart — FSRS repeterar dem tills de fastnar.`
+      )
+    }
+  } else if (weakestDomain && weakestDomain.accuracy < 0.7) {
+    parts.push(
+      `${weakestDomain.domain.charAt(0).toUpperCase() + weakestDomain.domain.slice(1)}-ord är ditt svagaste område just nu — ` +
+      `${Math.round(weakestDomain.accuracy * 100)}% rätt på de senaste ${weakestDomain.total} orden. ` +
+      `Fattat väljer fler ord och texter från det här området automatiskt.`
+    )
+  } else if (weakestDomain) {
+    parts.push(
+      `Du är i bra form — ${weakestDomain.domain} är fortfarande ditt svagaste område men du ligger på ${Math.round(weakestDomain.accuracy * 100)}%. ` +
+      `Håll igång så sköter FSRS resten.`
+    )
+  }
+
+  if (weakestLas && weakestLas.accuracy < 0.65) {
+    const label = (LAS_TYPE_LABELS[weakestLas.type] ?? weakestLas.type).toLowerCase()
+    if (weakestLas.type === 'slutledning') {
+      parts.push(
+        `I LÄS missar du mest ${label}sfrågor (${Math.round(weakestLas.accuracy * 100)}%) — de kräver att du läser mellan raderna, inte bara hittar rätt stycke.`
+      )
+    } else if (weakestLas.type === 'huvudtanke') {
+      parts.push(
+        `I LÄS är ${label} din svagaste frågetyp (${Math.round(weakestLas.accuracy * 100)}%) — fokusera på vad texten argumenterar för, inte bara vad den beskriver.`
+      )
+    } else {
+      parts.push(
+        `I LÄS är ${label} din svagaste frågetyp (${Math.round(weakestLas.accuracy * 100)}%).`
+      )
+    }
+  }
+
+  if (parts.length === 0) return null
+  return parts.join(' ')
+}
+
+function computeLasSubtypes(
+  responses: Array<{ is_correct: boolean; question_type: string; las_question_type?: string | null }>
+): { type: string; accuracy: number; total: number }[] {
+  const stats: Record<string, { correct: number; total: number }> = {}
+
+  for (const r of responses) {
+    if (r.question_type !== 'las' || !r.las_question_type) continue
+    if (!stats[r.las_question_type]) stats[r.las_question_type] = { correct: 0, total: 0 }
+    stats[r.las_question_type].total++
+    if (r.is_correct) stats[r.las_question_type].correct++
+  }
+
+  return Object.entries(stats)
+    .filter(([, s]) => s.total >= 3)
+    .map(([type, s]) => ({ type, accuracy: s.correct / s.total, total: s.total }))
+    .sort((a, b) => a.accuracy - b.accuracy)
+}
