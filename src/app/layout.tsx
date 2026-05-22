@@ -6,7 +6,6 @@ export const metadata: Metadata = {
   description: "Det fokuserade verktyget för ordförståelse och läsförståelse på Högskoleprovet.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.jpg",
     apple: "/icons/icon-192.png",
   },
   appleWebApp: {
