@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@/lib/supabase/client'
+import { useSessionStore } from '@/stores/sessionStore'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
 import { Button } from '@/components/ui/Button'
 import { Bell, BellOff } from 'lucide-react'
@@ -17,6 +18,7 @@ interface Props {
 
 export function ProfileForm({ profile, email }: Props) {
   const router = useRouter()
+  const resetSession = useSessionStore((s) => s.reset)
   const { permission, subscribed, subscribe, loading: pushLoading } = usePushNotifications()
   const [notifLoading, setNotifLoading] = useState(false)
   const [displayName, setDisplayName] = useState(profile?.display_name ?? '')
@@ -73,6 +75,7 @@ export function ProfileForm({ profile, email }: Props) {
 
   async function handleSignOut() {
     const supabase = createBrowserClient()
+    resetSession()
     await supabase.auth.signOut()
     router.push('/login')
   }
