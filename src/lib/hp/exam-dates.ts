@@ -1,3 +1,6 @@
+import { formatInTimeZone } from 'date-fns-tz'
+import { STOCKHOLM_TZ } from '@/lib/utils/date'
+
 // Officially announced HP exam dates from UHR.
 // When a new sitting is announced, append it here. Past sittings can stay —
 // `getUpcomingHpExams()` filters out anything earlier than today.
@@ -41,15 +44,11 @@ export const HP_EXAMS: HpExamSitting[] = [
   },
 ]
 
-// Returns sittings whose date is today or later, ascending.
+// Returns sittings whose date is today or later (Stockholm time), ascending.
 export function getUpcomingHpExams(now: Date = new Date()): HpExamSitting[] {
-  const today = new Date(now)
-  today.setHours(0, 0, 0, 0)
+  const todayYmd = formatInTimeZone(now, STOCKHOLM_TZ, 'yyyy-MM-dd')
   return HP_EXAMS
-    .filter((e) => {
-      const d = new Date(e.date + 'T00:00:00')
-      return d.getTime() >= today.getTime()
-    })
+    .filter((e) => e.date >= todayYmd)
     .sort((a, b) => a.date.localeCompare(b.date))
 }
 

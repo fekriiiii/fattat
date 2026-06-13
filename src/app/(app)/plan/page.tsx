@@ -6,6 +6,8 @@ import { createServerClient } from '@/lib/supabase/server'
 import { computeAvgRetention, computeLasAccuracy } from '@/lib/session/scoring'
 import { calculateGap } from '@/lib/session/planner'
 import { getOnboardingState } from '@/lib/onboarding/state'
+import { todayInStockholm, STOCKHOLM_TZ } from '@/lib/utils/date'
+import { formatInTimeZone } from 'date-fns-tz'
 import { ExamScheduleList } from '@/components/plan/ExamScheduleList'
 import { RESCHEDULE_CAP } from '@/lib/session/reschedule'
 import type { FsrsCard } from '@/types/database'
@@ -121,14 +123,14 @@ export default async function PlanPage() {
   const sessionsDoneThisWeek = (sessionsThisWeek ?? []).filter((s) => s.session_type === 'daily').length
   const examsDoneThisWeek = (sessionsThisWeek ?? []).filter((s) => s.session_type === 'exam_mode').length
   const dailyQuota = studyPlan?.daily_ord_quota ?? null
-  const today = new Date(); today.setHours(0, 0, 0, 0)
-  const inSevenDays = new Date(today.getTime() + 7 * 86_400_000)
+  // exam_schedule stores yyyy-MM-dd in Stockholm time — compare as strings
+  // against Stockholm's today (the server runs UTC).
+  const todayYmd = todayInStockholm()
+  const inSevenDaysYmd = formatInTimeZone(new Date(Date.now() + 7 * 86_400_000), STOCKHOLM_TZ, 'yyyy-MM-dd')
   const upcomingExamsThisWeek = (Array.isArray(studyPlan?.exam_schedule) ? studyPlan.exam_schedule as string[] : [])
-    .map((s) => {
-      const d = new Date(s + 'T00:00:00'); d.setHours(0, 0, 0, 0); return d
-    })
-    .filter((d) => d.getTime() >= today.getTime() && d.getTime() < inSevenDays.getTime())
-    .sort((a, b) => a.getTime() - b.getTime())
+    .filter((s) => s >= todayYmd && s < inSevenDaysYmd)
+    .sort()
+    .map((s) => new Date(s + 'T00:00:00'))
 
   const hasCoachData = allDomains.length > 0 || fragileWordsList.length > 0 || lasSubtypes.length > 0
 
@@ -146,7 +148,7 @@ export default async function PlanPage() {
       </div>
 
       {/* Goal */}
-      <div className="bg-primary rounded-card px-4 py-4 flex items-center justify-between">
+      <div className="surface-hero shadow-hero rounded-card px-5 py-5 flex items-center justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-cream/60 mb-1">Mål</p>
           <p className="text-3xl font-bold text-cream">{targetHp.toFixed(2)} HP</p>
@@ -174,8 +176,8 @@ export default async function PlanPage() {
 
       {/* Weekly trend */}
       {trend && (
-        <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-2">
+        <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
+          <p className="card-label mb-2">
             Veckans utveckling
           </p>
           <div className="flex items-baseline gap-2">
@@ -203,8 +205,8 @@ export default async function PlanPage() {
 
       {/* Weekly rhythm */}
       {studyPlan && (
-        <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+        <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
+          <p className="card-label mb-3">
             Den här veckan
           </p>
           <div className="flex flex-col gap-2 text-sm text-dark leading-relaxed">
@@ -261,8 +263,8 @@ export default async function PlanPage() {
 
       {/* Word progress */}
       {(totalWords ?? 0) > 0 && (
-        <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+        <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
+          <p className="card-label mb-3">
             Ordförrådet
           </p>
           <div className="flex justify-between text-sm mb-2">
@@ -285,9 +287,8 @@ export default async function PlanPage() {
 
       {/* Exam schedule */}
       {Array.isArray(studyPlan?.exam_schedule) && studyPlan.exam_schedule.length > 0 && (() => {
-        const today = new Date(); today.setHours(0, 0, 0, 0)
         const upcoming = (studyPlan.exam_schedule as string[])
-          .filter((s) => new Date(s + 'T00:00:00').getTime() >= today.getTime())
+          .filter((s) => s >= todayInStockholm())
           .sort()
         if (upcoming.length === 0) return null
         const used = studyPlan?.exam_reschedules_used ?? 0
@@ -300,7 +301,7 @@ export default async function PlanPage() {
         <h2 className="text-lg font-bold text-dark mb-3">Tränarens analys</h2>
 
         {!hasCoachData ? (
-          <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
+          <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
             <p className="text-sm text-dark/65 leading-relaxed">
               Gör ditt första pass för att aktivera tränaranalysen.
             </p>
@@ -317,8 +318,8 @@ export default async function PlanPage() {
 
             {/* Domain map */}
             {allDomains.length > 0 && (
-              <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+              <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
+                <p className="card-label mb-3">
                   Domänkarta — ORD
                 </p>
                 <div className="flex flex-col gap-3">
@@ -344,8 +345,8 @@ export default async function PlanPage() {
 
             {/* Fragile words */}
             {fragileWordsList.length > 0 && (
-              <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+              <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
+                <p className="card-label mb-3">
                   Dina svagaste ord
                 </p>
                 <div className="flex flex-col divide-y divide-dark/6">
@@ -366,8 +367,8 @@ export default async function PlanPage() {
 
             {/* LÄS breakdown */}
             {lasSubtypes.length > 0 && (
-              <div className="bg-white border border-dark/8 rounded-card px-4 py-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+              <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
+                <p className="card-label mb-3">
                   LÄS-analys
                 </p>
                 <div className="flex flex-col gap-3">

@@ -3,7 +3,8 @@ import { z } from 'zod'
 import { createServerClient } from '@/lib/supabase/server'
 import { calculateGap, computeExamSchedule } from '@/lib/session/planner'
 import { estimateDiagnosticBand, generateStudyPlan } from '@/lib/session/scoring'
-import { createCard, scheduleCard, cardToDbUpdate, ratingFromAnswerWithLatency } from '@/lib/fsrs/engine'
+import { pickBalanceFromDiagnostic } from '@/lib/session/balance'
+import { createCard, scheduleCard, cardToDbUpdate, ratingFromAnswerWithLatency, pickNextExamDate, daysUntil, retentionForDaysToExam } from '@/lib/fsrs/engine'
 import { logScorePrediction } from '@/lib/session/predictionLog'
 
 const ordResponseSchema = z.object({
@@ -34,18 +35,34 @@ export async function POST(req: Request) {
 
   const { sessionId, ordCorrect, ordTotal, lasCorrect, lasTotal, ordResponses } = parsed.data
 
-  // Mark the diagnostic session as completed
-  await supabase
+  // Idempotency guard: the results page fires this on mount, so a browser
+  // refresh re-POSTs. Re-running the writes would log a duplicate row into
+  // score_predictions (polluting prediction_calibration), rewrite the plan,
+  // and re-touch FSRS. On a repeat call we still compute and return the same
+  // band/gap/balance — we just skip every write.
+  const { data: sessionRow } = await supabase
     .from('study_sessions')
-    .update({
-      completed_at: new Date().toISOString(),
-      ord_count: ordTotal,
-      ord_correct: ordCorrect,
-      las_count: lasTotal,
-      las_correct: lasCorrect,
-    })
+    .select('completed_at')
     .eq('id', sessionId)
     .eq('user_id', user.id)
+    .maybeSingle()
+  if (!sessionRow) return NextResponse.json({ error: 'Session not found' }, { status: 404 })
+  const alreadyCompleted = !!sessionRow.completed_at
+
+  // Mark the diagnostic session as completed
+  if (!alreadyCompleted) {
+    await supabase
+      .from('study_sessions')
+      .update({
+        completed_at: new Date().toISOString(),
+        ord_count: ordTotal,
+        ord_correct: ordCorrect,
+        las_count: lasTotal,
+        las_correct: lasCorrect,
+      })
+      .eq('id', sessionId)
+      .eq('user_id', user.id)
+  }
 
   // Fetch profile, any existing plan, and total word count in parallel
   const [
@@ -77,7 +94,7 @@ export async function POST(req: Request) {
 
   // Log the prediction for later calibration (see migration 012). Both return
   // paths below show this same band to the user, so we log it here once.
-  await logScorePrediction(supabase, user.id, {
+  if (!alreadyCompleted) await logScorePrediction(supabase, user.id, {
     source: 'diagnostic_complete',
     predictedLow: hpLow,
     predictedMid: baselineHp,
@@ -93,10 +110,14 @@ export async function POST(req: Request) {
     meta: { ordTotal, lasTotal },
   })
 
+  const sessionBalance = pickBalanceFromDiagnostic(baselineOrdAcc, baselineLasAcc)
+
   // Can't calculate gap without an exam date and target score
   if (!profile?.exam_date || !profile?.target_score) {
-    await seedFsrsFromDiagnostic(supabase, user.id, sessionId, ordResponses ?? [])
-    return NextResponse.json({ gap: null, baselineHp, hpLow, hpHigh, noExamDate: !profile?.exam_date })
+    // No exam date yet → seed with default retention target (engine falls back
+    // to 0.9 when daysToExam is null).
+    if (!alreadyCompleted) await seedFsrsFromDiagnostic(supabase, user.id, sessionId, ordResponses ?? [], null)
+    return NextResponse.json({ gap: null, baselineHp, hpLow, hpHigh, noExamDate: !profile?.exam_date, sessionBalance })
   }
 
   const gap = calculateGap({
@@ -125,7 +146,15 @@ export async function POST(req: Request) {
   )
   const examSchedule = computeExamSchedule(daysTotal, planStart)
 
-  // Update existing plan, or create one if the user skipped exam date during onboarding
+  // Update existing plan, or create one if the user skipped exam date during onboarding.
+  // session_balance is only set on diagnostic completion (or via profile toggle) — the
+  // refresh route preserves whatever the user has, so re-diagnosing re-picks but
+  // a manual override survives further refreshes.
+  if (alreadyCompleted) {
+    // Repeat call (page refresh) — return the same payload without rewriting
+    // the plan or re-seeding FSRS.
+    return NextResponse.json({ gap, baselineHp, hpLow, hpHigh, sessionBalance })
+  }
   if (activePlan) {
     await supabase
       .from('study_plans')
@@ -134,6 +163,7 @@ export async function POST(req: Request) {
         daily_ord_quota: gap.dailyOrdQuota,
         weekly_goals: updatedGoals,
         exam_schedule: examSchedule,
+        session_balance: sessionBalance,
       })
       .eq('id', activePlan.id)
   } else {
@@ -146,12 +176,13 @@ export async function POST(req: Request) {
       weekly_goals: updatedGoals,
       implementation_cue: null,
       exam_schedule: examSchedule,
+      session_balance: sessionBalance,
     })
   }
 
-  await seedFsrsFromDiagnostic(supabase, user.id, sessionId, ordResponses ?? [])
+  await seedFsrsFromDiagnostic(supabase, user.id, sessionId, ordResponses ?? [], examSchedule)
 
-  return NextResponse.json({ gap, baselineHp, hpLow, hpHigh })
+  return NextResponse.json({ gap, baselineHp, hpLow, hpHigh, sessionBalance })
 }
 
 type OrdResponse = z.infer<typeof ordResponseSchema>
@@ -160,9 +191,12 @@ async function seedFsrsFromDiagnostic(
   supabase: Awaited<ReturnType<typeof createServerClient>>,
   userId: string,
   sessionId: string,
-  ordResponses: OrdResponse[]
+  ordResponses: OrdResponse[],
+  examSchedule: string[] | null
 ) {
   if (ordResponses.length === 0) return
+
+  const requestRetention = retentionForDaysToExam(daysUntil(pickNextExamDate(examSchedule)))
 
   // Find which words already have FSRS cards so we don't overwrite real learning history
   const wordIds = ordResponses.map((r) => r.wordId)
@@ -193,6 +227,18 @@ async function seedFsrsFromDiagnostic(
     answered_at: now.toISOString(),
   }))
 
+  // The diagnostic page also logs each ORD answer live via
+  // /api/diagnostic/answer (for resume). This batch is the authoritative
+  // final state — clear the per-answer rows first so answers aren't counted
+  // twice in accuracy stats and prediction_calibration. LÄS rows are only
+  // written per-answer, so they're left untouched.
+  await supabase
+    .from('session_responses')
+    .delete()
+    .eq('session_id', sessionId)
+    .eq('user_id', userId)
+    .eq('question_type', 'ord')
+
   if (toSeed.length === 0) {
     await supabase.from('session_responses').insert(sessionResponseRows)
     return
@@ -201,7 +247,7 @@ async function seedFsrsFromDiagnostic(
   const fsrsRows = toSeed.map((r) => {
     const card = createCard()
     const rating = ratingFromAnswerWithLatency(r.isCorrect, r.responseMs)
-    const scheduled = scheduleCard(card, rating)
+    const scheduled = scheduleCard(card, rating, requestRetention)
     return {
       ...cardToDbUpdate(scheduled.card),
       user_id: userId,

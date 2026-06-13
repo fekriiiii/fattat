@@ -65,13 +65,13 @@ export async function POST() {
     return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
   }
 
-  const { wordIds, articleIds, ordWords, articles } = await buildPool(supabase, user.id)
+  const { wordIds, articleIds, ordWords, articles, novelWordIds } = await buildPool(supabase, user.id)
 
   // Persist the chosen pool so a refresh resumes the same test. Best-effort —
   // tolerate missing migration 010 so the test can still be played through.
   await supabase
     .from('study_sessions')
-    .update({ payload: { ord_word_ids: wordIds, article_ids: articleIds } })
+    .update({ payload: { ord_word_ids: wordIds, article_ids: articleIds, novel_word_ids: novelWordIds } })
     .eq('id', session.id)
 
   return NextResponse.json({
@@ -79,6 +79,7 @@ export async function POST() {
     startedAt: session.started_at,
     ordWords,
     articles,
+    novelWordIds,
     priorResponses: [],
     resumed: false,
   })
@@ -108,6 +109,7 @@ async function resumeExam(supabase: SupabaseClient, userId: string, inProgress: 
   const payload = (inProgress.payload ?? {}) as SessionPayload
   let wordIds = payload.ord_word_ids ?? []
   let articleIds = payload.article_ids ?? []
+  let novelWordIds = payload.novel_word_ids ?? []
 
   // If the session has no usable payload yet (created by an older code path,
   // or migration 010 hadn't run when it was created so the UPDATE silently
@@ -139,6 +141,11 @@ async function resumeExam(supabase: SupabaseClient, userId: string, inProgress: 
     const usedWordIds = new Set(answeredWordIds)
     const fillWords = pool.wordIds.filter((id) => !usedWordIds.has(id))
     wordIds = [...answeredWordIds, ...fillWords].slice(0, 10)
+    // Novel set after reconstruction = whatever the rebuilt pool flagged as
+    // novel, intersected with the final wordIds. Already-answered words came
+    // from the user's reviewed deck (FSRS history) so they're never novel.
+    const novelSet = new Set(pool.novelWordIds)
+    novelWordIds = wordIds.filter((id) => novelSet.has(id))
 
     const usedArticleIds = new Set(answeredArticleIds)
     const fillArticles = pool.articleIds.filter((id) => !usedArticleIds.has(id))
@@ -146,7 +153,7 @@ async function resumeExam(supabase: SupabaseClient, userId: string, inProgress: 
 
     await supabase
       .from('study_sessions')
-      .update({ payload: { ord_word_ids: wordIds, article_ids: articleIds } })
+      .update({ payload: { ord_word_ids: wordIds, article_ids: articleIds, novel_word_ids: novelWordIds } })
       .eq('id', inProgress.id)
   }
 
@@ -181,6 +188,7 @@ async function resumeExam(supabase: SupabaseClient, userId: string, inProgress: 
     startedAt: inProgress.started_at,
     ordWords: orderedWords,
     articles: orderedArticles,
+    novelWordIds,
     priorResponses: validResponses,
     resumed: true,
   }
@@ -190,10 +198,23 @@ async function resumeExam(supabase: SupabaseClient, userId: string, inProgress: 
 // articles, mirroring the verbal-provpass structure (LÄS = 2 + 4 + 4 = 10).
 // Returns both the ID arrays (for payload persistence) and the materialized
 // records (so the caller can return them without a second round-trip).
+//
+// ORD pool composition (2026-05-30, corpus split):
+//   - Up to 5 ORD from the user's reviewed FSRS deck — words they've practiced
+//     (curated, plus any past-HP cards seeded by the diagnostic).
+//   - Remaining slots from novel past-HP material the user has never seen —
+//     authentic exam-simulation feel.
+// Without the 5-cap, a long-practicing user would face 10/10 reviewed words
+// (no exam-feel), and a fresh-from-diagnostic user might face 10/10 novel
+// past-HP (demoralizing — score reflects unprimed vocab, not effort). The
+// mix gives both honest measurement and emotional manageability.
 async function buildPool(
   supabase: SupabaseClient,
   userId: string
-): Promise<{ wordIds: string[]; articleIds: string[]; ordWords: Word[]; articles: Article[] }> {
+): Promise<{ wordIds: string[]; articleIds: string[]; ordWords: Word[]; articles: Article[]; novelWordIds: string[] }> {
+  const REVIEWED_CAP = 5
+  const TOTAL = 10
+
   // Deterministic ordering matters: this same function is called both on the
   // initial test build AND when reconstructing a payload-less resume. Without
   // .order(), the two calls can return different rows, causing the resume to
@@ -204,23 +225,34 @@ async function buildPool(
     .eq('user_id', userId)
     .gt('reps', 0)
     .order('word_id', { ascending: true })
-    .limit(10)
+    .limit(REVIEWED_CAP)
 
   const wordIds: string[] = (reviewedCards ?? []).map((r: { word_id: string }) => r.word_id)
+  const novelWordIds: string[] = []
 
-  if (wordIds.length < 10) {
+  if (wordIds.length < TOTAL) {
     const excluded = wordIds.length > 0
       ? `(${wordIds.map((id) => `'${id}'`).join(',')})`
       : `('00000000-0000-0000-0000-000000000000')`
 
+    // Fresh-fill draws from authentic past-HP material — not from the curated
+    // pool. The corpus split (migration 022) routes curated words to daily FSRS
+    // rotation and reserves past-HP words for the exam-simulation surface.
+    // past_exams is TEXT[]; PostgREST 'cs' (contains) lets us NOT-filter array
+    // containment. The 'eq' '{}' filter excludes empty arrays (which the seed
+    // script writes for words missing past-exam metadata).
     const { data: newWords } = await supabase
       .from('words')
       .select('id')
+      .not('past_exams', 'cs', '{curated}')
+      .not('past_exams', 'eq', '{}')
       .not('id', 'in', excluded)
       .order('id', { ascending: true })
-      .limit(10 - wordIds.length)
+      .limit(TOTAL - wordIds.length)
 
-    wordIds.push(...(newWords ?? []).map((r: { id: string }) => r.id))
+    const novel = (newWords ?? []).map((r: { id: string }) => r.id)
+    novelWordIds.push(...novel)
+    wordIds.push(...novel)
   }
 
   const { data: wordsData } = await supabase
@@ -283,5 +315,6 @@ async function buildPool(
     articleIds: articles.map((a) => a.id),
     ordWords,
     articles,
+    novelWordIds,
   }
 }

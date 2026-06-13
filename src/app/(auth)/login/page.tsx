@@ -61,10 +61,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-5">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen bg-cream flex flex-col items-center justify-center px-5 relative overflow-hidden">
+      {/* Ambient brand wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(120%_100%_at_50%_-30%,rgba(15,118,110,0.09),transparent_70%)]"
+      />
+      <div className="w-full max-w-sm relative">
         {/* Logo / brand */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 motion-safe:animate-fade-up">
           <div className="flex items-center justify-center mb-4">
             <Image src="/Fattat_Logo.png" alt="Fattat" width={140} height={93} priority />
           </div>
@@ -72,7 +77,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form card */}
-        <div className="bg-white rounded-card shadow-card p-6 flex flex-col gap-4">
+        <div className="bg-white rounded-card shadow-raised border border-dark/[0.05] p-6 flex flex-col gap-4 motion-safe:animate-fade-up motion-safe:[animation-delay:100ms]">
           <h2 className="text-[16px] font-bold text-dark">
             {mode === 'signup' ? 'Skapa konto' : 'Logga in'}
           </h2>
@@ -88,7 +93,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="du@example.com"
-                className="w-full h-[52px] px-5 rounded-btn border-2 border-dark/[0.08] bg-white text-dark text-[15px] placeholder:text-dark/30 focus:outline-none focus:border-primary transition-colors"
+                className="w-full h-[52px] px-5 rounded-btn border-2 border-dark/[0.08] bg-white text-dark text-[15px] placeholder:text-dark/30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_4px_rgba(15,118,110,0.10)] transition-all duration-200"
                 required
                 autoComplete="email"
                 autoFocus
@@ -105,7 +110,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={mode === 'signup' ? 'Minst 6 tecken' : 'Ditt lösenord'}
-                className="w-full h-[52px] px-5 rounded-btn border-2 border-dark/[0.08] bg-white text-dark text-[15px] placeholder:text-dark/30 focus:outline-none focus:border-primary transition-colors"
+                className="w-full h-[52px] px-5 rounded-btn border-2 border-dark/[0.08] bg-white text-dark text-[15px] placeholder:text-dark/30 focus:outline-none focus:border-primary focus:shadow-[0_0_0_4px_rgba(15,118,110,0.10)] transition-all duration-200"
                 required
                 minLength={6}
                 autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}

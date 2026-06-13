@@ -79,7 +79,7 @@ function renderSegmentsAsParagraphs(
   return paragraphs
     .filter((p) => p.some((t) => t.text.trim()))
     .map((para, pi) => (
-      <p key={pi} className="text-[15px] text-dark/85 leading-[1.7]">
+      <p key={pi} className="text-[16px] text-dark/85 leading-[1.75]">
         {para.map((token, ti) =>
           token.type === 'highlight' ? (
             <button
@@ -116,9 +116,9 @@ export function ArticleReader({ article, onDoneReading }: Props) {
   return (
     <div className="flex flex-col">
       {/* Article header */}
-      <div className="px-5 pt-4 pb-3.5 border-b border-dark/[0.06]">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-primary/50">
+      <div className="px-5 pt-4 pb-4 border-b border-dark/[0.06]">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary/60">
             {article.unit_position === 'kort' ? 'Kort text' : 'Lång text'}
           </span>
           <ReadingTimer
@@ -126,9 +126,9 @@ export function ArticleReader({ article, onDoneReading }: Props) {
             running={timerRunning && !done}
           />
         </div>
-        <h2 className="text-[19px] font-bold text-dark leading-tight">{article.title}</h2>
+        <h2 className="text-[21px] font-bold text-dark leading-tight tracking-tight">{article.title}</h2>
         {article.source_name && (
-          <p className="text-[11px] text-dark/60 mt-1">{article.source_name}</p>
+          <p className="text-[11px] text-dark/55 mt-1.5">{article.source_name}</p>
         )}
       </div>
 

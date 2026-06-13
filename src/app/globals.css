@@ -41,6 +41,47 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+::selection {
+  background: rgba(15, 118, 110, 0.18);
+}
+
+/* ── Signature surfaces ──────────────────────────────────────────────────
+   .surface-hero — the brand "money moment" surface: deep teal gradient with
+   a faint gold aurora top-right and a soft white sheen bottom-left.
+   Used for exam countdown, results heroes, and completion screens. */
+.surface-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(140deg, #0d8a7e 0%, #0f766e 42%, #11433e 100%);
+}
+.surface-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 90% at 88% -12%, rgba(212, 160, 23, 0.22), transparent 55%),
+    radial-gradient(90% 75% at -8% 112%, rgba(255, 255, 255, 0.09), transparent 60%);
+  pointer-events: none;
+}
+
+/* Dark charcoal variant for contrast moments (locked states, exam mode) */
+.surface-ink {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(145deg, #283548 0%, #1f2937 55%, #161e2a 100%);
+}
+.surface-ink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(110% 80% at 90% -10%, rgba(15, 118, 110, 0.28), transparent 55%);
+  pointer-events: none;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -52,7 +93,12 @@ body {
 
 @layer components {
   .field-input {
-    @apply w-full border-2 border-dark/[0.08] rounded-btn px-5 py-4 text-base text-dark bg-white focus:border-primary outline-none transition-colors placeholder:text-dark/35;
+    @apply w-full border-2 border-dark/[0.08] rounded-btn px-5 py-4 text-base text-dark bg-white shadow-card outline-none transition-all duration-200 placeholder:text-dark/35 focus:border-primary focus:shadow-[0_0_0_4px_rgba(15,118,110,0.10)];
+  }
+
+  /* Section label — the uppercase kicker above every dashboard card */
+  .card-label {
+    @apply text-[11px] font-bold uppercase tracking-[0.14em] text-dark/45;
   }
 }
 

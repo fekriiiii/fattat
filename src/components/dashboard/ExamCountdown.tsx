@@ -36,19 +36,22 @@ export function ExamCountdown({ examDate, targetScore }: Props) {
   const weeksLeft = Math.floor(daysLeft / 7)
 
   return (
-    <div className="bg-primary text-cream rounded-card px-5 py-[18px] flex items-center gap-4">
+    <div className="surface-hero text-cream rounded-card px-5 py-5 shadow-hero flex items-center gap-5">
       <div className="text-center shrink-0">
-        <p className="text-[32px] font-bold leading-none">{daysLeft}</p>
-        <p className="text-[11px] text-cream/70 mt-1">dagar kvar</p>
+        <p className="text-[40px] font-bold leading-none tracking-tight tabular-nums">{daysLeft}</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-cream/60 mt-1.5">dagar kvar</p>
       </div>
+      <div className="w-px self-stretch bg-cream/15 shrink-0" />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold">Högskoleprov</p>
-        <p className="text-xs text-cream/70 mt-0.5">
+        <p className="text-[15px] font-bold">Högskoleprovet</p>
+        <p className="text-xs text-cream/65 mt-1">
           {weeksLeft > 0 ? `${weeksLeft} veckor` : 'Denna vecka'}
           {targetScore ? ` · Mål ${targetScore.toFixed(2)} HP` : ''}
         </p>
       </div>
-      <CalendarDays size={20} className="text-cream/40 shrink-0" />
+      <div className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center shrink-0">
+        <CalendarDays size={19} className="text-cream/70" />
+      </div>
     </div>
   )
 }

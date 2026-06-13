@@ -14,7 +14,6 @@ interface SessionStore {
   currentLasQuestionIndex: number
 
   // Content queues
-  weaknessWords: Word[]
   ordWords: Word[]
   articles: Article[]
   newWordIds: Set<string>
@@ -35,11 +34,11 @@ interface SessionStore {
   catchUpMessage: string | null
   focusDomain: string | null
   focusMessage: string | null
+  balanceMessage: string | null
 
   // Actions
   initSession: (params: {
     sessionId: string
-    weaknessWords: Word[]
     ordWords: Word[]
     articles: Article[]
     newWordIds?: string[]
@@ -48,10 +47,14 @@ interface SessionStore {
     catchUpMessage?: string | null
     focusDomain?: string | null
     focusMessage?: string | null
+    balanceMessage?: string | null
     priorResponses?: SessionResponse[]
   }) => void
   selectAnswer: (label: string) => void
   submitAnswer: (response: SessionResponse) => void
+  // Resets the response timer. Called when an article reader or gist gate
+  // closes so question-1 response_ms measures the question, not the reading.
+  markAnswerStart: () => void
   advanceFromFeedback: () => void
   dismissFatigue: () => void
   dismissDomainGap: () => void
@@ -73,7 +76,6 @@ const initialState = {
   currentOrdIndex: 0,
   currentLasIndex: 0,
   currentLasQuestionIndex: 0,
-  weaknessWords: [],
   ordWords: [],
   articles: [],
   newWordIds: new Set<string>(),
@@ -88,33 +90,38 @@ const initialState = {
   catchUpMessage: null,
   focusDomain: null,
   focusMessage: null,
+  balanceMessage: null,
 }
 
 export const useSessionStore = create<SessionStore>((set, get) => ({
   ...initialState,
 
-  initSession({ sessionId, weaknessWords, ordWords, articles, newWordIds = [], isDiagnostic = false, catchUpMode = false, catchUpMessage = null, focusDomain = null, focusMessage = null, priorResponses }) {
+  initSession({ sessionId, ordWords, articles, newWordIds = [], isDiagnostic = false, catchUpMode = false, catchUpMessage = null, focusDomain = null, focusMessage = null, balanceMessage = null, priorResponses }) {
     set(() => {
       const base = {
         ...initialState,
         sessionId,
         isDiagnostic,
-        weaknessWords,
         ordWords,
         articles,
         newWordIds: new Set(newWordIds),
-        phase: (weaknessWords.length > 0 ? 'weakness' : 'ord') as SessionPhase,
+        // On LÄS-only days, ord arrays are empty — jump straight to 'las'.
+        phase: (ordWords.length > 0
+          ? 'ord'
+          : articles.length > 0
+            ? 'las'
+            : 'complete') as SessionPhase,
         answerStartTime: Date.now(),
         catchUpMode,
         catchUpMessage,
         focusDomain,
         focusMessage,
+        balanceMessage,
       }
       if (!priorResponses || priorResponses.length === 0) return base
 
       // Restore position from prior responses in the same update to avoid a
       // flash of question 1 between initSession and a separate restoreResponses call.
-      const allOrd = [...weaknessWords, ...ordWords]
       const ordCount = priorResponses.filter((r) => r.type === 'ord').length
       const lasCount = priorResponses.filter((r) => r.type === 'las').length
 
@@ -130,8 +137,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       }
 
       let phase: SessionPhase
-      if (ordCount < allOrd.length) {
-        phase = ordCount < weaknessWords.length ? 'weakness' : 'ord'
+      if (ordCount < ordWords.length) {
+        phase = 'ord'
       } else if (lasCount < articles.reduce((sum, a) => sum + a.questions.length, 0)) {
         phase = 'las'
       } else {
@@ -141,7 +148,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
       return {
         ...base,
         responses: priorResponses,
-        currentOrdIndex: Math.min(ordCount, allOrd.length),
+        currentOrdIndex: Math.min(ordCount, ordWords.length),
         currentLasIndex: lasIndex,
         currentLasQuestionIndex: lasQuestionIndex,
         phase,
@@ -154,6 +161,10 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   selectAnswer(label) {
     if (get().showingFeedback) return
     set({ selectedLabel: label })
+  },
+
+  markAnswerStart() {
+    set({ answerStartTime: Date.now() })
   },
 
   submitAnswer(response) {
@@ -196,16 +207,13 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
   advanceFromFeedback() {
     const s = get()
-    const allOrd = [...s.weaknessWords, ...s.ordWords]
 
-    // Currently in weakness or ord phase
-    if (s.phase === 'weakness' || s.phase === 'ord') {
+    // Currently in ord phase
+    if (s.phase === 'ord') {
       const nextOrdIndex = s.currentOrdIndex + 1
-      if (nextOrdIndex < allOrd.length) {
-        const nextPhase = nextOrdIndex < s.weaknessWords.length ? 'weakness' : 'ord'
+      if (nextOrdIndex < s.ordWords.length) {
         set({
           currentOrdIndex: nextOrdIndex,
-          phase: nextPhase,
           showingFeedback: false,
           selectedLabel: null,
           answerStartTime: Date.now(),
@@ -276,7 +284,6 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   // those should fire from live behavior, not historical replay.
   restoreResponses(responses) {
     set((s) => {
-      const allOrd = [...s.weaknessWords, ...s.ordWords]
       const ordCount = responses.filter((r) => r.type === 'ord').length
       const lasCount = responses.filter((r) => r.type === 'las').length
 
@@ -299,8 +306,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
       // Determine phase based on how far the user got.
       let phase: SessionPhase
-      if (ordCount < allOrd.length) {
-        phase = ordCount < s.weaknessWords.length ? 'weakness' : 'ord'
+      if (ordCount < s.ordWords.length) {
+        phase = 'ord'
       } else if (lasCount < s.articles.reduce((sum, a) => sum + a.questions.length, 0)) {
         phase = 'las'
       } else {
@@ -309,7 +316,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
       return {
         responses,
-        currentOrdIndex: Math.min(ordCount, allOrd.length),
+        currentOrdIndex: Math.min(ordCount, s.ordWords.length),
         currentLasIndex: lasIndex,
         currentLasQuestionIndex: lasQuestionIndex,
         phase,
@@ -326,8 +333,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
   currentOrdWord() {
     const s = get()
-    const allOrd = [...s.weaknessWords, ...s.ordWords]
-    return allOrd[s.currentOrdIndex] ?? null
+    return s.ordWords[s.currentOrdIndex] ?? null
   },
 
   currentArticle() {
@@ -336,8 +342,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   },
 
   totalOrd() {
-    const s = get()
-    return s.weaknessWords.length + s.ordWords.length
+    return get().ordWords.length
   },
 
   totalOrdAnswered() {
@@ -346,9 +351,8 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 
   progressPercent() {
     const s = get()
-    const totalOrd = s.weaknessWords.length + s.ordWords.length
     const totalLasQ = s.articles.reduce((sum, a) => sum + a.questions.length, 0)
-    const total = totalOrd + totalLasQ
+    const total = s.ordWords.length + totalLasQ
     if (total === 0) return 0
     const done = s.responses.length
     return Math.round((done / total) * 100)

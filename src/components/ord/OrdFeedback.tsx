@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/Button'
 import type { Word } from '@/types/database'
@@ -11,11 +12,38 @@ interface Props {
   chosenLabel: string
   isCorrect: boolean
   onNext: () => void
+  // Forced absorption window before Next activates. Defaults to 4500ms for
+  // learning contexts (daily session, diagnostic, onboarding). Set to 0 for
+  // övningsprov where the feedback is simulating exam-mode review and the
+  // extra friction would distort pacing.
+  delayMs?: number
 }
 
-export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext }: Props) {
+const DEFAULT_READ_DELAY_MS = 4500
+
+export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext, delayMs = DEFAULT_READ_DELAY_MS }: Props) {
   const correctOption = options.find((o) => o.isCorrect)
   const correctLabel = correctOption?.label ?? ''
+  const [progress, setProgress] = useState(delayMs > 0 ? 0 : 1)
+  const canAdvance = progress >= 1
+
+  // Forced read window. The MCQ pattern lets users guess and graduate to
+  // typing without absorbing the definition or example — then they crash
+  // in typing mode. The pause is the only thing standing between a lucky
+  // guess and shallow learning.
+  useEffect(() => {
+    if (delayMs <= 0) { setProgress(1); return }
+    const start = Date.now()
+    let raf = 0
+    function tick() {
+      const elapsed = Date.now() - start
+      const p = Math.min(elapsed / delayMs, 1)
+      setProgress(p)
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [delayMs])
 
   return (
     <div className="flex flex-col gap-5 px-5 pt-8 pb-6">
@@ -25,8 +53,8 @@ export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext }: P
           {word.word}
         </h2>
         <span className={cn(
-          'inline-block text-[11px] font-bold uppercase tracking-[0.08em] px-[14px] py-1.5 rounded-full',
-          isCorrect ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+          'inline-block text-[11px] font-bold uppercase tracking-[0.08em] px-[14px] py-1.5 rounded-full ring-1 ring-inset motion-safe:animate-pop-in',
+          isCorrect ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/15' : 'bg-rose-50 text-rose-600 ring-rose-600/15'
         )}>
           {isCorrect ? `Rätt — ${correctOption?.text}` : `Rätt svar: ${word.correct_synonym}`}
         </span>
@@ -38,7 +66,8 @@ export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext }: P
       </div>
 
       {/* Definition card */}
-      <div className="bg-white rounded-card shadow-card px-5 py-5">
+      <div className="bg-white rounded-card shadow-card border border-dark/[0.05] px-5 py-5 relative overflow-hidden">
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary-400 to-primary" />
         <p className="text-[15px] text-dark leading-[1.65]">{word.definition_sv}</p>
         {word.example_sentence && (
           <div className="border-t border-dark/[0.06] mt-3.5 pt-3.5">
@@ -76,7 +105,17 @@ export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext }: P
         })}
       </div>
 
-      <Button fullWidth size="lg" onClick={onNext}>Nästa</Button>
+      <div className="relative">
+        <Button fullWidth size="lg" onClick={onNext} disabled={!canAdvance}>
+          {canAdvance ? 'Nästa' : 'Läs definitionen…'}
+        </Button>
+        {!canAdvance && (
+          <div
+            className="absolute -bottom-2 left-0 h-[3px] bg-gradient-to-r from-primary/40 to-primary rounded-full pointer-events-none"
+            style={{ width: `${progress * 100}%` }}
+          />
+        )}
+      </div>
     </div>
   )
 }

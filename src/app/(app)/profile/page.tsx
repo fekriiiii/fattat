@@ -7,9 +7,10 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: streak }] = await Promise.all([
+  const [{ data: profile }, { data: streak }, { data: studyPlan }] = await Promise.all([
     supabase.from('user_profiles').select('*').eq('id', user.id).single(),
     supabase.from('user_streaks').select('*').eq('user_id', user.id).single(),
+    supabase.from('study_plans').select('session_balance').eq('user_id', user.id).eq('active', true).order('created_at', { ascending: false }).limit(1).maybeSingle(),
   ])
 
   const initials = profile?.display_name
@@ -39,7 +40,7 @@ export default async function ProfilePage() {
             { n: streak.total_days_studied, l: 'Dagar' },
             { n: streak.longest_streak ?? 0, l: 'Rekord' },
           ].map((s) => (
-            <div key={s.l} className="bg-white rounded-card shadow-card px-3 py-3.5 text-center">
+            <div key={s.l} className="bg-white rounded-card shadow-card border border-dark/[0.05] px-3 py-3.5 text-center">
               <p className="text-[22px] font-bold text-dark leading-none mb-1">{s.n}</p>
               <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-dark/60">{s.l}</p>
             </div>
@@ -47,7 +48,12 @@ export default async function ProfilePage() {
         </div>
       )}
 
-      <ProfileForm profile={profile} email={user.email ?? ''} streak={streak} />
+      <ProfileForm
+        profile={profile}
+        email={user.email ?? ''}
+        streak={streak}
+        sessionBalance={studyPlan?.session_balance ?? 'balanced'}
+      />
     </div>
   )
 }

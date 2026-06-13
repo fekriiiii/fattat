@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { buildDailySession } from '@/lib/session/builder'
 import { getOnboardingState } from '@/lib/onboarding/state'
+import { stockholmDayStartUtcIso } from '@/lib/utils/date'
 import type { SessionResponse } from '@/types/session'
 
 export async function POST(req: Request) {
@@ -26,11 +27,44 @@ export async function POST(req: Request) {
     : undefined
 
   try {
-    // Check for incomplete daily session from today
-    const todayStart = new Date()
-    todayStart.setHours(0, 0, 0, 0)
-    const todayStartIso = todayStart.toISOString()
+    // Stockholm midnight, not server (UTC) midnight — otherwise the daily-done
+    // gate rolls over at 01:00/02:00 Swedish time and a session completed just
+    // after midnight lets the user build a second daily the same day.
+    const todayStartIso = stockholmDayStartUtcIso()
 
+    // Gate: if the user has already completed a daily session today, refuse to
+    // spin up a new one. Returning `alreadyDone: true` lets the session page
+    // offer extra repetition without duplicating the daily session and
+    // polluting FSRS / streak / quotas.
+    const { data: completedToday } = await supabase
+      .from('study_sessions')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('session_type', 'daily')
+      .not('completed_at', 'is', null)
+      .gte('completed_at', todayStartIso)
+      .limit(1)
+      .maybeSingle()
+    if (completedToday) {
+      // If the user already has an in-progress extra session from today,
+      // skip the chooser and resume it directly — re-asking "vill du köra
+      // extra?" when they're already mid-extra is just friction.
+      const { data: ongoingExtra } = await supabase
+        .from('study_sessions')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('session_type', 'extra')
+        .is('completed_at', null)
+        .gte('started_at', todayStartIso)
+        .limit(1)
+        .maybeSingle()
+      if (ongoingExtra) {
+        return NextResponse.json({ resumeExtra: true })
+      }
+      return NextResponse.json({ alreadyDone: true })
+    }
+
+    // Check for incomplete daily session from today
     const { data: existingSession } = await supabase
       .from('study_sessions')
       .select('id, payload')
@@ -69,7 +103,6 @@ export async function POST(req: Request) {
 
       return NextResponse.json({
         sessionId: existingSession.id,
-        weaknessWords: existingPayload.weaknessWords ?? [],
         ordWords: existingPayload.ordWords ?? [],
         articles: existingPayload.articles ?? [],
         newWordIds: existingPayload.newWordIds ?? [],
@@ -77,6 +110,8 @@ export async function POST(req: Request) {
         catchUpMessage: existingPayload.catchUpMessage ?? null,
         focusDomain: existingPayload.focusDomain ?? null,
         focusMessage: existingPayload.focusMessage ?? null,
+        balance: existingPayload.balance ?? 'balanced',
+        balanceMessage: existingPayload.balanceMessage ?? null,
         priorResponses: (priorResponses ?? []).map((r) => ({
           question_type: r.question_type,
           word_id: r.word_id,
@@ -99,7 +134,6 @@ export async function POST(req: Request) {
       .from('study_sessions')
       .update({
         payload: {
-          weaknessWords: session.weaknessWords,
           ordWords: session.ordWords,
           articles: session.articles,
           newWordIds: session.newWordIds,
@@ -107,6 +141,8 @@ export async function POST(req: Request) {
           catchUpMessage: session.catchUpMessage,
           focusDomain: session.focusDomain,
           focusMessage: session.focusMessage,
+          balance: session.balance,
+          balanceMessage: session.balanceMessage,
         },
       })
       .eq('id', session.sessionId)

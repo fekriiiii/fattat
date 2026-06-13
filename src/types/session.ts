@@ -1,6 +1,6 @@
 import type { Word, Article, LasQuestion } from './database'
 
-export type SessionPhase = 'weakness' | 'ord' | 'las' | 'complete'
+export type SessionPhase = 'ord' | 'las' | 'complete'
 
 export interface OrdOption {
   label: 'A' | 'B' | 'C' | 'D' | 'E'
@@ -19,6 +19,8 @@ export interface LasQuestionData {
   questionIndex: number
 }
 
+export type AnswerConfidence = 'sure' | 'unsure' | 'guess'
+
 export interface SessionResponse {
   type: 'ord' | 'las'
   wordId?: string
@@ -30,4 +32,5 @@ export interface SessionResponse {
   correctLabel: string
   isCorrect: boolean
   responseMs: number
+  confidence?: AnswerConfidence  // LÄS daily sessions only — calibration signal
 }

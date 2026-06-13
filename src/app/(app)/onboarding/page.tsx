@@ -318,7 +318,7 @@ export default function OnboardingPage() {
             title="Har du gjort HP förut?"
             subtitle="Vi använder ditt resultat för totalbetyget — och för att smalna av prognosen redan från start."
           >
-            <div className="bg-white rounded-card p-4 border border-dark/8">
+            <div className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card">
               <div className="flex items-baseline justify-between mb-2">
                 <p className="text-xs text-dark/45 font-bold uppercase tracking-wide">
                   Tidigare resultat
@@ -595,7 +595,7 @@ function FsrsStep({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* Animated memory curve */}
-      <div className="bg-white rounded-card p-4 border border-dark/8">
+      <div className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card">
         <svg viewBox="0 0 300 92" className="w-full" aria-hidden="true">
           <text x="2" y="9" fontSize="7" fill="rgb(31 41 55 / 0.3)">Minne</text>
           <text x="270" y="90" fontSize="7" fill="rgb(31 41 55 / 0.3)">Tid</text>
@@ -710,7 +710,7 @@ function CountdownPanel({ examDate }: { examDate: string }) {
 
   return (
     <div
-      className="bg-white rounded-card p-4 border border-dark/8"
+      className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card"
       style={{ animation: 'fadeInUp 0.35s ease both' }}
     >
       <div className="flex items-baseline justify-between mb-3">
@@ -770,7 +770,7 @@ function PredictionBand({
   const midPct = (mid / 2) * 100
 
   return (
-    <div className="bg-white rounded-card p-4 border border-dark/8">
+    <div className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card">
       <div className="flex items-baseline justify-between mb-3">
         <p className="text-xs font-bold uppercase tracking-wide text-primary/55">
           {caption}
@@ -805,13 +805,17 @@ function PrecisionIndicator({
   hasMek: boolean
   hasElf: boolean
 }) {
-  const baseUnc = 0.20 + 0.05 + 0.08 // both missing
-  const currentUnc = 0.20 + (hasMek ? 0 : 0.05) + (hasElf ? 0 : 0.08)
+  // ELF uncertainty is 0.04 (not 0.08) here: this panel only renders on the
+  // previous_subsections step, which is only reachable after the user entered
+  // a previous HP score — and buildScoreBand halves the ELF uncertainty when
+  // HP is available. Must match PredictionBand on the same screen.
+  const baseUnc = 0.20 + 0.05 + 0.04 // both missing
+  const currentUnc = 0.20 + (hasMek ? 0 : 0.05) + (hasElf ? 0 : 0.04)
   const reduction = baseUnc - currentUnc
   const filled = (hasMek ? 1 : 0) + (hasElf ? 1 : 0)
 
   return (
-    <div className="bg-white rounded-card p-4 border border-dark/8">
+    <div className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card">
       <div className="flex items-baseline justify-between mb-2">
         <p className="text-xs font-bold uppercase tracking-wide text-primary/55">
           Prognosens precision
@@ -873,7 +877,7 @@ function GapPreview({
 
   return (
     <div
-      className="bg-white rounded-card p-4 border border-dark/8"
+      className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card"
       style={{ animation: 'fadeInUp 0.3s ease both' }}
     >
       <p className="text-xs font-bold uppercase tracking-wide text-primary/55 mb-3">
@@ -885,11 +889,16 @@ function GapPreview({
           Du är redan på rätt nivå. Dagliga sessioner håller dig i form inför provet.
         </p>
       ) : (
-        <p className={`text-sm leading-relaxed ${gap.isHeavy ? 'text-dark/70' : 'text-dark/70'}`}>
-          {gap.isHeavy
-            ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar — ett ambitiöst mål som kräver daglig träning utan längre avbrott.`
-            : `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar. Ett realistiskt tempo om du studerar varje dag.`}
-        </p>
+        <>
+          <p className="text-sm leading-relaxed text-dark/70">
+            {gap.isHeavy
+              ? `Ungefär ${gap.estimatedMinutesPerDay} minuter om dagen — ett ambitiöst mål som kräver daglig träning utan längre avbrott.`
+              : `Ungefär ${gap.estimatedMinutesPerDay} minuter om dagen. Ett realistiskt tempo om du studerar varje dag.`}
+          </p>
+          <p className="text-[11px] text-dark/40 mt-2">
+            Diagnostikprovet gör detta mer precist.
+          </p>
+        </>
       )}
 
       {noExam && (
@@ -954,7 +963,9 @@ function SummaryStep({
 
   const sessionUnc = 0.20
   const mekUnc = previousMekScore !== null ? 0 : 0.05
-  const elfUnc = previousElfScore !== null ? 0 : 0.08
+  // Missing-ELF uncertainty is halved (0.08 → 0.04) when a previous HP score
+  // exists, mirroring buildScoreBand in scoring.ts.
+  const elfUnc = previousElfScore !== null ? 0 : previousHpScore !== null ? 0.04 : 0.08
   const uncertainty = sessionUnc + mekUnc + elfUnc
 
   const examLabel = examDate
@@ -977,7 +988,7 @@ function SummaryStep({
         </p>
       </div>
 
-      <div className="bg-white rounded-card border border-dark/8 divide-y divide-dark/8">
+      <div className="bg-white rounded-card border border-dark/[0.05] shadow-card divide-y divide-dark/8">
         <SummaryRow label="Provdatum" value={examLabel} sub={days !== null ? `${days} dagar kvar` : undefined} />
         <SummaryRow
           label="Startnivå"
@@ -993,9 +1004,9 @@ function SummaryStep({
           }
         />
         <SummaryRow
-          label="Ord att lära sig"
-          value={`${gap.newWordsNeeded} ord`}
-          sub={`på ${gap.daysLeft} dagar`}
+          label="Daglig träning"
+          value={previousHpScore !== null ? `~${gap.estimatedMinutesPerDay} min/dag` : 'Kalibreras i diagnosprovet'}
+          sub={previousHpScore !== null ? `på ${gap.daysLeft} dagar` : undefined}
         />
       </div>
 

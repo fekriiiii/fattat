@@ -16,6 +16,7 @@ const lasResponseSchema = z.object({
   correctLabel: z.string(),
   isCorrect: z.boolean(),
   responseMs: z.number().int().min(0),
+  confidence: z.enum(['sure', 'unsure', 'guess']).nullable().optional(),
 })
 
 const schema = z.object({
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
         correct_label: r.correctLabel,
         is_correct: r.isCorrect,
         response_ms: r.responseMs,
+        confidence: r.confidence ?? null,
       }))
     )
   }

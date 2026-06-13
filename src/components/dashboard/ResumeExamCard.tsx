@@ -31,7 +31,7 @@ export function ResumeExamCard({ startedAt }: { startedAt: string }) {
     <Link href="/test">
       <div
         className={[
-          'rounded-card border px-4 py-[14px] flex items-center gap-3',
+          'rounded-card border px-4 py-4 flex items-center gap-3 shadow-card transition-transform duration-200 active:scale-[0.99]',
           inRed
             ? 'bg-red-500/[0.08] border-red-500/30'
             : inAmber

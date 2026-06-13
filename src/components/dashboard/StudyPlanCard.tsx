@@ -24,9 +24,9 @@ export function StudyPlanCard({
 
   if (noExamDate) {
     return (
-      <div className="bg-white shadow-card rounded-card px-4 py-4">
+      <div className="bg-white shadow-card border border-dark/[0.05] rounded-card px-5 py-5">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-bold uppercase tracking-widest text-dark/55">Din plan</p>
+          <p className="card-label">Din plan</p>
           <Link href="/profile" className="text-xs text-primary font-bold">
             Sätt provdatum →
           </Link>
@@ -45,10 +45,10 @@ export function StudyPlanCard({
       : `${newWordsNeeded} ord kvar på ${daysLeft} dagar.`
 
   return (
-    <Link href="/plan" className="block">
-      <div className={`rounded-card px-4 py-4 transition-colors ${isHeavy ? 'bg-amber-50 shadow-card' : 'bg-white shadow-card'}`}>
+    <Link href="/plan" className="block group">
+      <div className={`rounded-card px-5 py-5 shadow-card border transition-all duration-200 group-hover:shadow-card-hover group-active:scale-[0.99] ${isHeavy ? 'bg-amber-50 border-amber-200/60' : 'bg-white border-dark/[0.05]'}`}>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-dark/55">Din plan</p>
+          <p className="card-label">Din plan</p>
           <span className="text-xs text-primary font-bold">Se allt →</span>
         </div>
 
@@ -56,13 +56,13 @@ export function StudyPlanCard({
 
         {displayTotal > 0 && (
           <div>
-            <div className="flex justify-between text-xs text-dark/65 mb-1.5">
+            <div className="flex justify-between text-xs text-dark/60 mb-1.5">
               <span>{wordsLearned} av {displayTotal} {goalWords ? 'målet' : 'ord'}</span>
-              <span>{progressPct}%</span>
+              <span className="font-bold tabular-nums">{progressPct}%</span>
             </div>
-            <div className="w-full h-[5px] bg-dark/[0.06] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-dark/[0.05] rounded-full overflow-hidden">
               <div
-                className="h-full bg-primary rounded-full transition-all"
+                className="h-full bg-gradient-to-r from-primary-600 to-primary rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${progressPct}%` }}
               />
             </div>

@@ -1,10 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Word, Article } from '@/types/database'
-import { selectDueWordIds, selectWeaknessWordIds, interleaveByDomain } from '@/lib/fsrs/engine'
+import type { Word, Article, SessionBalance } from '@/types/database'
+import { selectDueWordIds, interleaveByDomain } from '@/lib/fsrs/engine'
+import { shouldRunLasToday, shouldRunOrdToday } from '@/lib/session/balance'
 
 export interface SessionPlan {
   sessionId: string
-  weaknessWords: Word[]
   ordWords: Word[]
   articles: Article[]
   catchUpMode: boolean
@@ -16,6 +16,11 @@ export interface SessionPlan {
   focusDomain: string | null
   focusMessage: string | null
   newWordIds: string[]
+  // Balance state — set when the user's plan is ord_heavy/las_heavy and
+  // today is an off-day for one of the modules. The UI uses this to explain
+  // why a session is ORD-only or LÄS-only.
+  balance: SessionBalance
+  balanceMessage: string | null
 }
 
 export interface BuildOptions {
@@ -34,7 +39,6 @@ export async function buildDailySession(
   const [
     sessionResult,
     { data: activePlan },
-    weaknessIds,
     catchUpResult,
     completedArticleIds,
     recentOrdWordIds,
@@ -46,13 +50,12 @@ export async function buildDailySession(
       .single(),
     supabase
       .from('study_plans')
-      .select('daily_ord_quota')
+      .select('daily_ord_quota, session_balance')
       .eq('user_id', userId)
       .eq('active', true)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
-    selectWeaknessWordIds(supabase, userId),
     detectCatchUp(supabase, userId, now),
     getCompletedArticleIds(supabase, userId),
     getRecentOrdWordIds(supabase, userId),
@@ -61,19 +64,33 @@ export async function buildDailySession(
   const { data: session, error: sessionError } = sessionResult
   if (sessionError || !session) throw new Error('Failed to create session')
 
-  const ordLimit = activePlan?.daily_ord_quota ?? 20
+  const balance: SessionBalance = (activePlan?.session_balance as SessionBalance | undefined) ?? 'balanced'
+  const runOrdToday = shouldRunOrdToday(balance)
+  const runLasToday = shouldRunLasToday(balance)
+  // Catch-up overrides balance — being away >2 days with >30 overdue is a
+  // bigger signal than the plan's normal cadence, and skipping ORD in that
+  // state would let the backlog grow.
+  const ordLimit = runOrdToday || catchUpResult.catchUpMode ? (activePlan?.daily_ord_quota ?? 20) : 0
 
-  // ─── Round 2: ORD IDs (needs weakness + catchup) + articles (needs completions) ─
+  // On ORD off-days (las_heavy plan, Sun/Mon/Wed/Fri), skip ORD entirely —
+  // catch-up still overrides this. Similarly skip LÄS on its off-days.
+  const skipOrd = !runOrdToday && !catchUpResult.catchUpMode
+  const skipLas = !runLasToday && !catchUpResult.catchUpMode
+
+  // ─── Round 2: ORD IDs (catch-up path or normal due-words) + articles ─────────
   let sessionNewIds = new Set<string>()
   const [mainOrdIds, articles] = await Promise.all([
     (async () => {
+      if (skipOrd) return [] as string[]
       if (catchUpResult.catchUpMode) {
+        // Catch-up surfaces fragile words (high lapses, low stability) — this
+        // is the FSRS-native version of "weakness", recomputed every time and
+        // not biased by lifetime miss_count.
         const { data: priorityCards } = await supabase
           .from('fsrs_cards')
           .select('word_id')
           .eq('user_id', userId)
           .lte('due', now)
-          .not('word_id', 'in', `(${weaknessIds.length > 0 ? weaknessIds.map((id) => `'${id}'`).join(',') : "'00000000-0000-0000-0000-000000000000'"})`)
           .order('lapses', { ascending: false })
           .order('stability', { ascending: true })
           .limit(ordLimit)
@@ -81,9 +98,10 @@ export async function buildDailySession(
       }
       const { ids, newIds } = await selectDueWordIds(supabase, userId, ordLimit)
       sessionNewIds = newIds
-      return ids.filter((id) => !weaknessIds.includes(id))
+      return ids
     })(),
     (async () => {
+      if (skipLas) return [] as Article[]
       const weakTypes = await getWeakLasQuestionTypes(supabase, userId)
       // Skip domain bias for articles when we're in catch-up mode — catch-up
       // already overrides ORD selection and doubling up dilutes both signals.
@@ -93,19 +111,17 @@ export async function buildDailySession(
   ])
 
   // ─── Round 3: full word data (needs final word ID list) ──────────────────────
-  const allWordIds = [...new Set([...weaknessIds, ...mainOrdIds])]
   const { data: wordsData } = await supabase
     .from('words')
     .select('*')
-    .in('id', allWordIds.length > 0 ? allWordIds : ['00000000-0000-0000-0000-000000000000'])
+    .in('id', mainOrdIds.length > 0 ? mainOrdIds : ['00000000-0000-0000-0000-000000000000'])
 
   const wordsById: Record<string, Word> = {}
   for (const w of wordsData ?? []) {
     wordsById[w.id] = w as Word
   }
 
-  const weaknessWords = weaknessIds.map((id) => wordsById[id]).filter(Boolean) as Word[]
-  const rawOrdWords  = mainOrdIds.map((id) => wordsById[id]).filter(Boolean) as Word[]
+  const rawOrdWords = mainOrdIds.map((id) => wordsById[id]).filter(Boolean) as Word[]
 
   // Focus is suppressed in catch-up mode; otherwise check that the requested
   // domain actually appears in this session's word pool. If it doesn't, we
@@ -122,9 +138,15 @@ export async function buildDailySession(
     focusMessage = `Inga ${preferredDomain}-ord väntar idag — kör vanlig session.`
   }
 
+  let balanceMessage: string | null = null
+  if (skipLas) {
+    balanceMessage = 'Idag är en ORD-dag — vi kör endast ord. LÄS-artiklar dyker upp måndag, onsdag och fredag.'
+  } else if (skipOrd) {
+    balanceMessage = 'Idag är en LÄS-dag — vi kör endast artiklar. ORD-ord dyker upp tisdag, torsdag och lördag.'
+  }
+
   return {
     sessionId: session.id,
-    weaknessWords,
     ordWords,
     articles,
     catchUpMode: catchUpResult.catchUpMode,
@@ -132,6 +154,8 @@ export async function buildDailySession(
     focusDomain: focusApplied ? preferredDomain! : null,
     focusMessage,
     newWordIds: [...sessionNewIds],
+    balance,
+    balanceMessage,
   }
 }
 

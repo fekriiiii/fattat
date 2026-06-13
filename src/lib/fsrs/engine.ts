@@ -11,6 +11,53 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 const params = generatorParameters({ enable_fuzz: true, maximum_interval: 365 })
 const f = new FSRS(params)
 
+// Cache schedulers per retention target so we don't reconstruct on every review.
+// Keyed by 2-decimal target (0.82 / 0.85 / 0.88 / 0.90) — at most a handful of entries.
+const schedulers = new Map<number, FSRS>()
+function getScheduler(requestRetention: number): FSRS {
+  const key = Math.round(requestRetention * 100) / 100
+  let s = schedulers.get(key)
+  if (!s) {
+    s = new FSRS(generatorParameters({
+      enable_fuzz: true,
+      maximum_interval: 365,
+      request_retention: key,
+    }))
+    schedulers.set(key, s)
+  }
+  return s
+}
+
+// Picks FSRS request_retention based on days to the user's next exam.
+// Default ts-fsrs target (0.9) is calibrated for lifelong learners with no deadline.
+// HP candidates have a fixed exam date — as it approaches, lower targets stretch
+// intervals less aggressively in exchange for fitting more new words into the
+// remaining runway. Above 90 days out, behave like a normal Anki user (0.90).
+// Inside 30 days, accept ~18% in-session forgetting to maximize coverage.
+export function retentionForDaysToExam(daysToExam: number | null): number {
+  if (daysToExam == null || daysToExam >= 90) return 0.90
+  if (daysToExam >= 60) return 0.88
+  if (daysToExam >= 30) return 0.85
+  return 0.82
+}
+
+// Picks the next future exam date from a sorted ISO-date array. Returns null if
+// the plan has no future exams (post-exam window) — caller falls back to default.
+export function pickNextExamDate(examSchedule: string[] | null | undefined): Date | null {
+  if (!examSchedule || examSchedule.length === 0) return null
+  const now = Date.now()
+  for (const iso of examSchedule) {
+    const d = new Date(iso)
+    if (d.getTime() >= now) return d
+  }
+  return null
+}
+
+export function daysUntil(date: Date | null): number | null {
+  if (!date) return null
+  return Math.ceil((date.getTime() - Date.now()) / 86400000)
+}
+
 export { Rating }
 
 export function createCard(): Card {
@@ -48,17 +95,37 @@ export function cardToDbUpdate(card: Card) {
   }
 }
 
-export function scheduleCard(card: Card, rating: Rating) {
+export function scheduleCard(card: Card, rating: Rating, requestRetention?: number) {
+  const sched = requestRetention != null ? getScheduler(requestRetention) : f
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (f.repeat(card, new Date()) as any)[rating] as { card: Card; log: unknown }
+  return (sched.repeat(card, new Date()) as any)[rating] as { card: Card; log: unknown }
 }
 
 export function ratingFromAnswer(isCorrect: boolean): Rating {
   return isCorrect ? Rating.Good : Rating.Again
 }
 
-export function ratingFromAnswerWithLatency(isCorrect: boolean, responseMs: number): Rating {
+export type AnswerMode = 'mcq' | 'typing'
+
+// Latency→rating thresholds must account for the answer format's motor time.
+// MCQ is a single tap after reading ~5 options; typing requires producing a
+// whole Swedish synonym on a mobile keyboard (~3–5s of typing alone for a
+// confident recall). With shared thresholds, correct typing answers landed in
+// Hard (>7s) almost every time — the exact "Hard misuse" pattern the FSRS
+// authors warn the algorithm cannot adapt to: intervals get suppressed and
+// graduated words eat review quota they don't need. Hard must mean "recalled
+// with difficulty", not "recalled while typing".
+export function ratingFromAnswerWithLatency(
+  isCorrect: boolean,
+  responseMs: number,
+  mode: AnswerMode = 'mcq'
+): Rating {
   if (!isCorrect) return Rating.Again
+  if (mode === 'typing') {
+    if (responseMs < 6000) return Rating.Easy
+    if (responseMs > 15000) return Rating.Hard
+    return Rating.Good
+  }
   if (responseMs < 2000) return Rating.Easy
   if (responseMs > 7000) return Rating.Hard
   return Rating.Good
@@ -85,7 +152,7 @@ export async function selectDueWordIds(
 
   const { data: dueCards } = await supabase
     .from('fsrs_cards')
-    .select('word_id, due')
+    .select('word_id, due, mcq_correct_streak')
     .eq('user_id', userId)
     .lte('due', now)
     .order('due', { ascending: true })
@@ -102,6 +169,15 @@ export async function selectDueWordIds(
   const dueIds: string[] = shuffled.map((r: { word_id: string }) => r.word_id)
   const newIds = new Set<string>()
 
+  // Due cards that haven't yet graduated to typing (mcq_correct_streak < 2)
+  // are flagged for MCQ display alongside truly-new words. The session page
+  // uses `newWordIds.has(id)` to pick MCQ vs typing — same predicate works
+  // for both classes.
+  for (const row of shuffled) {
+    const streak = (row as { mcq_correct_streak?: number }).mcq_correct_streak ?? 0
+    if (streak < 2) newIds.add(row.word_id)
+  }
+
   if (dueIds.length < limit) {
     const slotCount = limit - dueIds.length
     // Prefer the DB function (migration 016) — avoids URL length limits that arise
@@ -114,14 +190,18 @@ export async function selectDueWordIds(
     if (!rpcError && rpcData) {
       freshIds = (rpcData as { id: string }[]).map((r) => r.id)
     } else {
-      // Fallback for when migration 016 hasn't been applied yet.
+      // Fallback for when migration 016 hasn't been applied yet. Mirror the
+      // RPC's curated-only filter (migration 022) — past-HP words have 0%
+      // exam-day appearance odds and should never be introduced as new daily
+      // FSRS cards.
       const { data: seenCards } = await supabase
         .from('fsrs_cards')
         .select('word_id')
         .eq('user_id', userId)
       const seenIds: string[] = (seenCards ?? []).map((r: { word_id: string }) => r.word_id)
       const allExcluded = [...new Set([...dueIds, ...seenIds])]
-      let query = supabase.from('words').select('id').limit(slotCount)
+      // past_exams is TEXT[]; .contains checks array containment.
+      let query = supabase.from('words').select('id').contains('past_exams', ['curated']).limit(slotCount)
       if (allExcluded.length > 0) {
         query = query.not('id', 'in', `(${allExcluded.map((id) => `'${id}'`).join(',')})`)
       }
@@ -134,23 +214,6 @@ export async function selectDueWordIds(
   }
 
   return { ids: dueIds, newIds }
-}
-
-// Get weakness word IDs (missed 3+ times, due for review)
-export async function selectWeaknessWordIds(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<string[]> {
-  const { data } = await supabase
-    .from('fsrs_cards')
-    .select('word_id')
-    .eq('user_id', userId)
-    .gte('miss_count', 3)
-    .lte('due', new Date().toISOString())
-    .order('miss_count', { ascending: false })
-    .limit(5)
-
-  return (data ?? []).map((r: { word_id: string }) => r.word_id)
 }
 
 // Interleave words by domain (round-robin).

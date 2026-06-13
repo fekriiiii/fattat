@@ -20,6 +20,15 @@ function TestResultsInner() {
   const lasAnswered = parseInt(params.get('lasAnswered') ?? String(lasTotal))
   const timeUp = params.get('timeUp') === '1'
 
+  // ORD split: words user had reviewed (FSRS history) vs novel past-HP. Both
+  // counts are passed by the test page; if either pool is empty, fall back to
+  // the combined total instead of rendering a degenerate split line.
+  const ordReviewedCorrect = parseInt(params.get('ordReviewedCorrect') ?? '0')
+  const ordReviewedTotal = parseInt(params.get('ordReviewedTotal') ?? '0')
+  const ordNovelCorrect = parseInt(params.get('ordNovelCorrect') ?? '0')
+  const ordNovelTotal = parseInt(params.get('ordNovelTotal') ?? '0')
+  const showOrdSplit = ordReviewedTotal > 0 && ordNovelTotal > 0
+
   const ordPct = ordTotal > 0 ? Math.round((ordCorrect / ordTotal) * 100) : 0
   const lasPct = lasTotal > 0 ? Math.round((lasCorrect / lasTotal) * 100) : 0
 
@@ -46,7 +55,7 @@ function TestResultsInner() {
       </div>
 
       {/* HP score estimate */}
-      <div className="bg-primary text-cream rounded-card px-4 py-5 text-center">
+      <div className="surface-hero text-cream rounded-card px-4 py-6 text-center shadow-hero">
         <p className="text-xs text-cream/60 uppercase tracking-widest mb-1">Beräknat HP-resultat</p>
         <p className="text-5xl font-bold leading-none">{hpMid.toFixed(2)}</p>
         <p className="text-sm text-cream/60 mt-1">{hpLow.toFixed(2)} – {hpHigh.toFixed(2)} HP</p>
@@ -71,6 +80,28 @@ function TestResultsInner() {
           total={ordTotal}
           pct={ordPct}
         />
+        {/* Split ORD into "studied" vs "novel" — see corpus split, 2026-05-30.
+            Only shown when both pools have ≥1 word; otherwise the combined
+            ORD line above tells the whole story. */}
+        {showOrdSplit && (
+          <div className="bg-white border border-dark/8 rounded-card px-4 py-4 flex flex-col gap-3">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-dark/40">
+              ORD — uppdelat
+            </p>
+            <SplitRow
+              label="Ord du tränat på"
+              correct={ordReviewedCorrect}
+              total={ordReviewedTotal}
+              hint="Bra koll på det du repeterat."
+            />
+            <SplitRow
+              label="Nya HP-ord"
+              correct={ordNovelCorrect}
+              total={ordNovelTotal}
+              hint="Hur du tar dig an okända ord — som på riktiga provet."
+            />
+          </div>
+        )}
         <SectionResult
           label="Läsförståelse"
           correct={lasCorrect}
@@ -116,6 +147,33 @@ function SectionResult({
         </div>
       </div>
       <span className="text-sm font-bold text-dark/70 shrink-0">{correct}/{total}</span>
+    </div>
+  )
+}
+
+function SplitRow({
+  label, correct, total, hint,
+}: {
+  label: string
+  correct: number
+  total: number
+  hint: string
+}) {
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0
+  const good = pct >= 60
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-sm font-bold text-dark">{label}</span>
+        <span className="text-sm font-bold text-dark/70 tabular-nums">{correct}/{total}</span>
+      </div>
+      <div className="w-full h-1 bg-dark/8 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all ${good ? 'bg-green-500' : 'bg-amber-400'}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <p className="text-[11px] text-dark/50 leading-snug">{hint}</p>
     </div>
   )
 }

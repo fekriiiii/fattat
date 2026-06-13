@@ -38,28 +38,28 @@ export function StreakCalendar({ currentStreak, totalDaysStudied, studiedDates }
   ]
 
   return (
-    <div className="bg-white shadow-card rounded-card px-4 py-4">
+    <div className="bg-white shadow-card border border-dark/[0.05] rounded-card px-5 py-5">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-bold uppercase tracking-widest text-dark/55">Streak</p>
-        <div className="flex items-center gap-1 text-primary">
-          <Flame size={16} />
-          <span className="text-sm font-bold text-dark">
+        <p className="card-label">Streak</p>
+        <div className="flex items-center gap-1.5 bg-gradient-to-b from-gold/[0.14] to-gold/[0.07] ring-1 ring-inset ring-gold/20 rounded-full px-2.5 py-1">
+          <Flame size={14} className="text-gold" />
+          <span className="text-xs font-bold text-dark tabular-nums">
             {currentStreak} dag{currentStreak !== 1 ? 'ar' : ''}
           </span>
         </div>
       </div>
 
-      <p className="text-xs text-dark/65 capitalize mb-2">{monthName} {year}</p>
+      <p className="text-xs font-bold text-dark/60 capitalize mb-2">{monthName} {year}</p>
 
       {/* Day labels */}
-      <div className="grid grid-cols-7 gap-0.5 mb-0.5">
+      <div className="grid grid-cols-7 gap-1 mb-1">
         {dayLabels.map((d, i) => (
-          <div key={i} className="text-center text-[10px] text-dark/55 font-bold">{d}</div>
+          <div key={i} className="text-center text-[10px] text-dark/40 font-bold">{d}</div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-0.5">
+      <div className="grid grid-cols-7 gap-1">
         {cells.map((day, i) => {
           if (!day) return <div key={`empty-${i}`} />
           const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
@@ -70,11 +70,12 @@ export function StreakCalendar({ currentStreak, totalDaysStudied, studiedDates }
             <div
               key={day}
               className={cn(
-                'aspect-square rounded-sm flex items-center justify-center text-[11px] font-medium',
-                isToday && 'ring-1 ring-primary/60',
-                isStudied && 'bg-primary text-cream',
-                !isStudied && !isFuture && 'bg-dark/5 text-dark/60',
-                isFuture && 'text-dark/35'
+                'aspect-square rounded-lg flex items-center justify-center text-[11px] font-medium',
+                isToday && !isStudied && 'ring-[1.5px] ring-primary/60 font-bold text-dark',
+                isToday && isStudied && 'ring-[1.5px] ring-gold/70',
+                isStudied && 'bg-gradient-to-b from-primary-600 to-primary-700 text-cream font-bold shadow-[0_2px_6px_-1px_rgba(15,118,110,0.35)]',
+                !isStudied && !isFuture && !isToday && 'bg-dark/[0.04] text-dark/55',
+                isFuture && 'text-dark/30'
               )}
             >
               {day}
@@ -83,7 +84,7 @@ export function StreakCalendar({ currentStreak, totalDaysStudied, studiedDates }
         })}
       </div>
 
-      <p className="text-xs text-dark/60 mt-3">
+      <p className="text-xs text-dark/55 mt-3">
         {totalDaysStudied} dag{totalDaysStudied !== 1 ? 'ar' : ''} totalt
       </p>
     </div>

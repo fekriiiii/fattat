@@ -2,7 +2,24 @@
   "permissions": {
     "allow": [
       "Bash(python3 *)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "WebSearch",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell($lines = Get-Content \"ord-database.csv\"; $total = $lines.Count - 1; $curated = \\($lines | Select-String -SimpleMatch \"curated\"\\).Count; \"Total rows \\(approx\\): $total\"; \"Curated rows \\(approx\\): $curated\")",
+      "PowerShell($las = Get-Content \"las-database.csv\"; \"LAS file lines: $\\($las.Count\\)\"; \\($las | Select-String -Pattern \"^\\\\d+,\" | Measure-Object\\).Count)",
+      "PowerShell($first = Get-Content \"las-database.csv\" -TotalCount 2; $first[0].Substring\\(0, [Math]::Min\\(120, $first[0].Length\\)\\); $first[1].Substring\\(0, [Math]::Min\\(80, $first[1].Length\\)\\))",
+      "PowerShell(\\(Get-Content \"las-database.csv\" | Select-String -Pattern '^\\\\d{1,3},\"?[A-ZÅÄÖÃ]'\\).Count)",
+      "PowerShell(\\(Import-Csv \"las-database.csv\"\\).Count)",
+      "PowerShell($m = Select-String -Path \"CLAUDE.md\" -Pattern \"Launch shape\" -List; $m.LineNumber)",
+      "Bash(sed -i 's|bg-white rounded-card p-4 border border-dark/8|bg-white rounded-card p-4 border border-dark/[0.05] shadow-card|g; s|bg-white rounded-card border border-dark/8 divide-y|bg-white rounded-card border border-dark/[0.05] shadow-card divide-y|g' \"src/app/\\(app\\)/onboarding/page.tsx\")",
+      "Bash(sed -i 's|bg-white shadow-card rounded-card px-5 py-5 flex flex-col gap-3|bg-white shadow-card border border-dark/[0.05] rounded-card px-5 py-5 flex flex-col gap-3|' \"src/app/\\(app\\)/test/page.tsx\")",
+      "Bash(sed -i 's|bg-primary text-cream rounded-card px-4 py-5 text-center|surface-hero text-cream rounded-card px-4 py-6 text-center shadow-hero|' \"src/app/\\(app\\)/test/results/page.tsx\")",
+      "Bash(sed -i 's|bg-white rounded-card shadow-card px-3 py-3.5 text-center|bg-white rounded-card shadow-card border border-dark/[0.05] px-3 py-3.5 text-center|' \"src/app/\\(app\\)/profile/page.tsx\")",
+      "Bash(npm run *)",
+      "PowerShell(Get-Item las-database.csv, ord-database.csv | Select-Object Name, Length; \\(Get-Content las-database.csv | Measure-Object -Line\\).Lines; \\(Get-Content ord-database.csv | Measure-Object -Line\\).Lines)",
+      "Bash(kill %1)",
+      "Read(//c/Users/theli/.claude/skills/**)",
+      "Read(//c/Users/theli/.claude/plugins/**)"
     ]
   }
 }

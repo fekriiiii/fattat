@@ -4,8 +4,11 @@ import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useSessionStore } from '@/stores/sessionStore'
 import { Button } from '@/components/ui/Button'
+import { useCountUp } from '@/hooks/useCountUp'
 import { rawToHp } from '@/lib/session/scoring'
+import { balanceLabel, balanceExplanation } from '@/lib/session/balance'
 import type { GapResult } from '@/lib/session/planner'
+import type { SessionBalance } from '@/types/database'
 
 interface CompleteResponse {
   baselineHp: number
@@ -13,6 +16,7 @@ interface CompleteResponse {
   hpHigh: number
   gap: GapResult | null
   noExamDate?: boolean
+  sessionBalance?: SessionBalance
 }
 
 function ResultsContent() {
@@ -81,6 +85,7 @@ function ResultsContent() {
   const hpHigh = result?.hpHigh ?? Math.min(2.0, fallbackHp + 0.20)
 
   const gap = result?.gap
+  const sessionBalance = result?.sessionBalance
 
   function handleContinue() {
     reset()
@@ -90,10 +95,11 @@ function ResultsContent() {
   const verbalPct = ordTotal + lasTotal > 0
     ? Math.round(((ordCorrect + lasCorrect) / (ordTotal + lasTotal)) * 100)
     : 0
+  const verbalPctAnimated = useCountUp(verbalPct, true, 900)
 
   return (
     <div className="flex flex-col gap-5 px-4 py-8 max-w-sm mx-auto">
-      <div className="text-center">
+      <div className="text-center motion-safe:animate-fade-up">
         <p className="text-xs font-bold uppercase tracking-widest text-primary/50 mb-2">
           Diagnosprov
         </p>
@@ -104,23 +110,23 @@ function ResultsContent() {
       </div>
 
       {/* Primary: measured accuracy (what we actually know) */}
-      <div className="bg-primary text-cream rounded-card px-6 py-6 text-center">
-        <p className="text-xs font-bold uppercase tracking-widest text-cream/60 mb-1">
+      <div className="surface-hero text-cream rounded-card px-6 py-7 text-center shadow-hero motion-safe:animate-fade-up" style={{ animationDelay: '120ms' }}>
+        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-cream/60 mb-2">
           Verbal träffprocent
         </p>
-        <p className="text-5xl font-bold">{verbalPct}%</p>
-        <p className="text-sm text-cream/60 mt-1">{ordCorrect + lasCorrect} / {ordTotal + lasTotal} rätt totalt</p>
+        <p className="text-[56px] leading-none font-bold tabular-nums tracking-tight">{verbalPctAnimated}%</p>
+        <p className="text-sm text-cream/65 mt-2">{ordCorrect + lasCorrect} / {ordTotal + lasTotal} rätt totalt</p>
       </div>
 
       {/* ORD / LÄS breakdown */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 motion-safe:animate-fade-up" style={{ animationDelay: '260ms' }}>
         <ModuleCard label="Ordförståelse" correct={ordCorrect} total={ordTotal} pct={ordPct} />
         <ModuleCard label="Läsförståelse" correct={lasCorrect} total={lasTotal} pct={lasPct} />
       </div>
 
       {/* Secondary: HP estimate, demoted with a beta tag because the model
           hasn't been calibrated against real HP outcomes yet (see migration 015). */}
-      <div className="bg-white border border-dark/8 rounded-card px-4 py-3">
+      <div className="bg-white border border-dark/8 rounded-card px-4 py-3 motion-safe:animate-fade-up" style={{ animationDelay: '380ms' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <p className="text-[11px] font-bold uppercase tracking-widest text-dark/45">
@@ -140,6 +146,25 @@ function ResultsContent() {
           våra prognoser kalibreras mot verkliga HP-resultat över tid.
         </p>
       </div>
+
+      {/* Session balance — shown when diagnostic detects an ORD/LÄS imbalance.
+          Auto-picked by the API; user can switch in profile. */}
+      {sessionBalance && sessionBalance !== 'balanced' && (
+        <div className="bg-primary/[0.06] border border-primary/20 rounded-card px-4 py-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-1">
+            Din studieplan: {balanceLabel(sessionBalance)}
+          </p>
+          <p className="text-sm text-dark/75 leading-relaxed">
+            {balanceExplanation(sessionBalance)}
+          </p>
+          <button
+            onClick={() => router.push('/profile')}
+            className="mt-2 text-xs font-bold text-primary underline underline-offset-2"
+          >
+            Byt till balanserad →
+          </button>
+        </div>
+      )}
 
       {/* Gap plan — shown once API responds */}
       {gap ? (
@@ -181,19 +206,21 @@ function ResultsContent() {
         </div>
       )}
 
-      <Button fullWidth size="lg" onClick={handleContinue}>
-        Starta din första träningssession →
-      </Button>
+      <div className="motion-safe:animate-fade-up" style={{ animationDelay: '500ms' }}>
+        <Button fullWidth size="lg" onClick={handleContinue}>
+          Starta din första träningssession →
+        </Button>
+      </div>
     </div>
   )
 }
 
 function ModuleCard({ label, correct, total, pct }: { label: string; correct: number; total: number; pct: number }) {
   return (
-    <div className="bg-white border border-dark/8 rounded-card px-4 py-4 text-center">
-      <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-1">{label}</p>
-      <p className="text-3xl font-bold text-dark">{pct}%</p>
-      <p className="text-xs text-dark/65 mt-0.5">{correct}/{total} rätt</p>
+    <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-4 py-4 text-center">
+      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-dark/45 mb-1.5">{label}</p>
+      <p className="text-3xl font-bold text-dark tracking-tight tabular-nums">{pct}%</p>
+      <p className="text-xs text-dark/55 mt-1">{correct}/{total} rätt</p>
     </div>
   )
 }

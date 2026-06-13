@@ -24,6 +24,7 @@ export default function DiagnosticPage() {
   const [readArticleIds, setReadArticleIds] = useState<Set<string>>(new Set())
   const [currentOrdOptions, setCurrentOrdOptions] = useState<OrdOption[]>([])
   const [currentLasOptions, setCurrentLasOptions] = useState<LasOption[]>([])
+  const [buildError, setBuildError] = useState(false)
 
   const store = useSessionStore()
   const {
@@ -51,16 +52,58 @@ export default function DiagnosticPage() {
     if (initiated.current) return
     initiated.current = true
     async function start() {
-      const res = await fetch('/api/diagnostic/build', { method: 'POST' })
-      if (!res.ok) { router.push('/dashboard'); return }
+      let res: Response
+      try {
+        res = await fetch('/api/diagnostic/build', { method: 'POST' })
+      } catch {
+        setBuildError(true)
+        return
+      }
+      if (!res.ok) { setBuildError(true); return }
       const data = await res.json()
+
+      // Resume support: prior responses from an abandoned diagnostic are
+      // replayed so the user lands on the first unanswered question.
+      const validLasTypes = new Set(['huvudtanke', 'detalj_fakta', 'detalj_kausal', 'syfte_funktion', 'slutledning', 'jämförande', 'ståndpunkt'])
+      const prior = ((data.priorResponses ?? []) as Array<{
+        question_type: 'ord' | 'las'
+        word_id: string | null
+        article_id: string | null
+        question_id: string | null
+        chosen_label: string
+        correct_label: string
+        is_correct: boolean
+        response_ms: number | null
+        las_question_type: string | null
+      }>).map((r) => ({
+        type: r.question_type,
+        wordId: r.word_id ?? undefined,
+        articleId: r.article_id ?? undefined,
+        questionId: r.question_id ?? undefined,
+        chosenLabel: r.chosen_label,
+        correctLabel: r.correct_label,
+        isCorrect: r.is_correct,
+        responseMs: r.response_ms ?? 0,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        lasQuestionType: (r.las_question_type && validLasTypes.has(r.las_question_type)) ? r.las_question_type as any : undefined,
+      }))
+
       initSession({
         sessionId: data.sessionId,
-        weaknessWords: [],
         ordWords: data.ordWords,
         articles: data.articles,
         isDiagnostic: true,
+        priorResponses: prior.length > 0 ? prior : undefined,
       })
+
+      // Articles the user already answered questions on count as read — don't
+      // force a re-read of the article they were mid-way through.
+      const answeredArticleIds = prior
+        .filter((r) => r.type === 'las' && r.articleId)
+        .map((r) => r.articleId as string)
+      if (answeredArticleIds.length > 0) {
+        setReadArticleIds(new Set(answeredArticleIds))
+      }
     }
     start()
   }, [initSession, router])
@@ -112,11 +155,21 @@ export default function DiagnosticPage() {
     selectAnswer(label)
     const correctLabel = currentOrdOptions.find((o) => o.isCorrect)?.label ?? 'A'
     submitAnswer({ type: 'ord', wordId: word.id, chosenLabel: label, correctLabel, isCorrect, responseMs })
+    // Persist immediately (fire-and-forget) so a refresh can resume. The
+    // complete route de-duplicates these against its final batch insert.
+    fetch('/api/diagnostic/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId, questionType: 'ord', wordId: word.id,
+        chosenLabel: label, correctLabel, isCorrect, responseMs,
+      }),
+    }).catch(() => {})
   }
 
   function handleLasAnswer(label: string, isCorrect: boolean) {
     const article = store.currentArticle()
-    if (!article) return
+    if (!article || !sessionId) return
     const question = article.questions[currentLasQuestionIndex]
     if (!question) return
     const responseMs = Date.now() - answerStartTime
@@ -127,11 +180,42 @@ export default function DiagnosticPage() {
       type: 'las',
       articleId: article.id,
       questionId: String(question.n),
+      lasQuestionType: question.type,
       chosenLabel: label,
       correctLabel,
       isCorrect,
       responseMs,
     })
+    fetch('/api/diagnostic/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId, questionType: 'las', articleId: article.id,
+        questionId: String(question.n), lasQuestionType: question.type,
+        chosenLabel: label, correctLabel, isCorrect, responseMs,
+      }),
+    }).catch(() => {})
+  }
+
+  if (buildError) {
+    return (
+      <div className="flex-1 flex items-center justify-center px-6 py-16">
+        <div className="max-w-sm w-full text-center flex flex-col gap-4">
+          <div>
+            <h1 className="text-xl font-bold text-dark">Kunde inte starta diagnosprovet</h1>
+            <p className="text-sm text-dark/65 mt-1.5 leading-relaxed">
+              Något gick fel — kolla din uppkoppling och försök igen.
+            </p>
+          </div>
+          <button
+            className="text-sm font-bold text-primary underline underline-offset-2"
+            onClick={() => window.location.reload()}
+          >
+            Försök igen
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (!sessionId) {

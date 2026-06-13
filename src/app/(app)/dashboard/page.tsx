@@ -10,6 +10,7 @@ import {
   computeAvgRetention,
 } from '@/lib/session/scoring'
 import { calculateGap } from '@/lib/session/planner'
+import { todayInStockholm, stockholmDayStartUtcIso, stockholmHour } from '@/lib/utils/date'
 import { logScorePrediction } from '@/lib/session/predictionLog'
 import { StreakCalendar } from '@/components/dashboard/StreakCalendar'
 import { DomainMap } from '@/components/dashboard/DomainMap'
@@ -31,8 +32,9 @@ export default async function DashboardPage() {
 
   // Fetch everything in parallel
   const examResumeCutoff = new Date(Date.now() - EXAM_DURATION_MS).toISOString()
-  const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0)
-  const todayStartIso = todayStart.toISOString()
+  // Stockholm midnight, not server (UTC) midnight — must match the boundary
+  // used by /api/session/build or the dashboard CTA and the build gate disagree.
+  const todayStartIso = stockholmDayStartUtcIso()
   const [
     { data: profile },
     { data: streak },
@@ -97,7 +99,7 @@ export default async function DashboardPage() {
     supabase.from('fsrs_cards').select('word_id').eq('user_id', user.id),
     supabase.from('study_sessions').select('*', { count: 'exact', head: true }).eq('user_id', user.id).not('completed_at', 'is', null),
     supabase.from('study_sessions').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('session_type', 'daily').not('completed_at', 'is', null),
-    supabase.from('study_sessions').select('id').eq('user_id', user.id).eq('session_type', 'daily').not('completed_at', 'is', null).gte('completed_at', todayMidnightUTC()).limit(1).maybeSingle(),
+    supabase.from('study_sessions').select('id').eq('user_id', user.id).eq('session_type', 'daily').not('completed_at', 'is', null).gte('completed_at', todayStartIso).limit(1).maybeSingle(),
     // In-progress övningsprov for the resume CTA: started within the last 30 min,
     // not yet completed. Timer keeps running against `started_at` regardless of
     // whether the user is on /test or somewhere else.
@@ -158,22 +160,23 @@ export default async function DashboardPage() {
   // Prefer the algorithmic schedule from study_plans.exam_schedule.
   // Fall back to the legacy "every 7 days" rule when no schedule exists yet
   // (e.g. for users created before migration 008 ran).
-  const today = new Date(); today.setHours(0, 0, 0, 0)
+  // exam_schedule stores YYYY-MM-DD in Stockholm time (planner.ts uses
+  // formatInTimeZone). Anchor "today" to Stockholm too, otherwise late-evening
+  // Stockholm users see the count off by one (server runs UTC on Vercel).
   const examSchedule: string[] = (activePlan?.exam_schedule as string[] | undefined) ?? []
+  const ymdToMs = (s: string) =>
+    Date.UTC(Number(s.slice(0, 4)), Number(s.slice(5, 7)) - 1, Number(s.slice(8, 10)))
+  const todayMs = ymdToMs(todayInStockholm())
 
   let nextExamDaysAway: number | null = null
   let nextExamLabel: string | null = null
   if (examSchedule.length > 0) {
-    // Find the first scheduled date that is today or in the future
     const upcoming = examSchedule
-      .map((s) => {
-        const d = new Date(s + 'T00:00:00'); d.setHours(0, 0, 0, 0); return d
-      })
-      .filter((d) => d.getTime() >= today.getTime())
-      .sort((a, b) => a.getTime() - b.getTime())
+      .map(ymdToMs)
+      .filter((ms) => ms >= todayMs)
+      .sort((a, b) => a - b)
     if (upcoming.length > 0) {
-      const first = upcoming[0]
-      nextExamDaysAway = Math.round((first.getTime() - today.getTime()) / 86400000)
+      nextExamDaysAway = Math.round((upcoming[0] - todayMs) / 86400000)
       nextExamLabel = nextExamDaysAway === 0
         ? 'Övningsprov idag'
         : nextExamDaysAway === 1
@@ -261,28 +264,28 @@ export default async function DashboardPage() {
 
   if (isFirstTimer) {
     return (
-      <div className="flex flex-col gap-4 px-4 pt-5 pb-6">
-        <div>
-          <h1 className="text-[22px] font-bold text-dark leading-tight">
+      <div className="flex flex-col gap-4 px-4 pt-6 pb-6">
+        <div className="motion-safe:animate-fade-up">
+          <h1 className="text-[26px] font-bold text-dark leading-tight tracking-tight">
             Bra jobbat{profile?.display_name ? `, ${profile.display_name.split(' ')[0]}` : ''}!
           </h1>
-          <p className="text-[13px] text-dark/65 mt-1">Nu börjar den riktiga träningen.</p>
+          <p className="text-sm text-dark/60 mt-1">Nu börjar den riktiga träningen.</p>
         </div>
 
-        <div className="bg-white shadow-card rounded-card p-5 flex flex-col gap-3">
-          <p className="text-[13px] font-bold text-dark">Så här funkar en session</p>
-          <div className="flex flex-col gap-2 text-[13px] text-dark/65 leading-relaxed">
-            <div className="flex gap-2"><span className="text-primary">•</span><span>FSRS väljer rätt ord baserat på din nivå</span></div>
-            <div className="flex gap-2"><span className="text-primary">•</span><span>ORD-frågor först, sedan en läsförståelsetext</span></div>
-            <div className="flex gap-2"><span className="text-primary">•</span><span>Direkt feedback efter varje fråga</span></div>
-            <div className="flex gap-2"><span className="text-primary">•</span><span>Ca 10–15 minuter per dag räcker</span></div>
+        <div className="bg-white shadow-card border border-dark/[0.05] rounded-card p-5 flex flex-col gap-3.5 motion-safe:animate-fade-up motion-safe:[animation-delay:80ms]">
+          <p className="card-label">Så här funkar en session</p>
+          <div className="flex flex-col gap-2.5 text-[13px] text-dark/65 leading-relaxed">
+            <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>FSRS väljer rätt ord baserat på din nivå</span></div>
+            <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>ORD-frågor först, sedan en läsförståelsetext</span></div>
+            <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>Direkt feedback efter varje fråga</span></div>
+            <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>Ca 10–15 minuter per dag räcker</span></div>
           </div>
         </div>
 
         {gap && (
-          <div className={`rounded-card px-4 py-4 border ${gap.isHeavy ? 'bg-amber-50 border-amber-200' : 'bg-white border-dark/8'}`}>
+          <div className={`rounded-card px-5 py-4 border shadow-card motion-safe:animate-fade-up motion-safe:[animation-delay:160ms] ${gap.isHeavy ? 'bg-amber-50 border-amber-200/60' : 'bg-white border-dark/[0.05]'}`}>
             <p className="text-sm font-bold text-dark mb-1">Din studieplan</p>
-            <p className="text-sm text-dark/65 leading-relaxed">
+            <p className="text-sm text-dark/60 leading-relaxed">
               {gap.newWordsNeeded === 0
                 ? 'Du är redan på rätt nivå. Fortsätt med dagliga sessioner för att hålla dig i form.'
                 : gap.isHeavy
@@ -292,7 +295,7 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        <Link href="/session">
+        <Link href="/session" className="motion-safe:animate-fade-up motion-safe:[animation-delay:240ms]">
           <Button fullWidth size="lg">Starta dagens session</Button>
         </Link>
       </div>
@@ -300,21 +303,21 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-[14px] px-4 pt-5 pb-6">
+    <div className="flex flex-col gap-[14px] px-4 pt-6 pb-6">
       {/* Greeting + streak badge */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between motion-safe:animate-fade-up">
         <div>
-          <h1 className="text-[22px] font-bold text-dark leading-tight">
+          <h1 className="text-[26px] font-bold text-dark leading-tight tracking-tight">
             {greeting()}{profile?.display_name ? `, ${profile.display_name.split(' ')[0]}` : ''}
           </h1>
-          <p className="text-[13px] text-dark/65 mt-1">
+          <p className="text-sm text-dark/60 mt-1">
             {isDoneToday ? 'Du har studerat idag. Bra jobbat!' : inProgressDaily ? 'Du har en session på gång' : 'Redo för dagens session?'}
           </p>
         </div>
         {streak?.current_streak ? (
-          <div className="flex items-center gap-1.5 bg-gold/10 rounded-full px-3 py-1.5 shrink-0">
+          <div className="flex items-center gap-1.5 bg-gradient-to-b from-gold/[0.16] to-gold/[0.08] ring-1 ring-inset ring-gold/25 rounded-full px-3 py-1.5 shrink-0">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#D4A017"><path d="M12 2c.5 3.5 4 6 4 10a4 4 0 11-8 0c0-4 3.5-6.5 4-10z"/></svg>
-            <span className="text-[14px] font-bold text-gold">{streak.current_streak}</span>
+            <span className="text-[14px] font-bold text-gold tabular-nums">{streak.current_streak}</span>
           </div>
         ) : null}
       </div>
@@ -325,17 +328,17 @@ export default async function DashboardPage() {
 
       {/* CTA — primary action */}
       {isDoneToday ? (
-        <div className="bg-primary/[0.06] border border-primary/20 rounded-card px-4 py-[14px] flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+        <div className="bg-white border border-primary/15 shadow-card rounded-card px-4 py-4 flex items-center gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:60ms]">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-b from-primary/[0.14] to-primary/[0.07] ring-1 ring-inset ring-primary/15 flex items-center justify-center shrink-0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F766E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-dark">Dagens session klar</p>
-            <p className="text-[11px] text-dark/65 mt-0.5">Kom tillbaka imorgon för nästa session.</p>
+            <p className="text-xs text-dark/55 mt-0.5 leading-relaxed">FSRS schemalägger nya ord till imorgon — vila ger bättre minne.</p>
           </div>
         </div>
       ) : (
-        <Link href="/session">
+        <Link href="/session" className="motion-safe:animate-fade-up motion-safe:[animation-delay:60ms]">
           <Button fullWidth size="lg">
             {inProgressDaily ? 'Fortsätt dagens session' : 'Starta dagens session'}
           </Button>
@@ -344,9 +347,9 @@ export default async function DashboardPage() {
 
       {/* Övningsprov CTA — visible only when an exam is due (today or overdue, or legacy 7-day rule) */}
       {testAvailable && (
-        <Link href="/test">
-          <div className="bg-gold/[0.08] border border-gold/20 rounded-card px-4 py-[14px] flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gold/[0.15] flex items-center justify-center shrink-0">
+        <Link href="/test" className="group motion-safe:animate-fade-up motion-safe:[animation-delay:90ms]">
+          <div className="bg-gradient-to-b from-gold/[0.10] to-gold/[0.05] border border-gold/25 shadow-glow-gold rounded-card px-4 py-4 flex items-center gap-3 transition-transform duration-200 group-active:scale-[0.99]">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-b from-gold/[0.22] to-gold/[0.12] ring-1 ring-inset ring-gold/25 flex items-center justify-center shrink-0">
               <span className="text-gold font-bold text-sm">Ö</span>
             </div>
             <div className="flex-1 min-w-0">
@@ -364,8 +367,8 @@ export default async function DashboardPage() {
 
       {/* Upcoming-exam hint — when next exam is scheduled but not yet due */}
       {!testAvailable && nextExamDaysAway !== null && nextExamDaysAway > 0 && (
-        <div className="bg-primary/[0.04] border border-primary/15 rounded-card px-4 py-3 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+        <div className="bg-white/60 border border-primary/10 rounded-card px-4 py-3 flex items-center gap-3 motion-safe:animate-fade-up motion-safe:[animation-delay:90ms]">
+          <div className="w-9 h-9 rounded-full bg-primary/[0.08] ring-1 ring-inset ring-primary/10 flex items-center justify-center shrink-0">
             <span className="text-primary font-bold text-sm">Ö</span>
           </div>
           <div className="flex-1 min-w-0">
@@ -378,26 +381,29 @@ export default async function DashboardPage() {
       )}
 
       {/* Exam countdown */}
-      <ExamCountdown
-        examDate={profile?.exam_date ?? null}
-        targetScore={profile?.target_score ?? null}
-      />
+      <div className="motion-safe:animate-fade-up motion-safe:[animation-delay:120ms]">
+        <ExamCountdown
+          examDate={profile?.exam_date ?? null}
+          targetScore={profile?.target_score ?? null}
+        />
+      </div>
 
       {/* Verbal accuracy — primary, measurable signal. The HP prediction below
           is shown as a small "beta" line because it's unvalidated against real
           HP outcomes (see audit in CLAUDE.md / migration 015). Lead with what
           we actually measure, not what we estimate. */}
-      <div className="bg-white shadow-card rounded-card px-4 py-4">
-        <p className="text-xs font-bold uppercase tracking-widest text-dark/65 mb-3">
+      <div className="bg-white shadow-card border border-dark/[0.05] rounded-card px-5 py-5 motion-safe:animate-fade-up motion-safe:[animation-delay:180ms]">
+        <p className="card-label mb-3">
           Verbal träffprocent
         </p>
-        <div className="flex items-baseline gap-1.5 mb-1">
-          <span className="text-4xl font-bold text-dark">
+        <div className="flex items-baseline gap-2 mb-1.5">
+          <span className="text-[44px] leading-none font-bold text-dark tracking-tight tabular-nums">
             {Math.round(verbalAccuracy * 100)}
           </span>
-          <span className="text-sm text-dark/65">% ORD + LÄS</span>
+          <span className="text-base font-bold text-primary">%</span>
+          <span className="text-sm text-dark/50">ORD + LÄS</span>
         </div>
-        <p className="text-xs text-dark/65 leading-relaxed">
+        <p className="text-xs text-dark/55 leading-relaxed">
           Andel rätt på dina senaste ord- och läsförståelsefrågor.
         </p>
 
@@ -437,28 +443,36 @@ export default async function DashboardPage() {
       </div>
 
       {/* Study plan card */}
-      <StudyPlanCard
-        newWordsNeeded={gap?.newWordsNeeded ?? 0}
-        daysLeft={gap?.daysLeft ?? 0}
-        wordsLearned={wordsLearned ?? 0}
-        totalWords={unseenWords}
-        isHeavy={gap?.isHeavy ?? false}
-        noExamDate={!profile?.exam_date}
-        goalWords={gap?.newWordsNeeded}
-      />
+      <div className="motion-safe:animate-fade-up motion-safe:[animation-delay:240ms]">
+        <StudyPlanCard
+          newWordsNeeded={gap?.newWordsNeeded ?? 0}
+          daysLeft={gap?.daysLeft ?? 0}
+          wordsLearned={wordsLearned ?? 0}
+          totalWords={unseenWords}
+          isHeavy={gap?.isHeavy ?? false}
+          noExamDate={!profile?.exam_date}
+          goalWords={gap?.newWordsNeeded}
+        />
+      </div>
 
       {/* Domain map */}
-      <DomainMap stats={domainStats} />
+      <div className="motion-safe:animate-fade-up motion-safe:[animation-delay:300ms]">
+        <DomainMap stats={domainStats} />
+      </div>
 
       {/* LÄS question-type breakdown */}
-      <LasTypeBreakdown stats={lasTypeStats} />
+      <div className="motion-safe:animate-fade-up motion-safe:[animation-delay:360ms]">
+        <LasTypeBreakdown stats={lasTypeStats} />
+      </div>
 
       {/* Streak calendar */}
-      <StreakCalendar
-        currentStreak={streak?.current_streak ?? 0}
-        totalDaysStudied={streak?.total_days_studied ?? 0}
-        studiedDates={studiedDatesThisMonth}
-      />
+      <div className="motion-safe:animate-fade-up motion-safe:[animation-delay:420ms]">
+        <StreakCalendar
+          currentStreak={streak?.current_streak ?? 0}
+          totalDaysStudied={streak?.total_days_studied ?? 0}
+          studiedDates={studiedDatesThisMonth}
+        />
+      </div>
     </div>
   )
 }
@@ -466,7 +480,8 @@ export default async function DashboardPage() {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function greeting() {
-  const h = new Date().getHours()
+  // Stockholm hour — the server runs UTC, which would shift greetings 1–2h.
+  const h = stockholmHour()
   if (h < 10) return 'God morgon'
   if (h < 13) return 'God förmiddag'
   if (h < 18) return 'God eftermiddag'
@@ -474,13 +489,8 @@ function greeting() {
 }
 
 function firstDayOfMonth(): string {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`
-}
-
-function todayMidnightUTC(): string {
-  const d = new Date()
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}T00:00:00Z`
+  // Stockholm month, not server (UTC) month.
+  return `${todayInStockholm().slice(0, 7)}-01`
 }
 
 type ResponseRow = { is_correct: boolean; question_type: string; word_id: string | null }

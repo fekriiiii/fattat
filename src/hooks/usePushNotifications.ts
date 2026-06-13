@@ -27,7 +27,29 @@ export function usePushNotifications() {
     if (!('serviceWorker' in navigator)) return false
     const reg = await navigator.serviceWorker.ready
     const sub = await reg.pushManager.getSubscription()
-    return sub !== null
+    if (!sub) return false
+
+    // Ensure this subscription is registered for the current user.
+    // The browser subscription is device-level; the DB row is account-level.
+    // Re-upserting on load fixes the case where the user switched accounts.
+    const key = sub.getKey('p256dh')
+    const auth = sub.getKey('auth')
+    if (key && auth) {
+      const toBase64 = (buf: ArrayBuffer) =>
+        btoa(String.fromCharCode(...Array.from(new Uint8Array(buf))))
+      await fetch('/api/push/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          endpoint: sub.endpoint,
+          p256dh: toBase64(key),
+          auth: toBase64(auth),
+          userAgent: navigator.userAgent,
+        }),
+      })
+    }
+
+    return true
   }
 
   async function subscribe(): Promise<boolean> {

@@ -13,6 +13,7 @@ import { LasFeedback } from '@/components/las/LasFeedback'
 import { shuffleOptions } from '@/lib/fsrs/engine'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
 import { haptics } from '@/lib/utils/haptics'
+import { Button } from '@/components/ui/Button'
 import type { OrdOption } from '@/components/ord/OrdQuestion'
 import type { LasOption } from '@/components/las/LasQuestion'
 
@@ -32,6 +33,10 @@ export default function TestPage() {
   const [startedAt, setStartedAt] = useState<string | null>(null)
   const [currentOrdOptions, setCurrentOrdOptions] = useState<OrdOption[]>([])
   const [currentLasOptions, setCurrentLasOptions] = useState<LasOption[]>([])
+  const [novelWordIds, setNovelWordIds] = useState<Set<string>>(new Set())
+  // Explainer screen shown once per fresh test (suppressed on resume so users
+  // mid-test aren't re-blocked). Marked seen as soon as the user dismisses it.
+  const [showExplainer, setShowExplainer] = useState(false)
   const timeUpFired = useRef(false)
 
   const store = useSessionStore()
@@ -66,6 +71,12 @@ export default function TestPage() {
       const data = await res.json()
       setSessionIdForComplete(data.sessionId)
       setStartedAt(data.startedAt ?? new Date().toISOString())
+      setNovelWordIds(new Set<string>((data.novelWordIds ?? []) as string[]))
+      // Show explainer only on a truly fresh start (no prior responses).
+      // Resumed mid-test sessions land back into questions directly.
+      if (!data.resumed && (data.priorResponses ?? []).length === 0) {
+        setShowExplainer(true)
+      }
 
       const prior = (data.priorResponses ?? []) as Array<{
         question_type: 'ord' | 'las'
@@ -93,7 +104,6 @@ export default function TestPage() {
       // between two separate set() calls when resuming mid-test.
       initSession({
         sessionId: data.sessionId,
-        weaknessWords: [],
         ordWords: data.ordWords,
         articles: data.articles,
         priorResponses: mappedPrior,
@@ -142,6 +152,17 @@ export default function TestPage() {
     const ord = responses.filter((r) => r.type === 'ord')
     const las = responses.filter((r) => r.type === 'las')
 
+    // Split ORD into reviewed (words the user has FSRS history on) vs novel
+    // (fresh-fill past-HP). Totals derived from the pool the server returned:
+    // ordWords.length minus novelWordIds count gives the reviewed total. The
+    // user may have answered fewer than the totals; unanswered count as wrong.
+    const novelOrdAnswered = ord.filter((r) => r.wordId && novelWordIds.has(r.wordId))
+    const reviewedOrdAnswered = ord.filter((r) => r.wordId && !novelWordIds.has(r.wordId))
+    const novelTotal = novelWordIds.size
+    const reviewedTotal = ORD_TOTAL - novelTotal
+    const novelCorrect = novelOrdAnswered.filter((r) => r.isCorrect).length
+    const reviewedCorrect = reviewedOrdAnswered.filter((r) => r.isCorrect).length
+
     fetch('/api/session/complete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -161,9 +182,13 @@ export default function TestPage() {
     params.set('lasTotal', String(LAS_TOTAL))
     params.set('ordAnswered', String(ord.length))
     params.set('lasAnswered', String(las.length))
+    params.set('ordReviewedCorrect', String(reviewedCorrect))
+    params.set('ordReviewedTotal', String(reviewedTotal))
+    params.set('ordNovelCorrect', String(novelCorrect))
+    params.set('ordNovelTotal', String(novelTotal))
     if (reason === 'time_up') params.set('timeUp', '1')
     router.push(`/test/results?${params.toString()}`)
-  }, [sessionIdForComplete, responses, router])
+  }, [sessionIdForComplete, responses, router, novelWordIds])
 
   // On complete: route to results with full totals
   useEffect(() => {
@@ -285,6 +310,53 @@ export default function TestPage() {
     )
   }
 
+  // ─── EXPLAINER ───────────────────────────────────────────────────────────────
+  // Shown once per fresh övningsprov to set expectations: the test mixes words
+  // the user has practiced with novel past-HP material. Without this, a user
+  // who has only been doing daily curated sessions sees ~5 unfamiliar past-HP
+  // words and reads it as "Fattat is testing me on stuff it never taught me"
+  // — even though the score itself is honest (it's measuring how well they
+  // handle unprimed HP-level vocabulary, which is what the real exam does).
+  if (showExplainer) {
+    const novelCount = novelWordIds.size
+    const reviewedCount = ORD_TOTAL - novelCount
+    return (
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="max-w-sm w-full flex flex-col gap-5">
+          <div className="text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary/60 mb-2">
+              Övningsprov
+            </p>
+            <h1 className="text-2xl font-bold text-dark leading-tight">
+              Innan du börjar
+            </h1>
+          </div>
+
+          <div className="bg-white shadow-card border border-dark/[0.05] rounded-card px-5 py-5 flex flex-col gap-3">
+            <p className="text-[15px] text-dark leading-relaxed">
+              Av <strong>{ORD_TOTAL} ord</strong> är ungefär{' '}
+              <strong>{reviewedCount} sådana du tränat på</strong> och{' '}
+              <strong>{novelCount} nya ord från äkta HP-prov</strong>.
+            </p>
+            <p className="text-[14px] text-dark/70 leading-relaxed">
+              Det riktiga provet fungerar likadant — du möter alltid okända ord.
+              Det här mäter både ditt aktuella ordförråd <em>och</em> hur du tar
+              dig an nya ord.
+            </p>
+            <p className="text-[13px] text-dark/55 leading-relaxed">
+              På resultatsidan ser du båda delarna separat — så du vet vad som
+              är repetition och vad som är HP-nivå just nu.
+            </p>
+          </div>
+
+          <Button fullWidth size="lg" onClick={() => setShowExplainer(false)}>
+            Förstått, kör
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   const percent = progressPercent()
 
   // ─── ORD ─────────────────────────────────────────────────────────────────────
@@ -306,6 +378,7 @@ export default function TestPage() {
             chosenLabel={lastOrdResponse.chosenLabel}
             isCorrect={lastOrdResponse.isCorrect}
             onNext={advanceFromFeedback}
+            delayMs={0}
           />
         ) : (
           <OrdQuestion

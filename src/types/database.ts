@@ -91,6 +91,9 @@ export interface FsrsCard {
   state: FsrsState
   last_review: string | null
   miss_count: number
+  // 0..2 — counts consecutive correct MCQ answers. Once at 2, the word has
+  // graduated to typing mode and the counter is frozen.
+  mcq_correct_streak: number
   created_at: string
   updated_at: string
 }
@@ -146,6 +149,10 @@ export interface StudySession {
 export interface SessionPayload {
   ord_word_ids?: string[]
   article_ids?: string[]
+  // Subset of ord_word_ids drawn from the fresh-fill past-HP pool (vs. words
+  // the user already has FSRS history on). Lets the results page split the
+  // score into "ord du tränat på" vs "nya HP-ord" — corpus split, 2026-05-30.
+  novel_word_ids?: string[]
 }
 
 export interface SessionResponse {
@@ -161,6 +168,12 @@ export interface SessionResponse {
   correct_label: string
   is_correct: boolean
   response_ms: number | null
+  // LÄS daily sessions only — one-tap confidence judgment captured before
+  // feedback. Enables calibration feedback ("säker men fel") — migration 023.
+  confidence: 'sure' | 'unsure' | 'guess' | null
+  // FSRS rating (1=Again 2=Hard 3=Good 4=Easy) applied at review time for ORD
+  // answers. Review log for future per-user parameter optimization — migration 023.
+  fsrs_rating: number | null
   answered_at: string
 }
 
@@ -177,7 +190,10 @@ export interface StudyPlan {
   created_at: string
   exam_schedule: string[]  // YYYY-MM-DD ISO date strings, ascending — see Step 16b
   exam_reschedules_used: number
+  session_balance: SessionBalance
 }
+
+export type SessionBalance = 'balanced' | 'ord_heavy' | 'las_heavy'
 
 export interface StudyPartner {
   id: string

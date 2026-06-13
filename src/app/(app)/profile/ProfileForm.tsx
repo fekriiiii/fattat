@@ -8,15 +8,17 @@ import { usePushNotifications } from '@/hooks/usePushNotifications'
 import { Button } from '@/components/ui/Button'
 import { Bell, BellOff } from 'lucide-react'
 import { ExamDatePicker } from '@/components/onboarding/ExamDatePicker'
-import type { UserProfile, UserStreak } from '@/types/database'
+import type { UserProfile, UserStreak, SessionBalance } from '@/types/database'
+import { balanceLabel } from '@/lib/session/balance'
 
 interface Props {
   profile: UserProfile | null
   email: string
   streak: UserStreak | null
+  sessionBalance: SessionBalance
 }
 
-export function ProfileForm({ profile, email }: Props) {
+export function ProfileForm({ profile, email, sessionBalance: initialBalance }: Props) {
   const router = useRouter()
   const resetSession = useSessionStore((s) => s.reset)
   const { permission, subscribed, subscribe, loading: pushLoading } = usePushNotifications()
@@ -30,9 +32,7 @@ export function ProfileForm({ profile, email }: Props) {
   const [previousMekInput, setPreviousMekInput] = useState(profile?.previous_mek_score ?? 1.0)
   const [previousElfScore, setPreviousElfScore] = useState<number | null>(profile?.previous_elf_score ?? null)
   const [previousElfInput, setPreviousElfInput] = useState(profile?.previous_elf_score ?? 1.0)
-  const [reportedHpScore, setReportedHpScore] = useState<number | null>(profile?.reported_hp_score ?? null)
-  const [reportedHpInput, setReportedHpInput] = useState(profile?.reported_hp_score ?? 1.0)
-  const [reportedHpTestDate, setReportedHpTestDate] = useState(profile?.reported_hp_test_date ?? '')
+  const [balance, setBalance] = useState<SessionBalance>(initialBalance)
   const [notifyAt, setNotifyAt] = useState(profile?.preferred_notify_at ?? '19:00')
   const [studyCue, setStudyCue] = useState(profile?.study_cue ?? '')
   const [saving, setSaving] = useState(false)
@@ -41,7 +41,6 @@ export function ProfileForm({ profile, email }: Props) {
   async function handleSave() {
     setSaving(true)
     const supabase = createBrowserClient()
-    const reportedHpChanged = reportedHpScore !== (profile?.reported_hp_score ?? null)
     const { error } = await supabase.from('user_profiles').update({
       display_name: displayName.trim() || null,
       exam_date: examDate || null,
@@ -49,9 +48,6 @@ export function ProfileForm({ profile, email }: Props) {
       previous_hp_score: previousHpScore,
       previous_mek_score: previousMekScore,
       previous_elf_score: previousElfScore,
-      reported_hp_score: reportedHpScore,
-      reported_hp_test_date: reportedHpScore !== null ? (reportedHpTestDate || null) : null,
-      reported_hp_reported_at: reportedHpChanged && reportedHpScore !== null ? new Date().toISOString() : profile?.reported_hp_reported_at ?? null,
       preferred_notify_at: notifyAt,
       study_cue: studyCue.trim() || null,
     }).eq('id', profile!.id)
@@ -60,6 +56,15 @@ export function ProfileForm({ profile, email }: Props) {
       console.error('Profile update failed:', error)
       setSaving(false)
       return
+    }
+
+    // Persist session balance (separate endpoint — refresh below doesn't touch it)
+    if (balance !== initialBalance) {
+      await fetch('/api/study-plan/balance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ balance }),
+      })
     }
 
     // Regenerate study plan (exam schedule + daily quota) to reflect new profile values
@@ -173,67 +178,31 @@ export function ProfileForm({ profile, email }: Props) {
           />
         </Field>
 
-        {/* Reported HP score — the user's real exam result, used to calibrate
-            our score predictions. See migration 015 + score_predictions log. */}
-        <div className="border-t border-dark/8 pt-5 mt-1">
-          <p className="text-sm font-bold text-dark mb-1">Har du gjort HP nyligen?</p>
-          <p className="text-xs text-dark/55 leading-relaxed mb-3">
-            Om du har skrivit Högskoleprovet medan du använt Fattat hjälper det oss att förbättra
-            våra prognoser om du delar ditt riktiga resultat.
-          </p>
-          <Field label="Ditt verkliga HP-resultat">
-            {reportedHpScore !== null ? (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold text-dark">{reportedHpInput.toFixed(2)}</span>
-                  <span className="text-sm text-dark/50">HP</span>
-                </div>
-                <input
-                  type="range"
-                  min={0.0}
-                  max={2.0}
-                  step={0.05}
-                  value={reportedHpInput}
-                  onChange={(e) => {
-                    const v = parseFloat(e.target.value)
-                    setReportedHpInput(v)
-                    setReportedHpScore(v)
-                  }}
-                  className="w-full accent-primary"
-                />
-                <div className="flex justify-between text-xs text-dark/35">
-                  <span>0.00</span><span>2.00</span>
-                </div>
-                <button
-                  onClick={() => setReportedHpScore(null)}
-                  className="text-xs text-dark/40 hover:text-dark/60 text-left transition-colors"
-                >
-                  Ta bort
-                </button>
-              </div>
-            ) : (
+        <Field label="Sessionsbalans">
+          <div className="flex flex-col gap-1.5">
+            {(['balanced', 'ord_heavy', 'las_heavy'] as SessionBalance[]).map((b) => (
               <button
-                onClick={() => setReportedHpScore(reportedHpInput)}
-                className="w-full text-left px-4 py-3 rounded-card border-2 border-dashed border-dark/15 hover:border-primary/40 text-sm text-dark/50 hover:text-primary transition-colors"
+                key={b}
+                type="button"
+                onClick={() => setBalance(b)}
+                className={`text-left px-4 py-3 rounded-card border transition-colors ${
+                  balance === b
+                    ? 'border-primary bg-primary/[0.06]'
+                    : 'border-dark/10 hover:border-dark/25'
+                }`}
               >
-                + Rapportera resultat
+                <p className={`text-sm font-bold ${balance === b ? 'text-primary' : 'text-dark'}`}>
+                  {balanceLabel(b)}
+                </p>
+                <p className="text-xs text-dark/60 mt-0.5 leading-relaxed">
+                  {b === 'balanced' && 'ORD + LÄS i varje session.'}
+                  {b === 'ord_heavy' && 'ORD varje dag. LÄS mån/ons/fre.'}
+                  {b === 'las_heavy' && 'LÄS varje dag. ORD tis/tors/lör.'}
+                </p>
               </button>
-            )}
-          </Field>
-          {reportedHpScore !== null && (
-            <div className="mt-3">
-              <Field label="Provdatum">
-                <input
-                  type="date"
-                  value={reportedHpTestDate}
-                  onChange={(e) => setReportedHpTestDate(e.target.value)}
-                  className="field-input"
-                  max={new Date().toISOString().slice(0, 10)}
-                />
-              </Field>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        </Field>
 
         <Field label="Påminnelsetid">
           <input
