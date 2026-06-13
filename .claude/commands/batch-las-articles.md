@@ -152,15 +152,11 @@ Output all rows in one block, clearly separated:
 Column order:
 `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`
 
-CSV rules (same as single-article command):
-- Wrap fields with commas, quotes, or newlines in double quotes
-- Escape internal double quotes by doubling them (`""`)
-- `featured_ord_words` as Postgres array literal: `{"ord1","ord2"}`
-- `body` is the final body after approved swaps
+To add the batch, use the shared safe encoder `scripts/append-las-row.cjs` (same mechanism as `write-las-article` Step 9), run **once per article**. It handles all CSV escaping, the `featured_ord_words` literal, word-count, validation and a parse-back check.
 
-Then ask: *"Ser det bra ut? Jag kan lägga till raderna direkt i `las-database.csv`, eller så kopierar du dem."*
-
-If confirmed, append all rows to `las-database.csv` in one write.
+1. Find the current max id. For each article build a **plain JSON payload** with an explicit sequential `id` (max+1, max+2, …) plus `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body` (final, post-swap), `questions`, `vocab_highlights`, `featured_ord_words` (array of strings). Write each to its own temp file (e.g. `_las_1.json`, `_las_2.json`).
+2. Preview the whole batch first — run each payload with `--dry-run`, show the combined summary, resolve any ⚠ warnings, then ask: *"Ser det bra ut? Jag lägger till raderna i `las-database.csv`."*
+3. On confirm, run each payload without the flag, in id order. Then delete the temp files.
 
 ---
 
@@ -168,6 +164,7 @@ If confirmed, append all rows to `las-database.csv` in one write.
 
 - passage_anchor is a verbatim quote from the **final** body (post-swap)
 - Every wrong option has a distractor_type
+- Blind-test each question against `Bilaga: Distraktordesign` in `analysis/_LAS_analys.md`: flag (don't silently format) any where the correct answer is guessable on length/keyword/plausibility, merely echoes the anchor, or has a caricature distractor — these come from outside and may be weak
 - Every ORD word in vocab_highlights is present in the final body and in ord-database.csv
 - question_count matches actual questions
 - unit_position matches: `kort` = 2 questions, `lång` = 4 questions

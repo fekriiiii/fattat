@@ -208,6 +208,8 @@ For each **wrong** option, categorize why it is wrong. Use exactly one of these 
 
 Only include keys for the wrong options (not the correct one).
 
+**Blind-test the incoming questions before formatting (validation gate).** These questions come from outside, so they may be weak. For each one apply the test from `Bilaga: Distraktordesign` in `analysis/_LAS_analys.md`: would someone who only skimmed the text pick the correct answer on length, keyword, or general plausibility? Flag — don't silently format — any question where the correct answer is the longest/most-hedged option, where it merely echoes the anchor verbatim, or where a distractor is a caricature eliminable without reading. Tell the user which question is weak and why, and offer a stronger rewrite using the appendix's eight tools.
+
 ### `notes`
 Leave blank unless there is something genuinely unusual worth flagging.
 
@@ -251,17 +253,11 @@ Output a single CSV row with these columns in exact order:
 
 > The `is_designed_content` column was added in migration `009_designed_content.sql`. Default `TRUE` for designed pedagogical material (the typical case); `FALSE` only when the article is based on a real published source. Never displayed to users — internal flag only.
 
-Rules for the CSV output:
-- Wrap any field that contains commas, quotes, or newlines in double quotes
-- Escape internal double quotes by doubling them (`""`)
-- The `questions` and `vocab_highlights` fields are JSON strings — wrap them in double quotes and escape internal quotes
-- `featured_ord_words` is a Postgres array literal: `{"förskjutning","vördnad","godtycke"}`
-- `body` is the **final** body (after approved swaps)
-- `notes` is blank unless you have something to flag
+To add the row to the database, use the shared safe encoder `scripts/append-las-row.cjs` (same mechanism as `write-las-article` Step 9). It handles all CSV escaping, the `featured_ord_words` literal, word-count, next-id, validation (`correct` ∈ options, kort=2/lång=4, dup-title) and a parse-back check — so a stray quote can't silently break the seed pipeline.
 
-Show the complete row for review, then ask: *"Ser det bra ut? Jag kan lägga till raden direkt i `las-database.csv`, eller så kopierar du den till Google Sheets."*
-
-If the user confirms, append the row to `las-database.csv`.
+1. Build a **plain JSON payload** (native values, no CSV escaping anywhere): `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body` (the **final** body, after approved swaps), `questions`, `vocab_highlights` (Step 8), `featured_ord_words` (Step 9 — already an array of strings). For a real published source set `is_designed_content: false` with the matching `source_url`/`source_name`; otherwise the defaults (`TRUE` / `Fattat`) apply. Write it to `_las_payload.json`.
+2. Preview + verify without writing: `node scripts/append-las-row.cjs _las_payload.json --dry-run`. Show the summary, resolve any ⚠ warnings, then ask: *"Ser det bra ut? Jag lägger till raden i `las-database.csv`."*
+3. On confirm: `node scripts/append-las-row.cjs _las_payload.json`. Then delete the temp payload.
 
 ---
 
