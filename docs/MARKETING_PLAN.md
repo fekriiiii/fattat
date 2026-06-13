@@ -1,6 +1,23 @@
 # Fattat — Marketing Plan
 
-> Created 2026-05-12. Last updated 2026-05-20 (second pass).
+> Created 2026-05-12. Last updated 2026-06-11 (plan paused — see status below).
+
+---
+
+## ⏸️ STATUS 2026-06-11: Public plan paused
+
+The founder delayed the public dogfooding series — too much going on to document daily. **New plan:** the founder trains hard in Fattat privately (no posting) for the real HP exam on **18 oktober 2026** (~129 days away), aiming for a strong result. After the result lands (~late November 2026), a new marketing plan gets built around the *actual outcome* — outcome-first instead of journey-first.
+
+What this changes:
+- **Phase 1/2 as written below are void.** No Day 0 video, no daily series, no Oct '26 paid cycle. The phase content below is kept as reference — much of it (positioning, delta framing, algorithm notes, score-reveal structure) carries into plan v2.
+- **First realistic monetization window moves to the våren 2027 sitting** (10 april 2027, anmälan 7–14 januari 2027) — which is where the old Phase 3 said 10k SEK/month plays out anyway. The delay costs the Oct '26 proof-of-concept cycle, not the end goal.
+
+What stays live during the quiet period:
+- **Waitlist landing page** at fattat.se keeps collecting emails passively.
+- **⚠️ HP-anmälan 11–18 augusti 2026** — one-week window, hard deadline. Miss it and there is no result, no proof, no plan v2. The single most important date in the project right now.
+- **Record raw material anyway** (founder, low effort): occasional session screen-recordings + dashboard screenshots as the months pass. No editing, no posting — just save files. If plan v2 becomes "jag använde min egen app i tystnad i 4 månader — här är resultatet", receipts make it a story instead of a claim.
+- **Content generation continues** — the founder's own daily use will exhaust the current corpus (see CLAUDE.md); curated ORD batches and LÄS articles keep growing via the slash commands.
+- **Legal workstream** (`LEGAL_SETUP.md`) loses its August urgency but should keep moving at low pace — it's slow bureaucracy and is needed before the April '27 window opens payments.
 
 ---
 

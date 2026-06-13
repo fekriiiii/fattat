@@ -659,3 +659,63 @@ Längdskala (empiriskt mätt på 52 textsegment över 16 provpass):
 9. **Källor är nästan alltid namngivna** — högskoleprovet anger originalförfattare för auktoritet och spårbarhet. Översättningar förekommer sällan; texter är primärt skrivna på svenska för svenska målgrupper.
 
 10. **Genus-/maktperspektiv återkommer**: Flera texter har genus- eller maktperspektiv (Nya yrken, Flickboken och yrkeslivet, Bankerna, Utsatta gruppers hälsa) — speglar samtida samhällsdiskurs.
+
+---
+
+# Bilaga: Distraktordesign — hur HP bygger svarsalternativen
+
+> Tillagd 2026-06-12. Reverse-engineerad från äkta LÄS-frågor med facit i **Provpass 5 24-ht** (Apparatsöndagen / Psykiatri och vetenskap / Staten, kyrkan och läsarna) och **Provpass 3 23-vt** (Studentfabriken / Digitaliseringspolitik / Kerstin Thorvall) — ~20 frågor totalt. Det här är den dimension resten av dokumentet saknade: inte *vilka frågetyper* HP ställer, utan *hur de fyra alternativen konstrueras* så att rätt svar inte går att gissa.
+>
+> **Alla frågegenererande skills ska följa denna bilaga i frågesteget** — `write-las-article`, `format-las-article`, `batch-las-articles`. Den ligger här (en plats) så att ramverket inte driver isär mellan skills.
+
+## Kärninsikt
+
+I äkta HP är **alla fyra alternativ på ämnet och förankrade i texten**. Inget alternativ går att stryka utan att läsa texten. Rätt svar är nästan aldrig en ordagrann upprepning av en mening — det är en *omformulerad abstraktion* eller en *syntes av flera ställen*. Distraktorerna innehåller däremot ofta textens mest *minnesvärda ord och fakta*. Därför leder nyckelordssökning eleven **fel**, inte rätt. Diskrimineringen vilar på en enda precis relation: riktning, tidpunkt, motiv, eller vilken fråga som faktiskt ställs.
+
+## Distraktorgrammatiken — åtta verktyg HP använder
+
+1. **Sant-men-fel-fråga** (vanligast och kraftfullast). Distraktorn säger något texten *faktiskt påstår* — men svarar på en något annan fråga än den ställda.
+   - PP5 24-ht Q13: frågan gäller hur neuropsykiatri ses *numera*; B och D ger den *gamla* betydelsen, båda korrekt återgivna ur texten. Rätt: C.
+   - PP5 24-ht Q16: textens mest minnesvärda fakta (vården kostar 70–90 miljarder) dinglas som B "för dyr", men frågan gäller programmets *antagande*. Rätt: D (forskning förbättrar vården).
+
+2. **Det förkastade alternativet.** Distraktorn beskriver en väg/princip texten uttryckligen nämner men *inte valde*.
+   - PP5 24-ht Q14: A beskriver "representera många intressen" — den andra utredningsprincipen, som inte valdes. Rätt: C.
+
+3. **Rätt fakta, påhittat motiv.** Distraktorn återger ett korrekt faktum men tillskriver en orsak/avsikt texten aldrig anger.
+   - PP5 24-ht Q14 D: gruppen saknade visserligen psykiatrisk kompetens (sant), men "i förhoppning om opartiskhet" är ett påhittat motiv — texten säger att det berodde på medlemsbrist. Rätt: C.
+
+4. **Omvänd riktning / agens.** Distraktorn behåller textens centrala substantiv men vänder på vem som gör vad mot vem.
+   - PP5 24-ht Q18 A: konventikelplakatet *var* statens kontroll, inte ett motverkande av den. Rätt: C.
+   - PP3 23-vt Q13 C: "går händelserna i förväg" — texten säger tvärtom att regeringen ligger efter ("gått den förbi"). Rätt: A.
+   - PP3 23-vt Q16 B: "mindre statlig styrning" — författaren vill ha *mer*. Rätt: A.
+
+5. **Ytlig nyckelords-/bildläsning.** Distraktorn snappar upp ett bokstavligt ord eller en bild och gör det till poängen.
+   - PP3 23-vt Q14: "internets politiska period" — A ("partipolitisk maktkamp") och C ("arena för politiska diskussioner") griper var sin fel betydelse av *politisk*. Rätt: D (reglering).
+   - PP3 23-vt Q19: dikten upprepar "tacksam", så A "nöjd och framåtblickande" och C "positiv och ödmjuk" lockar en bokstavlig läsare. Rätt: B "ironisk och trotsig" — ironin inverterar ordet.
+
+6. **Nära-men-inte-riktigt i hög upplösning.** Minst en distraktor är en nästan-parafras av rätt svar, skild med ett enda semantiskt gångjärn.
+   - PP5 24-ht Q17 A vs B: "svår för prästerna att bedöma" vs "siffrorna bör tolkas med försiktighet" — texten säger att prästerna *överdrev*, inte att de hade svårt att bedöma. Rätt: B.
+
+7. **Två-leds-alternativ där båda leden måste stämma.** Vid resultat-/ståndpunktsfrågor får alla alternativ samma form ("X men Y"); exakt ett har båda leden rätt — de andra parar ett rätt led med ett fel.
+   - PP5 24-ht Q15: alla fyra har formen "invändning + medgivande"; bara D matchar båda halvorna. Q20: alla "skulle X men ledde till Y"; bara B.
+
+8. **Sant för en del / en text, inte för helheten.** Vid syntes-/jämförelsefrågor är distraktorn sann om *ena* texten eller *en* del.
+   - PP3 23-vt Q20 D: "åldrande kroppens förfall" gäller "Tacksam?" men inte "Ångestmaskerad". Rätt: A (gäller båda).
+
+## Tellen som en AI-modell måste sluta producera
+
+Varje punkt nedan är raka motsatsen till hur HP gör — och är de återkommande felen i AI-genererade HP-frågor:
+
+- **Karikatyrdistraktor** ("avskaffa allt stöd", "omedelbart och utan övergång") — strykbar utan att läsa texten. HP gör aldrig detta; använd verktyg 1–4 i stället.
+- **Längd-/nyans-tell** — rätt svar längst och mest hedgat, fel svar korta och absoluta. HP *utjämnar* längd och register; vid nyanserade frågor får alla fyra samma retoriska skelett (verktyg 7).
+- **Rätt svar = parafras av den citerbaraste meningen (= ankaret).** Då vinner nyckelordssökning. Vänd på det: lägg textens nyckelord i distraktorerna, och gör rätt svar till en omformulerad abstraktion eller en syntes av ≥2 ställen.
+- **Distraktorer som är frånvarande eller falska.** Bygg varje distraktor FRÅN ett verkligt textelement, missbrukat enligt verktyg 1–8.
+
+## Konstruktionsordning per fråga
+
+1. Bestäm rätt svar och dess ankare. **Om svaret står ordagrant i en enda mening — gör frågan svårare** så att svaret kräver att man väger ihop två ställen eller drar en slutsats (gäller särskilt HT/ÅSY/INF).
+2. Formulera rätt svar som en *omskrivning*, inte ett citat. Plocka bort textens mest minnesvärda nyckelord ur rätt svar.
+3. Bygg tre distraktorer med tre *olika* verktyg ur listan. Minst en ska vara verktyg 1 (sant-men-fel-fråga) och minst en verktyg 6 (nära-men-inte-riktigt).
+4. Lägg textens minnesvärda nyckelord/fakta i distraktorerna, inte i rätt svar.
+5. Matcha alla fyra i längd, satsbyggnad och konkretionsgrad. Vid två-leds-frågor: ge alla samma "X men Y"-form. **Obs:** ett syntessvar (verktyg/punkt 1 i kärninsikten) blir naturligt långt eftersom det väger ihop två led — bygg då ut distraktorerna med egna bisatser så att de blir lika långa. Räkna orden och kontrollera: **rätt svar får aldrig vara det klart längsta alternativet.** Det är det vanligaste sättet som length-tellet smyger sig tillbaka in efter att man "fixat" innehållet.
+6. **Blindtest:** skulle någon som bara skummat texten ändå pricka rätt på längd, nyckelord eller allmän rimlighet? Om ja — skriv om tills det enda sättet att nå rätt svar är den precisa läsoperationen.

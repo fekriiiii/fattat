@@ -1,0 +1,437 @@
+2014-10-25      Högskoleprovet
+
+Provpass 1
+
+Svarshäfte nr.
+
+                Verbal del n
+
+                                               Provet innehåller 40 uppgifter
+
+Instruktion
+
+Detta provhäfte består av fyra olika delprov. Dessa är ORD (ordförståelse), LÄS (svensk läsförståelse),
+MEK (meningskomplettering) och ELF (engelsk läsförståelse). Anvisningar och exempeluppgifter
+finner du i ett separat häfte.
+
+Prov  Antal uppgifter		Uppgiftsnummer Rekommenderad provtid
+
+ORD             10			 1–10		   3 minuter
+
+LÄS             10			 11–20		  22 minuter
+
+MEK             10			 21–30		  8 minuter
+
+ELF             10			 31–40		  22 minuter
+
+  Alla svar ska föras in i svarshäftet. Det ska ske inom provtiden.
+  Markera tydligt.
+  Om du inte kan lösa en uppgift, försök då att bedöma vilket svarsförslag som verkar mest rimligt.
+  Du får inget poängavdrag om du svarar fel.
+  Du får använda provhäftet som kladdpapper.
+
+På nästa sida börjar provet som innehåller 40 uppgifter och den totala provtiden är 55 minuter.
+
+BÖRJA INTE MED PROVET FÖRRÄN PROVLEDAREN SÄGER TILL!
+
+Tillstånd har inhämtats att publicera det upphovsrättsligt skyddade material som ingår i detta prov.
+DELPROV ORD – ORDFÖRSTÅELSE
+
+1. konferera                     2. centrifug
+
+A värdera                        A torkskåp
+B bekräfta                       B plattform mitt i gatan
+C överlägga                      C kraftcentral
+D granska                        D roterande behållare
+E komma överens                  E tvättautomat
+
+3. sömndrucken                   4. oboe
+
+A i djup sömn                    A ödebygd
+B som har stort sömnbehov        B pelare
+C pigg och utvilad               C trädgårdsväxt
+D som har försovit sig           D ädelsten
+E omtöcknad av sömn              E blåsinstrument
+
+5. de facto                      6. spel för galleriet
+
+A för säkerhets skull            A hemliga förhandlingar
+B i själva verket                B publikfrieri
+C med ens                        C offentlig vadslagning
+D till varje pris                D repetition
+E på inga villkor                E exklusiv underhållning
+
+7. efterleva                     8. förtrytelse
+
+A förbättra                      A förargelse
+B ångra                          B förskräckelse
+C överta                         C förakt
+D följa                          D förtvivlan
+E ersätta                        E förvirring
+
+9. välsituerad                  10. domesticering
+
+A rik                           A inavel
+B känd                          B uppfostran
+C tränad                        C avvänjning
+D artig                         D inlärning
+E kunnig                        E tämjning
+
+                             –2–
+                                                                    DELPROV LÄS – LÄSFÖRSTÅELSE
+
+Skolalgebra                                                         upplever att de behöver ett nytt verktyg för att kunna lösa
+                                                                    problemet. För att kunna hantera de anteckningar som då
+För många elever i grundskolan är algebra ett förvirrande           görs, med hjälp av någon form av algebraisk representation,
+avsnitt i matematikundervisningen. Genom läroböckerna               är nästa steg viktigt. I många läroböcker brukar detta vara
+ställs de snabbt inför uppgifter som handlar om att skriva          lektion ett, men enligt mig är det självklart att detta avsnitt
+uttryck eller att förenkla uttryck, formulera ekvationer till       kommer efter uppgifter som kräver algebraiskt tänkande.
+problem och lösa ekvationer av typen 3x + 4 = 2x – 2. Detta
+ger få ledtrådar till vad algebra är. Det vore önskvärt att            Strävan att skriva uttryck i enklaste form ställer till pro-
+eleverna fick närma sig algebra mer strukturerat. Den alge-         blem för eleverna. För några år sedan började jag be mina
+bra som vi arbetar med i grundskolan tycker jag kan delas           elever att sätta ut de multiplikationstecken som inte syns
+in i tre delar. Första delen brukar jag benämna algebraiskt         och märkte att en väsentlig del av problem med notation
+tänkande. Det handlar om att använda variabelbegreppet              och förståelse försvann. Skillnaden mellan hur uttrycken
+för att kunna lösa uppgifter där det finns relationer mellan        2(3 + x) och 2 • (3 + x) uppfattas är gigantisk.
+objekt, t.ex. relationen i ålder mellan personer samt deras
+gemensamma ålder. Andra delen brukar jag benämna alge-                 För att träna detta använder vi bl.a. övningar som
+braisk grammatik. Den består av konventioner och nota-              påminner om sudoku. I de första matriserna ska eleverna
+tioner. Här ska eleverna exempelvis lära sig att 2x = 2 • x         addera uttryck, och de kan bara fyllas i om algebraiska för-
+och att 2x + x = 3x. Tredje delen är modellering. Det inne-         enklingar görs. Matriserna går lätt att utveckla genom att
+bär att kunna översätta en vardaglig händelse eller något           antalet rader och kolumner ändras samt att addition byts
+utommatematiskt till ett algebraiskt uttryck.                       till multiplikation. De som vill ta det ytterligare ett steg
+                                                                    kan göra en matris med division och hamna i polynom-
+   I artikeln ”Från Fibonacci till algebra” beskrev jag akti-       division. Det finns möjligheter för alla att få utmaningar.
+viteter som hjälper elever att förstå varför algebra är ett
+effektivt verktyg i många problemlösningssituationer.                  Eleverna vill gärna göra egna matriser. Ge dem det i
+Aktiviteternas enkla samband blir gradvis alltmer utma-             läxa, med tillägget: så få utsatta uttryck som möjligt – likt
+nande, mängden information och relationer överskrider               sudoku – men ändå lösbart. Låt dem sedan lösa varandras
+det som vi kan hantera med huvudräkning och enkla stöd-             matriser.
+anteckningar, och eleverna kommer till en punkt då de
+                                                                                                                    Per Berggren
+
+Uppgifter
+
+11. Vad menar textförfattaren att den sudoku-                       12. Vilken uppfattning har textförfattaren om
+     liknande övningen ska träna eleverna i?                             de tre delarna i skolalgebran som han räk-
+                                                                         nar upp?
+A Förmågan att hantera algebraiska uttryck.
+                                                                    A Eleverna bör lära sig algebrans grammatiska
+B Förmågan att lösa avancerade algebraiska                               grunder först av allt.
+     problem.
+                                                                    B Eleverna bör behärska modellering innan de
+C Förmågan att uppfatta algebraiska relationer                           utför algebraiska aktiviteter.
+     mellan objekt.
+                                                                    C Eleverna bör öva sig i algebraiskt tänkande innan
+D Förmågan att översätta vardagsaktiviteter till                         de lär sig algebrans konventioner.
+     algebraiska uttryck.
+                                                                    D Eleverna bör få sin första introduktion i algebra
+                                                                         via lustfyllda och gradvis allt svårare matriser.
+
+                                                               –3–  » FORTSÄTT PÅ NÄSTA SIDA
+LÄS
+
+Bakläxa i Arbetsdomstolen
+
+Arbetstagarskapet är tvingande till arbetstagarens förmån.           bevisa att arbetsgivaren hade uttalat en osanning (att
+Det har sin grund i den juridiska principen att en arbets-           arbetsbrist förelåg) och att osanningen objektivt sett hade
+givare och en arbetstagare inte kan avtala om att ett arbets-        haft betydelse för hennes träffande av avvecklingsavtalet.
+avtal inte är ett anställningsavtal.                                 Svekregeln var därmed tillämplig och domstolen ogiltig-
+                                                                     förklarade avtalet.
+   Trots att arbetstagarskapet är tvingande till arbetstaga-
+rens förmån kan den som är anställd förfoga över sitt arbets-           Bevisbördan vid tillämpning av ogiltighetsreglerna i
+tagarskap genom att träffa avtal om att anställningsavtalet          avtalslagen ligger på den part som hävdar ogiltigheten. I
+ska upphöra. Då gäller endast de allmänna avtalsrättsliga            det aktuella fallet kunde arbetstagaren bevisa att arbets-
+regler som återfinns i vår allmänna avtalslag. Av särskilt           givaren hade lämnat felaktig information om påstådd
+intresse är avtalslagens regel om svek, 30 § avtalslagen.            arbetsbrist, när det i själva verket förhöll sig så att arbets-
+                                                                     givaren avsåg att rekrytera.
+   Avtalslagens regel om ogiltighet vid svek innebär att om
+part har ”svikligen förlett” motparten så kan avtalet ogil-             Domstolen bedömde att lögnen objektivt sett hade
+tigförklaras. Vad menas då med svek i detta sammanhang?              betydelse för arbetstagarens agerande. Om arbetstagaren
+                                                                     vetat om de riktiga förhållandena skulle hon inte ha ingått
+   Svekregeln innehåller två kriterier. För det första ska det       avtalet, åtminstone inte på de aktuella villkoren.
+handla om en lögn. För det andra ska det vara fråga om
+en lögn som objektivt sett kan sägas ha haft betydelse för              Regeln om svek i avtalslagen handlar om tillit. Parter i
+partens benägenhet att träffa avtal.                                 ett avtal ska kunna lita på varandra så att uttalade lögner
+                                                                     eller förtiganden av väsentliga omständigheter i princip
+   I en aktuell dom (AD 2011 nr 92) har Arbetsdomsto-                medför att träffat avtal är ogiltigt. Detta gäller alltså även
+len ogiltigförklarat ett avvecklingsavtal med stöd av 30 §           i arbetsrättsliga sammanhang.
+avtalslagen. En kvinna, som träffat ett avtal om att hen-
+nes anställning skulle upphöra mot viss ersättning, kunde                                                           Tommy Iseskog
+
+Uppgifter                                                            14. Vad bör AD:s utslag rimligen ha inneburit
+                                                                          för den berörda kvinnan, om man följer
+13. Vad var innebörden av det avtal som kvin-                             textens resonemang?
+     nan ingått och som diskuteras i texten?
+                                                                     A Att hennes anställningsavtal upphörde.
+A Hennes anställning skulle fortsätta under oklara                   B Att hon fick ekonomisk kompensation.
+     villkor.                                                        C Att hennes anställning fortsatte.
+                                                                     D Att hon ersattes av en annan person.
+B Hennes anställning kunde upphöra om svek-
+     regeln var tillämpbar.
+
+C Hennes anställning ansågs oberoende av reglerna
+     i avtalslagen.
+
+D Hennes anställning skulle upphöra på grund av
+     arbetsbrist.
+
+                                                                –4–
+                                                                      LÄS
+
+Vårdcentraler och psykologer
+
+Sveriges Psykologförbund har kartlagt tillgången till psy-               Majoriteten, 82 procent, av samtliga vårdcentraler drivs
+kologer vid landets samtliga vårdcentraler. Patienters till-          i offentlig regi. Skillnaderna mellan privata och offentliga
+gång till psykologer – en kartläggning av landets vårdcentraler       vårdcentraler är stora. Endast två procent av de offentliga
+(2009) visar att endast 260 av landets cirka 930 vårdcentra-          vårdcentralerna har avtal med privatpraktiserande psyko-
+ler har psykologer anställda. 151 vårdcentraler saknar helt           loger, jämfört med 20 procent för de privata vårdcentra-
+tillgång till psykolog. Och mer än hälften av alla vårdcen-           lerna. 90 procent av fallen kommer via remiss.
+traler har varken anställda psykologer eller vårdavtal med
+privatpraktiserande psykologer.                                          Av de offentliga vårdcentralerna är det endast 30 pro-
+                                                                      cent som har anställda psykologer, medan 43 procent av
+   Mahlin Olsson, utredare på Psykologförbundet, har                  de privata har anställda psykologer.
+gjort kartläggningen.
+                                                                         – Vi vill med denna kartläggning väcka opinion och
+   – Kartläggningen visar en fördubbling av antalet anställda         debatt. Vi har lagt ut hela listan med landets samtliga vård-
+psykologer, jämfört med kartläggningen av tillgången på               centraler på Psykologförbundets hemsida så att alla kan
+psykologer på vårdcentraler som Socialstyrelsen gjorde                gå in och läsa och se vilka vårdcentraler som har anställda
+2007, och det är ju bra. Men Psykologförbundet vill att               psykologer och vilka som har avtal med privatpraktise-
+det ska finnas psykologer på samtliga vårdcentraler i lan-            rande psykologer, säger Mahlin Olsson.
+det. Det ska vara samma vård för alla oavsett var man bor
+eller hur mycket pengar man har, säger Mahlin Olsson.                    – Förbundet vill att människor ska kunna ringa direkt
+                                                                      till en psykolog på sin vårdcentral, utan att behöva gå
+   Skillnaderna i landet är stora. Dalarna har inga psyko-            via en läkare. Enligt våra undersökningar vill de flesta ha
+loger anställda och heller inget vårdavtal. Örebro saknar             psykologisk behandling, inte medicin i första hand, fort-
+anställda psykologer på sina vårdcentraler och i Östergöt-            sätter Mahlin Olsson.
+land har endast tre procent av vårdcentralerna anställda
+psykologer. I Stockholm saknar tre av fyra vårdcentra-                   I kartläggningen, som gjordes under fyra veckor i
+ler anställda psykologer. Gotland är ensamt om att ha                 maj och juni 2009, har 894 av 930 vårdcentraler besva-
+anställda psykologer på samtliga vårdcentraler.                       rat frågorna, vilket motsvarar 96 procent av samtliga
+                                                                      vårdcentraler.
+
+                                                                                                                  Kajsa Heinemann
+
+Uppgifter
+
+15. Vilken vision för vården har Psykologför-                         16. Skillnaderna i tillgång till psykolog vid
+     bundet, enligt texten?                                                vårdcentral varierar inom landet. Ger tex-
+                                                                           ten någon förklaring till detta, och i så fall
+A Mer jämlikhet.                                                           vilken?
+B Mer privatisering.
+C Mer öppenhet.                                                       A Ja, vårdcentralerna prioriterar medicinsk behand-
+D Mer konkurrens.                                                          ling framför psykologisk.
+
+                                                                      B Ja, en övervägande andel av alla vårdcentraler
+                                                                           drivs i offentlig regi.
+
+                                                                      C Ja, det går oftast inte att få en direkt kontakt
+                                                                           med psykolog i nuvarande system.
+
+                                                                      D Nej, texten ger ingen förklaring till detta.
+
+                                                                 –5–  » FORTSÄTT PÅ NÄSTA SIDA
+LÄS
+
+Förvildade hjärtan                                                    nämnare för de båda verken eftersom det är dessa drag som
+                                                                      skiljer ut dem från övrig samtida litteratur.
+Selma Lagerlöfs debutroman Gösta Berlings saga (1891)
+mottogs av ett antal litteraturkritiker på ett förringande               Lagerlöf hade förmodligen inte själv läst Nietzsche – det
+sätt. Lagerlöf ansågs vara en författare som skrev utifrån            tycks forskningen vara överens om. Emellertid var för-
+en muntlig tradition – en ”sagotant” – och betraktades                fattaren både intresserad av och känslig för tidens ten-
+som varken intellektuell eller nyskapande. Romanen fann               denser. Verkets spänning mellan det apolloniska och det
+man vara både enkel och naiv. (Ett fåtal kritiker gick mot            dionysiska – skenet som gör livet meningsfullt och den
+strömmen och beskrev romanen som modern.) Senare                      hedonistiska, lustfyllda utlevelsen – är något Bergenmar
+studier har reviderat denna (läs: ålderdomliga) uppfatt-              framhåller, och hon menar att detta inte gestaltas genom
+ning om Lagerlöfs gärning, och Vivi Edström framhåller i              någon enskild individ utan som en kollektiv stämning.
+sin biografi om Selma Lagerlöf (Livets vågspel, 2002) verket
+som ett paradigmskifte beträffande både konstfullhet och                 Denna kollektiva stämning av uppbrott och kaos, som
+politisk medvetenhet.                                                 tematiskt framställs genom ett ”bejakande av kärleken”,
+                                                                      är en kvinnornas sak där Gösta Berling inte har någon
+   Det är ur detta varierade mottagande som Jenny Ber-                framskjuten position. Anledningen är, enligt Bergenmar,
+genmar hämtat inspiration till sin avhandling Förvildade              att Berling är ”lika mycket en Don Juan (som är nam-
+hjärtan. Livets estetik och berättandets etik i Selma Lagerlöfs       net på hans häst, egen anm.) som en Faust”. Denna syn-
+Gösta Berlings saga. Bergenmar betonar att verkets ställ-             vinkel är något skev eftersom nihilism, som jag förstår
+ning, såväl ur ett samtidsperspektiv som ur ett litteratur-           den, förutsätter en extrem subjektivism som i mina ögon
+historiskt perspektiv, kräver en studie av dess förhållande           bäst gestaltas av Gösta Berling själv genom hans ständiga
+till samtidens filosofiska och estetiska strömningar, och             pendlande mellan storhetsvansinne och leda orsakad av
+att det är än mer nödvändigt eftersom författaren är en               ett begär som är omöjligt att tillfredsställa. Därutöver bör
+kvinna.                                                               man med tanke på ovan nämnda namnsymbolik påminna
+                                                                      sig att Gösta Berling även flankeras av en hund – Tankred
+   Det är genom de olika romanfigurernas förhållande till             – vars namn leder i en helt annan riktning än mot en
+omvärlden som tidens filosofiska diskussioner gestaltas.              manlighet i kris.
+Detta förhållande är könsbundet: enligt Bergenmar bidrar
+den upproriska stämning som råder i romanen till att för-                I avhandlingens fjärde kapitel beskriver Bergenmar
+ändra de kvinnliga romanfigurernas status som medbor-                 hur Lagerlöfs verk kan sägas vara en hybrid mellan det
+gare. Den retoriska figur som Lagerlöf använder för att               muntliga berättandet och det skriftliga framställningssät-
+skildra tillståndet av samhällelig och mänsklig oordning är           tet. Verket är en lyckad sammansmältning av saga och
+omkastningen. Framför allt ser Bergenmar omkastningen                 roman vilket skapar ett personligt tilltal och fängslar läsa-
+som ett sätt att rubba ”könsmaktsordningen i äktenskap,               ren. Kapitlets inriktning mot berättarteknik kan i viss mån
+hem och förhållandet till fäderna”. En annan viktig aspekt            uppfattas som inkonsekvent för avhandlingen som hel-
+av avhandlingen har varit att påvisa hur romanens idévärld            het. Särskilt kan begreppsapparaten kritiseras för att vara
+byggs upp genom att växelvis anta och förkasta moraliska              godtycklig eftersom Bergenmar underlåter att informera
+axiom och hur Lagerlöf, i tidens nihilistiska anda, undvikit          läsaren om anledningen till sitt val.
+att ge någon slutgiltig lösning på de frågor som de olika
+episoderna i romanen väcker.                                             Det är i nästföljande kapitel Bergenmar låter sig engage-
+                                                                      ras och för fram sitt credo med emfas: att moderniseringen
+   Bergenmar inleder med att beskriva 1890-talets påbör-              innebär en konflikt mellan rationalitet och känsloliv och
+jade frigörelse från realismen samt hur det estetiska livs-           att Lagerlöf genom detta tema skriver in sig i litteratur-
+projektet – nihilismen – utvecklas. På ett väl avlyssnat sätt         historien genom att låta även kvinnor utvecklas och delta
+jämför Bergenmar romanfiguren Gösta Berling och Hei-                  i samhällsförändringen. Omvälvningen är ett kvinnligt
+denstams figur Hans Alienus (Hans Alienus, 1892), hos                 projekt, mannen står för förvildning. Med denna slut-
+vilka man mycket riktigt kan finna många samstämmiga                  sats tycks avhandlingen till viss del sammanfalla med den
+idéer och ideal. ”Främlingskapets stolthet och smärta”                senaste i raden av Lagerlöfavhandlingar: Maria Karlssons
+och det ”skönhetssvärmeri” (enligt Oscar Levertin) som                avhandling, Känslans röst. Det melodramatiska i Selma
+Alienus uttrycker skulle likaväl kunna gälla Gösta Berling.           Lagerlöfs romankonst (2002), som delvis behandlar Gösta
+Bergenmar har dock valt att betona livsglädjen, det hög-              Berlings saga. I detta kapitel, som är både välskrivet och
+stämda tonläget, blandningen av stilarter samt försöken               intressant, förs även en diskussion om förnuft ställt mot
+att frigöra sig från ett förljuget samhälle som gemensamma
+
+                                                                 –6–
+                                                                    LÄS
+
+känsla samt erotik och etik. Hur ska människan kunna                många infallsvinklar. Och kanske är jag inte fullt över-
+leva utan vare sig religiösa eller sociala lagar? Hur ska hon       tygad om den skarpa gräns som Bergenmar drar mellan
+ensam kunna avgöra vad som är gott och ont?                         konsekvenserna av kvinnornas respektive Gösta Berlings
+                                                                    (samt de övriga kavaljerernas) handlingar – för mig fram-
+   Romanens avslut tycks uttrycka ett avståndstagande               står de samtliga som en skara desillusionerade varelser –
+från den erotiska utlevelsen till förmån för en altruistisk         men de iakttagelser som framförts är både intressanta och
+människokärlek, men sensmoralen är långt ifrån entydig.             tänkvärda, och romanens nihilistiska tendens som Bergen-
+Bergenmar framhåller ett slut utan syntes vilket harmo-             mar redogjort för är en mycket intressant ståndpunkt och
+nierar med romanens genomgående strategi att låta det               något för forskningen att gripa tag i framgent.
+moraliska ställningstagandet pendla såväl genom tema
+som genom komposition, något som blir belyst på ett                                                           Maria Wahlström
+utmärkt sätt. Bergenmar har heller inte förbisett tidigare
+forskningsresultat samtidigt som hon tydligt redogjort              nihilism = ståndpunkt som förnekar att det existerar en
+för sina egna ståndpunkter. Möjligtvis hade avhandlingen            objektiv grund för t.ex. kunskap eller moraliska värden
+tjänat på ytterligare sammanhållning; ibland är associa-
+tionerna väl yviga och texten sveper därmed över alltför
+
+Uppgifter                                                           19. Hur kan man utifrån texten bäst beskriva
+                                                                         romanen Gösta Berlings saga?
+17. Vad är huvudinriktningen för den recense-
+     rade avhandlingen om Gösta Berlings saga?                      A Traditionstyngd och med många symboler.
+                                                                    B Växlingsrik och utan svar.
+A Att belysa kopplingarna mellan romanens inne-                     C Koncentrerad och med klara ideal.
+     håll och dåtidens idéer.                                       D Flyktig och utan budskap.
+
+B Att utforska det blandade mottagande som                          20. Hur betraktar recensenten sammanfatt-
+     romanen fick när den gavs ut.                                       ningsvis Jenny Bergenmars ståndpunkter?
+
+C Att undersöka förhållandet mellan romangestal-                    A Som i huvudsak en bekräftelse av andra forska-
+     ten Gösta Berling och dåtidens mansroll.                            res slutsatser.
+
+D Att klarlägga i vilken grad romanens motiv har                    B Som väl värda att begrunda och dessutom
+     stöd i Selma Lagerlöfs egen livssituation.                          utforska vidare.
+
+18. I en fråga ställer sig recensenten tveksam                      C Som inspirerande för både andra forskare och
+     till Jenny Bergenmars resonemang om                                 vanliga läsare.
+     Gösta Berlings saga.Vilken fråga?
+                                                                    D Som alltför långtgående för att motivera till
+A Frågan om vilken nutida ställning romanen har.                         fortsatt forskning.
+B Frågan om vilken litterär genre romanen tillhör.
+C Frågan om vilken roll tidsandan spelar i romanen.
+D Frågan om vilken betydelse kön har i romanen.
+
+                                                               –7–  » FORTSÄTT PÅ NÄSTA SIDA
+DELPROV MEK – MENINGSKOMPLETTERING
+
+              21. Ett centralt kapitel i boken är ett collage av ____ om ensamhet som hon har läst i
+                   böcker och artiklar och sedan ____ lite grann efter eget huvud.
+
+              A förvrängningar – beskurit
+              B uppfattningar – plagierat
+              C symboler – kopierat
+              D påståenden – förändrat
+
+              22. De tidiga avhoppen har många olika orsaker. Studenten kan till exempel ha upptäckt
+                   att han eller hon gjort ett felval. Men det kan också handla om svårigheter att klara av
+                   utbildningen. Matematiken anges som en ____ i flera självvärderingar.
+
+              A minnesbeta
+              B rotvälska
+              C stötesten
+              D tankenöt
+
+              23. Det var en tystlåten och kraftigt byggd man med så stubinkort hår att han ____ tyck-
+                   tes vara helt skallig. Svensson var 38 år gammal och hade nyligen kommit till roteln
+                   från Huddingepolisen där han ägnat många år åt utredningar om gängbrottslighet. Han
+                   hade rykte om sig att ____ ett häftigt humör och hårda nypor, vilket var en ____ för
+                   att han möjligen använde metoder gentemot klientelet som inte var helt förenliga
+                   med det polisiära reglementet.
+
+              A ibland – förena – analys
+              B till synes – uppbåda – tolkning
+              C på håll – besitta – omskrivning
+              D verkligen – anta – beskrivning
+
+              24. Idag har det ena minnet efter det andra ____ honom. Några av dem har varit beklag-
+                   liga, några ganska bra; några har stämt ner hans humör och gjort honom ____.
+
+              A avlöst – disträ
+              B hemsökt – moloken
+              C påmint – yster
+              D svikit – lidelsefull
+
+                                                                          –8–
+                                                                                                                                                   MEK
+
+25. Efter omkring 3 veckors ruvning kläcks kycklingarna, som redan från början är ganska
+     ____ och kan följa modern och under hennes ledning söka föda.
+
+A försiktiga
+B försigkomna
+C förfördelade
+D förtjänstfulla
+
+26. Begränsningsåtgärder inom äldrevården får inte förekomma ____ och flera studier
+     visar att åtgärderna inte har lett till ett minskat antal fallskador. Begränsningsåtgärder
+     ska vara ordinerade, och i de fall de förekommer måste de ____ och regelbundet
+     omprövas.
+
+A rutinmässigt – beordras
+B tidsmässigt – rapporteras
+C slentrianmässigt – dokumenteras
+D regelmässigt – åtgärdas
+
+27. Naturalisterna drevs inte bara av ambitionen att fokusera på social misär och utsug-
+     ning av arbetare. Orättvisa och korruption i alla dess former var som ____ för dem.
+
+A vita fläckar
+B blå dunster
+C svarta får
+D röda skynken
+
+28. Vi kan se spåren av människors ____ arbete i äldre tid med att erövra och nyttja
+     detta landskap för produktion av ____; här dikade man ____ för att få slåtter av gräs
+     på så kallade översilningsängar, alltså naturlig ängsmark som genom grävda diken till-
+     förs vatten.
+
+A sträva – spannmål – åkermark
+B idoga – djurfoder – myrar
+C flitiga – träråvara – skogar
+D kärva – energigrödor – sjöar
+
+–9–  » FORTSÄTT PÅ NÄSTA SIDA
+MEK
+
+              29. Hans vision var ett ____ Stockholm, en storstad i stil med New York, med nattöppna
+                   restauranger, affärer och teatrar. I den meningen var han en radikal modernist. Men
+                   han var ingen estet. Han såg på Stockholm med ingenjörens ögon, inte med ____.
+
+              A urbant – arkitektens
+              B provinsiellt – konstnärens
+              C kommersiellt – entreprenörens
+              D subkulturellt – regissörens
+              30. I en uppföljningsstudie fick studenterna göra en utvärdering av övningen. Många ogil-
+
+                   lade att de osjälviska fick de rättvisa, alltså de som hade tagit och gett ungefär lika
+                   mycket, att framstå som dåliga. Man kommenterade också att de osjälviska bröt mot
+                   ____ genom att hålla sig för goda för belöningssystemet.
+              A konvenansen
+              B legitimiteten
+              C diskrepansen
+              D generositeten
+
+                                                                         – 10 –
+
