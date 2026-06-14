@@ -96,6 +96,13 @@ function featuredLiteral(f) {
   fail('featured_ord_words måste vara en array av ord eller en {"..."}-literal');
 }
 
+// Pull the headwords out of either form: ["a","b"] or the {"a","b"} CSV-literal.
+function featuredWords(f) {
+  if (Array.isArray(f)) return f.map((w) => String(w).trim()).filter(Boolean);
+  if (typeof f === 'string') return (f.match(/"([^"]+)"/g) || []).map((s) => s.slice(1, -1));
+  return [];
+}
+
 // ---- load -----------------------------------------------------------------
 let payload;
 try { payload = JSON.parse(fs.readFileSync(payloadPath, 'utf8')); }
@@ -142,6 +149,48 @@ if (payload.unit_position === 'lång' && wordCount < 950) warn(`lång-text på $
 if (existingIds.includes(nextId)) warn(`id ${nextId} finns redan i filen`);
 const titleIdx = colIdx('title');
 if (titleIdx !== -1 && dataRows.some((r) => r[titleIdx] === payload.title)) warn(`En artikel med titeln "${payload.title}" finns redan — dubblett?`);
+
+// ORD-överlapp: varna om ett featured-ord redan är featured i en annan artikel.
+// Mjuk varning (inte fail) — ibland vill man medvetet förstärka samma ord i två texter.
+const fIdx = colIdx('featured_ord_words');
+const idCol = colIdx('id');
+if (fIdx !== -1) {
+  const featuredById = new Map(); // headord (gemener) -> Set(id)
+  for (const r of dataRows) {
+    const rid = idCol !== -1 ? r[idCol] : '?';
+    for (const w of featuredWords(r[fIdx])) {
+      const key = w.toLowerCase();
+      if (!featuredById.has(key)) featuredById.set(key, new Set());
+      featuredById.get(key).add(rid);
+    }
+  }
+  for (const w of featuredWords(payload.featured_ord_words)) {
+    const hits = featuredById.get(w.toLowerCase());
+    if (hits && hits.size) warn(`ordet "${w}" är redan featured i id ${[...hits].join(', ')}`);
+  }
+}
+
+// Curated-guard: featured-ord ska vara curated. Daglig ORD introducerar bara
+// past_exams='curated' (migration 022); past-HP-ord tränas aldrig dagligen, så
+// att featurea dem ger död ORD→LÄS-förstärkning. Mjuk varning (hoppas om
+// ord-database.csv saknas, så skriptet funkar även utanför repo-roten).
+try {
+  const ordRows = parseCSV(fs.readFileSync('ord-database.csv', 'utf8').replace(/^﻿/, ''));
+  const oHead = ordRows[0];
+  const wIdx = oHead.indexOf('word');
+  const peIdx = oHead.indexOf('past_exams');
+  if (wIdx !== -1 && peIdx !== -1) {
+    const peByWord = new Map();
+    for (const r of ordRows.slice(1)) if (r[wIdx]) peByWord.set(r[wIdx].toLowerCase(), r[peIdx]);
+    for (const w of featuredWords(payload.featured_ord_words)) {
+      const pe = peByWord.get(w.toLowerCase());
+      if (pe === undefined) warn(`featured-ordet "${w}" finns inte i ord-database.csv`);
+      else if (pe !== 'curated') warn(`featured-ordet "${w}" är past-HP (past_exams=${pe}) — tränas inte i daglig ORD, ger död ORD→LÄS-förstärkning`);
+    }
+  }
+} catch (e) {
+  console.log('  (curated-koll hoppades över: kunde inte läsa ord-database.csv)');
+}
 
 // ---- build row in header order -------------------------------------------
 const valueByCol = {

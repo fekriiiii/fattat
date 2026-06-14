@@ -129,7 +129,7 @@ For all articles simultaneously, run Steps 5–9 from the single-article command
 - **Step 6:** Determine domain, genre, word_count, difficulty, question_count
 - **Step 7:** Format questions JSON (type, stem, options, correct, passage_anchor, explanation, distractor_types, notes)
 - **Step 8:** Format vocab_highlights JSON
-- **Step 9:** Set featured_ord_words
+- **Step 9:** Set featured_ord_words (**curated words only** — `past_exams = 'curated'`; past-HP words stay in the body/glossary but are never featured)
 
 Run quality checks silently. If any article fails a check (e.g. a passage_anchor can't be found verbatim in the final body), flag it specifically rather than blocking the whole batch.
 

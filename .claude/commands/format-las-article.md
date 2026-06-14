@@ -126,7 +126,7 @@ Combine:
 - ORD words detected naturally in Step 3
 - ORD words baked in via approved swaps in Step 4
 
-This combined list is what feeds both `vocab_highlights` and `featured_ord_words`. Deduplicate.
+This combined list feeds `vocab_highlights` (the reading glossary — may include past-HP words). But `featured_ord_words` is the ORD→LÄS reinforcement tag and takes **curated words only** (`past_exams = 'curated'`): daily ORD never introduces past-HP words (migration 022), so featuring them is dead reinforcement. Look up `past_exams` for each detected/swapped word and drop non-curated ones from the featured set (they stay in the body and may stay in `vocab_highlights`). Deduplicate. (`append-las-row.cjs` warns if a non-curated word reaches `featured_ord_words`.)
 
 ---
 
@@ -235,7 +235,7 @@ Use the `definition_sv` value verbatim from the ORD database.
 
 ## Step 9 — Set featured_ord_words
 
-The combined list from Step 5, formatted as a JSON array of strings:
+The combined list from Step 5 — **curated words only** (`past_exams = 'curated'`; drop past-HP words even if they appear in the body) — formatted as a JSON array of strings:
 
 ```
 ["förskjutning","vördnad","godtycke","premieras"]

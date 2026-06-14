@@ -58,7 +58,7 @@ If the user provides any of these, honor them. For any field left as `"välj"`, 
    - Build a coverage map: count how many times each ORD word appears across all `featured_ord_words` columns
 
 2. Read `ord-database.csv` in full (read in chunks of ~200 rows if needed). Extract for each entry:
-   - `word`, `correct_synonym`, `accepted_synonyms`, `definition_sv`, `pos`, `domain`, `difficulty`
+   - `word`, `correct_synonym`, `accepted_synonyms`, `definition_sv`, `pos`, `domain`, `difficulty`, `past_exams`
 
 ---
 
@@ -109,10 +109,12 @@ Using the coverage map from Step 2, assign each ORD word a tier:
 
 ### 4b — Select candidates
 
-Build a shortlist of ORD words that fit the article's domain + genre. Priority:
-1. Tier 1/2 words whose `domain` matches
-2. Tier 1/2 words from adjacent domains
-3. Tier 3 domain-matching words if shortlist is thin
+**Hard filter — curated only.** Target and feature ONLY words with `past_exams = 'curated'`. Daily ORD introduces *only* curated words as new FSRS cards (migration 022); past-HP words (`past_exams = '2024-V'`, `'2017-V'`, …) are never practiced daily, so featuring them gives **dead ORD→LÄS reinforcement** — the article can never be selected for "you recently practiced word X" because X is never in the user's daily rotation. Past-HP words may still appear *incidentally* in the body (often they're the most natural term — e.g. a legal term in a juridisk text) and may be glossed in `vocab_highlights` as reading help, but they must NOT be `featured_ord_words` targets. `append-las-row.cjs` enforces this with a warning, but select correctly from the start.
+
+Build a shortlist of **curated** ORD words that fit the article's domain + genre. Priority:
+1. Tier 1/2 curated words whose `domain` matches
+2. Tier 1/2 curated words from adjacent domains
+3. Tier 3 curated domain-matching words if shortlist is thin
 
 Only include words that can be used naturally in the target register.
 
@@ -287,14 +289,14 @@ Ask: *"Ser frågorna bra ut? Skriv 'ja' eller berätta vad som behöver justeras
 From the confirmed article body:
 
 1. List every ORD word (headword form) present in any inflected form
-2. Look up `definition_sv` for each in `ord-database.csv`
+2. Look up `definition_sv` and `past_exams` for each in `ord-database.csv`
 
-**vocab_highlights**:
+**vocab_highlights** — reading glossary; may include any notable ORD word in the body, *including* past-HP words (they aid comprehension):
 ```json
 [{ "word": "prognos", "definition": "..." }, ...]
 ```
 
-**featured_ord_words** (Postgres array literal):
+**featured_ord_words** (Postgres array literal) — the ORD→LÄS reinforcement tag, so **curated words only** (`past_exams = 'curated'`). Drop any past-HP word from this list even if it appears in the body — daily ORD never trains it, so featuring it is dead reinforcement. (`append-las-row.cjs` warns if a non-curated word slips through.)
 ```
 {"prognos","kontroversiell",...}
 ```
