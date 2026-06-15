@@ -135,6 +135,19 @@ payload.questions.forEach((q, idx) => {
   if (!(q.correct in q.options)) fail(`Fråga ${idx + 1}: 'correct'=${q.correct} finns inte bland options-nycklarna`);
 });
 
+// Question-quality guard — the tell AI HP-questions keep producing: the correct
+// answer is the longest option. Option POSITION is deliberately NOT checked: the
+// session/test/diagnostic pages shuffle options via shuffleOptions() and relabel
+// A–D at render, so the stored correct letter never reaches the user — only the
+// option *lengths* survive the shuffle, so length is the only real tell.
+payload.questions.forEach((q, idx) => {
+  const opts = q.options || {};
+  const clen = String(opts[q.correct] || '').trim().length;
+  const dlens = Object.keys(opts).filter((k) => k !== q.correct).map((k) => String(opts[k]).trim().length);
+  const maxD = dlens.length ? Math.max(...dlens) : 0;
+  if (dlens.length && clen > maxD) warn(`Fråga ${idx + 1}: rätt svar (${q.correct}) är längst (${clen} tecken mot ${maxD}) — längd-tell; gör minst en distraktor minst lika lång`);
+});
+
 // ---- derive ---------------------------------------------------------------
 const existingIds = dataRows.map((r) => parseInt(r[0], 10)).filter((n) => !isNaN(n));
 const nextId = payload.id != null ? payload.id : (existingIds.length ? Math.max(...existingIds) + 1 : 1);
