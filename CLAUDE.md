@@ -5,7 +5,9 @@
 ---
 
 ## The Seed Command
-npx tsx scripts/seed.ts --ord=ord-database.csv --las=las-database.csv
+npx tsx scripts/seed.ts --ord=ord-database.csv --las-dir=las
+
+> ORD words live in `ord-database.csv`. LÄS articles live in the **`las/` folder — one JSON file per article** (not a single CSV; see "Recent Fixes"). The legacy `--las=las-database.csv` flag still imports the old CSV if ever needed, but new articles are written to `las/`.
 
 ## How to Work With the Founder
 
@@ -165,20 +167,20 @@ Two slash commands in `.claude/commands/`:
 **ORD — `/extract-hp-words`**
 User provides a past HP exam PDF + facit PDF. Claude extracts words, identifies correct synonyms and distractors, writes Swedish definitions and example sentences, classifies domain/difficulty. Output: CSV rows for `ord-database.csv`.
 
-**LÄS — `/format-las-article`**
-User provides article + questions (generated externally in HP style). Claude auto-detects existing ORD-database words in the body, proposes 3–6 synonym swaps to bake in more ORD words (user approves each), then generates `passage_anchor`, `explanation`, `distractor_types`, `vocab_highlights`, `featured_ord_words`. Output: complete CSV row for `las-database.csv`.
+**LÄS — `/format-las-article`** (also `/write-las-article`, `/batch-las-articles`)
+User provides article + questions (generated externally in HP style). Claude auto-detects existing ORD-database words in the body, proposes 3–6 synonym swaps to bake in more ORD words (user approves each), then generates `passage_anchor`, `explanation`, `distractor_types`, `vocab_highlights`, `featured_ord_words`. Output: one JSON file in the `las/` folder, written via `scripts/add-las-article.cjs` (validates + encodes; never hand-write the file).
 
 **ORD→LÄS connection:** `featured_ord_words` on articles lets the session builder prefer articles that reinforce recently practiced ORD words. Silent — users just notice relevance.
 
-### CSV schemas
+### Content schemas
 
-**ORD:** `id, word, pos, correct_synonym, distractor_1–4, definition_sv, example_sentence, domain, difficulty, past_exams, accepted_synonyms, notes`
+**ORD** (CSV: `ord-database.csv`): `id, word, pos, correct_synonym, distractor_1–4, definition_sv, example_sentence, domain, difficulty, past_exams, accepted_synonyms, notes`
 - `accepted_synonyms` — comma-separated alternatives for the typing variant (e.g. `spådom,prediktion`)
 
-**LÄS:** `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, notes`
-- `questions` — JSON: `[{n, type, stem, options:{A,B,C,D}, correct, passage_anchor, explanation, distractor_types, notes}]`
-- `vocab_highlights` — JSON: `[{word, definition}]`
-- `featured_ord_words` — Postgres array literal: `{"prognos","diffus"}`
+**LÄS** (one JSON file per article in `las/`): `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`
+- `questions` — array: `[{n, type, stem, options:{A,B,C,D}, correct, passage_anchor, explanation, distractor_types, notes}]`
+- `vocab_highlights` — array: `[{word, definition}]`
+- `featured_ord_words` — array of strings: `["prognos","diffus"]`
 
 ---
 
@@ -198,6 +200,8 @@ Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber b
 ---
 
 ## Recent Fixes
+
+**LÄS storage: one file per article + featured_ord_words seed bug (2026-06-16)** — moved LÄS articles off the single growing `las-database.csv` and into a **`las/` folder, one JSON file per article**. Motivation was authoring scale, not the database: 100+ articles is trivial for Postgres, but a ~1MB single-line-per-article CSV is slow and fragile for Claude Code to *edit* (fixing article #43 meant reading/parsing the whole file). Per-file means an edit only ever touches `las/043-*.json`; the add path was already safe (the writer appends, never rewrites). Four pieces: (1) `scripts/migrate-las-to-files.cjs` (one-off) split the 6 existing articles into `las/<id>-<slug>.json`; (2) `scripts/seed.ts` now reads the folder via `--las-dir=las` (legacy `--las=file.csv` still imports the old CSV), sharing one record-builder between both paths; (3) `scripts/add-las-article.cjs` replaces `append-las-row.cjs` — same guards (em-dash ban, length-tell, dup-title, curated-only featured words, cross-article overlap, parse-back verify) but writes one JSON file and derives the next id from the folder; (4) the three LÄS skills + this doc updated to the new flow. **Also fixed a silent bug found along the way:** the old `seedLas` never copied `featured_ord_words` into the DB (it was absent from the insert object), so the column sat empty (`{}`) on every article and the ORD→LÄS reinforcement feature — the whole point of `featured_ord_words` — was a no-op in production. The folder seed inserts it properly; re-seeding the 6 existing articles backfills it live. `las-database.csv` is kept on disk as a frozen backup of the migration source (git also has it). Files: `scripts/migrate-las-to-files.cjs` (new), `scripts/add-las-article.cjs` (new, replaces `append-las-row.cjs`), `scripts/seed.ts`, `.claude/commands/{write,format,batch}-las-article(s).md`, `las/*.json` (new). *North Star: goal #1 — the bottleneck to a deep LÄS bank (needed for ~4 months of daily training before 18 okt and for the post-result marketing) isn't the database, it's how painlessly the founder + Claude Code can produce and *fix* articles; this keeps that friction flat as the corpus grows. The featured_ord_words fix also revives a cog-sci differentiator (ORD→LÄS reinforcement) that had quietly been doing nothing.*
 
 **ORD morphology decode in feedback — v1 (2026-06-16)** — gives students a tool for the unknown-word problem the övningsprov explainer only *names* ("du möter alltid okända ord"). After a full morphological sweep of all 877 ORD words (`analysis/ORD_morfologi.md`), the key finding was that the bigger lever isn't the headword but the **answer options** — 3 753 distinct option words vs 877 headwords, and "not knowing what the alternatives mean" is the real bottleneck (founder + friends). `decodeWord()` (`src/lib/ord/morphology.ts`) breaks a Swedish word into its building blocks, **computed at runtime** (not a stored field — most option words aren't DB headwords) and **conservative** (returns `null` unless confident; silence beats a wrong split). v1 covers meaning-bearing suffixes only — `-lös`/`-full`/`-fri`/`-bar`/`-värd`/`-värt`/`-aktig` — verified against the full corpus at 60 confident decodes, 0 wrong splits. Guards: leading-`o` words skipped (an unhandled negation would invert meaning — `oanvändbar`); a false-positive set (`underbar`, `uppenbar`, `överfull`, `varaktig`…); paraphrase only from an unambiguous base so a stem like `gräns` is never corrupted to `grän`. Surfaced as a "Byggstenar" block in ORD feedback **post-answer only** (Rule #2 — never a hint): correct answer → headword + correct synonym (snappy); wrong answer → headword + every option. Dropped from v1: `-sam` (too semantically varied for one honest gloss). Next on the same rails: prefixes (negation first), then compound-splitting, then a curated English-cognate table. Files: `src/lib/ord/morphology.ts` (new), `src/components/ord/MorphemeBreakdown.tsx` (new), `src/components/ord/OrdFeedback.tsx`, `src/components/ord/OrdFeedbackTyping.tsx`. Production build verified green. *North Star: goal #1 — a transferable skill that lifts performance on words the student never studied, which no Swedish HP competitor teaches; pedagogy, not access (the locked vision).*
 

@@ -1,6 +1,6 @@
 # Write LÄS Article — Generate and Add to Database
 
-Generate an HP-authentic LÄS article from scratch, with ORD-database vocabulary baked in during writing. Uses empirical HP patterns (from `analysis/_LAS_analys.md`) to match authentic register, length, and question-type distribution. Always plans against the target slot distribution before writing. Outputs a complete CSV row for `las-database.csv`.
+Generate an HP-authentic LÄS article from scratch, with ORD-database vocabulary baked in during writing. Uses empirical HP patterns (from `analysis/_LAS_analys.md`) to match authentic register, length, and question-type distribution. Always plans against the target slot distribution before writing. Outputs one article file in the `las/` folder.
 
 ---
 
@@ -50,10 +50,10 @@ Take these from the invocation if the user supplied them; otherwise auto-derive 
 
 ## Step 2 — Read databases
 
-1. Read `las-database.csv`:
-   - Find the current maximum `id`
-   - For each existing article, record: `domain`, `genre`, `unit_position`, `featured_ord_words`
-   - Build a coverage map: count how many times each ORD word appears across all `featured_ord_words` columns
+1. Read the `las/` folder (one JSON file per article):
+   - Find the current maximum `id` (the writer script also derives this automatically, but you need it for the slot plan)
+   - For each existing article file, record: `domain`, `genre`, `unit_position`, `featured_ord_words`
+   - Build a coverage map: count how many times each ORD word appears across all articles' `featured_ord_words`
 
 2. Read `ord-database.csv` in full (read in chunks of ~200 rows if needed). Extract for each entry:
    - `word`, `correct_synonym`, `accepted_synonyms`, `definition_sv`, `pos`, `domain`, `difficulty`, `past_exams`
@@ -107,7 +107,7 @@ Using the coverage map from Step 2, assign each ORD word a tier:
 
 ### 4b — Select candidates
 
-**Hard filter — curated only.** Target and feature ONLY words with `past_exams = 'curated'`. Daily ORD introduces *only* curated words as new FSRS cards (migration 022); past-HP words (`past_exams = '2024-V'`, `'2017-V'`, …) are never practiced daily, so featuring them gives **dead ORD→LÄS reinforcement** — the article can never be selected for "you recently practiced word X" because X is never in the user's daily rotation. Past-HP words may still appear *incidentally* in the body (often they're the most natural term — e.g. a legal term in a juridisk text) and may be glossed in `vocab_highlights` as reading help, but they must NOT be `featured_ord_words` targets. `append-las-row.cjs` enforces this with a warning, but select correctly from the start.
+**Hard filter — curated only.** Target and feature ONLY words with `past_exams = 'curated'`. Daily ORD introduces *only* curated words as new FSRS cards (migration 022); past-HP words (`past_exams = '2024-V'`, `'2017-V'`, …) are never practiced daily, so featuring them gives **dead ORD→LÄS reinforcement** — the article can never be selected for "you recently practiced word X" because X is never in the user's daily rotation. Past-HP words may still appear *incidentally* in the body (often they're the most natural term — e.g. a legal term in a juridisk text) and may be glossed in `vocab_highlights` as reading help, but they must NOT be `featured_ord_words` targets. `add-las-article.cjs` enforces this with a warning, but select correctly from the start.
 
 Build a shortlist of **curated** ORD words that fit the article's domain + genre. Priority:
 1. Tier 1/2 curated words whose `domain` matches
@@ -122,7 +122,7 @@ Target count:
 
 ### 4c — Select (no gate)
 
-Pick the words internally — no separate approval. They surface in the final draft (Step 7) for the single review, and `append-las-row.cjs` enforces curated-only + no cross-article overlap. If the user named a theme/angle, prefer words that serve it.
+Pick the words internally — no separate approval. They surface in the final draft (Step 7) for the single review, and `add-las-article.cjs` enforces curated-only + no cross-article overlap. If the user named a theme/angle, prefer words that serve it.
 
 ---
 
@@ -158,7 +158,7 @@ Pick the words internally — no separate approval. They surface in the final dr
 - **No pedagogical scaffolding**: never write "Som vi ska se", "Det är viktigt att notera", "I denna text diskuterar vi"
 - **Swedish discourse markers**: "Det framgår att", "Forskning visar att", "Enligt X har det visats att", "Det råder delade meningar om"
 - **Source voice**: sounds like it appeared in a real Swedish publication (Forskning & Framsteg, Läkartidningen, DN Debatt, Riksrevisionen, Juridisk Tidskrift)
-- **Inga em-dash (—)**: använd punkt, komma eller kolon i stället. Em-dash är den tydligaste signaturen på AI-skriven text. Gäller brödtext *och* frågetext (stem/alternativ/förklaring). Kolon för utvikning och en-dash (–) för intervall är okej. Hård spärr i `append-las-row.cjs` som blockerar append om en em-dash slinker med.
+- **Inga em-dash (—)**: använd punkt, komma eller kolon i stället. Em-dash är den tydligaste signaturen på AI-skriven text. Gäller brödtext *och* frågetext (stem/alternativ/förklaring). Kolon för utvikning och en-dash (–) för intervall är okej. Hård spärr i `add-las-article.cjs` som blockerar append om en em-dash slinker med.
 
 ### ORD word integration rules
 
@@ -283,27 +283,27 @@ From the confirmed article body:
 [{ "word": "prognos", "definition": "..." }, ...]
 ```
 
-**featured_ord_words** (Postgres array literal) — the ORD→LÄS reinforcement tag, so **curated words only** (`past_exams = 'curated'`). Drop any past-HP word from this list even if it appears in the body — daily ORD never trains it, so featuring it is dead reinforcement. (`append-las-row.cjs` warns if a non-curated word slips through.)
+**featured_ord_words** (Postgres array literal) — the ORD→LÄS reinforcement tag, so **curated words only** (`past_exams = 'curated'`). Drop any past-HP word from this list even if it appears in the body — daily ORD never trains it, so featuring it is dead reinforcement. (`add-las-article.cjs` warns if a non-curated word slips through.)
 ```
 {"prognos","kontroversiell",...}
 ```
 
 ---
 
-## Step 9 — Append the row via the safe encoder
+## Step 9 — Write the article file via the safe writer
 
-Do **not** hand-encode the CSV. The fiddly + dangerous escaping (doubled quotes, embedded newlines, the `featured_ord_words` array literal, the file's BOM) is handled by a tested helper: `scripts/append-las-row.cjs`. It auto-counts `word_count`, auto-assigns the next `id`, validates the row (required fields, `correct` ∈ options, kort=2/lång=4, dup-title), and verifies the row parses back before writing. A single mis-typed quote in a hand-built row can break the seed pipeline silently — this removes that risk.
+Do **not** hand-write the JSON file. Use the tested helper `scripts/add-las-article.cjs`. It auto-counts `word_count`, auto-assigns the next `id` (max in `las/` + 1), validates (required fields, `correct` ∈ options, kort=2/lång=4, dup-title, em-dash ban, length-tell, curated-only featured words, cross-article featured overlap), and verifies the record serializes + parses back before writing one file to `las/<id>-<slug>.json`. Every article is its own file, so editing one later never touches the others.
 
 **difficulty**: 1 = accessible, 2 = solid reading required, 3 = dense/formal/technical.
 
 Steps:
 
-1. Assemble the confirmed article as a **plain JSON payload** (native values — no CSV escaping anywhere). Required keys: `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body`, `questions` (array), `vocab_highlights` (array), `featured_ord_words` (**array of strings**, e.g. `["prognos","diffus"]` — the script builds the `{"..."}` literal). Optional (defaults applied): `id` (max+1), `word_count` (counted from body), `question_count` (= questions.length), `source_url` (`""`), `source_name` (`"Fattat"`), `past_hp` (`""`), `is_designed_content` (`true` → `TRUE`), `notes` (`""`). Write it to a temp file, e.g. `_las_payload.json`.
+1. Assemble the confirmed article as a **plain JSON payload** (native values). Required keys: `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body`, `questions` (array), `vocab_highlights` (array), `featured_ord_words` (**array of strings**, e.g. `["prognos","diffus"]`). Optional (defaults applied): `id` (max+1), `word_count` (counted from body), `question_count` (= questions.length), `source_url` (`""`), `source_name` (`"Fattat"`), `past_hp` (`""`), `is_designed_content` (`true`), `notes` (`""`). Write it to a temp file, e.g. `_las_payload.json`.
 
-2. **Dry-run, then append — automatically** (the single "ja" from Step 7 already authorized this; do NOT ask again):
+2. **Dry-run, then write — automatically** (the single "ja" from Step 7 already authorized this; do NOT ask again):
    ```
-   node scripts/append-las-row.cjs _las_payload.json --dry-run
-   node scripts/append-las-row.cjs _las_payload.json
+   node scripts/add-las-article.cjs _las_payload.json --dry-run
+   node scripts/add-las-article.cjs _las_payload.json
    ```
    Only pause if the dry-run prints a ⚠ warning that genuinely needs a human decision (e.g. a length/curated/overlap issue you can't resolve yourself) — surface just that. A benign length warning for a body inside the HP empirical range (783–1192 words) is fine to note in passing and proceed.
 
@@ -311,7 +311,7 @@ Steps:
 
 5. Show the updated slot table from Step 3a so the user sees how the balance shifted.
 
-Column order in the CSV, for reference: `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`. The script reads these from the header row, so it stays correct even if the schema changes later.
+The article file's keys mirror the seed's expectations: `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`. The seed reads every `las/*.json` file, so a new article goes live on the next seed run.
 
 ---
 
@@ -327,5 +327,5 @@ Column order in the CSV, for reference: `id, title, source_url, source_name, dom
 - question_count matches actual question count
 - unit_position matches: `kort` = 2 questions, `lång` = 4 questions
 - featured_ord_words matches ORD words actually present in confirmed body
-- Inga em-dash (—) i brödtext eller frågetext (ersätt med punkt, komma eller kolon; hård spärr i `append-las-row.cjs`)
+- Inga em-dash (—) i brödtext eller frågetext (ersätt med punkt, komma eller kolon; hård spärr i `add-las-article.cjs`)
 - Slot classification of this article is correct (will be used in updated slot table)

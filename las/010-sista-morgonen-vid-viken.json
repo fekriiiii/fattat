@@ -1,0 +1,92 @@
+{
+  "id": 10,
+  "title": "Sista morgonen vid viken",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "litterär_prosa",
+  "word_count": 288,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Det var den sista morgonen i huset, och Gerda hade klätt sig som till en bjudning. De andra gick i strumplästen mellan flyttlådorna och bar ut det som skulle bäras ut, men hon stod vid fönstret i sin grå kappa, redan färdig, som om hon väntade på någon. Barnbarnet Maj såg på henne från dörren och tänkte att mormodern alltid hade ägt den förmågan: att göra sig i ordning för just det som andra helst ville glömma så fort som möjligt.\r\n\r\nLjuset över viken var lågt och vemodigt den morgonen, ett grått ljus som lade sig över de tomma rummen utan att fästa vid något. Möblerna var redan utburna. Kvar fanns bara de ljusare fyrkanterna på tapeten, där tavlorna hade hängt i femtio år.\r\n\r\nMaj hade väntat sig tårar. Hon hade förberett sig på att trösta, på att säga något om att ett hus ändå bara är väggar. Men Gerdas anletsdrag var alldeles lugna, och ingenting i dem röjde vad hon kände. Hon såg nästan road ut. En gång, mindes Maj från fotografierna, hade den gamla kvinnans fägring varit något man talade om i hela socknen. Nu var ansiktet fårat, men hållningen var densamma.\r\n\r\n\"Du behöver inte hjälpa till\", sa Maj försiktigt. Det var fel sak att säga. Gerda hade städse gjort allt själv, och hon var alldeles för egensinnig för att ta emot en arm bara för att golvet lutade en aning.\r\n\r\nI stället gick hon fram till den nakna väggen och rätade till den enda tavla som ännu hängde kvar. Det var en åtbörd så självklar att Maj först inte begrep den. Sedan vände hon sig om, utan att se sig tillbaka mot rummet, och gick mot dörren.\r\n\r\n\"Kom nu\", sa hon. \"Bilen står och väntar.\"",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man av texten sluta sig till om Gerdas sätt att möta uppbrottet?",
+      "options": {
+        "A": "Hon sörjer mest av allt att den fägring hon en gång var känd för i socknen nu är borta.",
+        "B": "Hon möter uppbrottet behärskat och på sina egna villkor, utan att visa vad det kostar henne.",
+        "C": "Hon har klätt upp sig för att markera sitt missnöje med att familjen tvingar henne att lämna huset.",
+        "D": "Hon är oberörd av att lämna huset och känner egentligen ingen saknad efter åren där."
+      },
+      "correct": "B",
+      "passage_anchor": "Men Gerdas anletsdrag var alldeles lugna, och ingenting i dem röjde vad hon kände. […] Sedan vände hon sig om, utan att se sig tillbaka mot rummet, och gick mot dörren.",
+      "explanation": "Det lugna ansiktet som döljer känslan, viljan att klara allt själv och att hon inte ser sig tillbaka pekar tillsammans mot ett behärskat, självvalt avsked snarare än sorg, likgiltighet eller protest.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "C": "rätt_fakta_påhittat_motiv",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken beskrivning fångar bäst textens huvudtanke?",
+      "options": {
+        "A": "Texten handlar om sorgen över att tvingas lämna ett hem som familjen ägt i femtio år.",
+        "B": "Texten visar framför allt hur olika generationer hanterar en förlust på skilda sätt.",
+        "C": "Det avgörande är inte vad en människa förlorar, utan med vilken hållning hon bär förlusten.",
+        "D": "Den som behärskar sina känslor inför en förlust lider i själva verket mindre än den som visar dem."
+      },
+      "correct": "C",
+      "passage_anchor": "hade den gamla kvinnans fägring varit något man talade om i hela socknen. Nu var ansiktet fårat, men hållningen var densamma.",
+      "explanation": "Genom kontrasten mellan Majs väntade tårar och Gerdas behärskade, nästan ceremoniella avsked lyfter texten fram hållningen, inte själva förlusten, som det centrala.",
+      "distractor_types": {
+        "A": "ytlig_nyckelordsläsning",
+        "B": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "anletsdrag",
+      "definition": "Synliga drag och linjer i en persons ansikte."
+    },
+    {
+      "word": "åtbörd",
+      "definition": "Rörelse eller gest med kroppen som uttrycker något."
+    },
+    {
+      "word": "egensinnig",
+      "definition": "Som följer sin egen vilja utan att lyssna på andra."
+    },
+    {
+      "word": "fägring",
+      "definition": "Stor yttre skönhet, ofta hos en kvinna."
+    },
+    {
+      "word": "vemodig",
+      "definition": "Som präglas av en mild och eftertänksam sorg."
+    },
+    {
+      "word": "städse",
+      "definition": "Alltid och utan undantag, ofta i högtidligt språk."
+    }
+  ],
+  "featured_ord_words": [
+    "anletsdrag",
+    "åtbörd",
+    "egensinnig",
+    "fägring",
+    "vemodig",
+    "städse"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

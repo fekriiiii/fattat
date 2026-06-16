@@ -1,6 +1,6 @@
 # Format LÄS Article — Add to Database
 
-Take a LÄS article and questions (from any source: Codex, Gemini, Claude, manual) and format them as a complete database row for `las-database.csv`. The skill automatically detects ORD-database words already in the article and proposes natural synonym swaps to bake in more — strengthening the ORD ↔ LÄS pedagogical loop.
+Take a LÄS article and questions (from any source: Codex, Gemini, Claude, manual) and format them as a complete article file in the `las/` folder (one JSON file per article). The skill automatically detects ORD-database words already in the article and proposes natural synonym swaps to bake in more — strengthening the ORD ↔ LÄS pedagogical loop.
 
 ---
 
@@ -29,7 +29,7 @@ If a real source is provided (real news, real research summary), keep the actual
 
 ## Step 2 — Read databases
 
-Read `las-database.csv` to find the current maximum `id`. New row continues from there.
+Read the `las/` folder to find the current maximum `id`. The new article continues from there (the writer script also derives this automatically).
 
 Read `ord-database.csv` in full. Build a working list of every ORD entry with these fields:
 - `word` (the headword)
@@ -66,7 +66,7 @@ Now actively look for places where a non-ORD-database word in the body could be 
 
 Before generating any proposals, compute word coverage across the existing database:
 
-1. Read all rows in `las-database.csv` and collect every word listed in each row's `featured_ord_words` column.
+1. Read every article file in `las/` and collect every word listed in each article's `featured_ord_words`.
 2. Count how many articles each ORD word already appears in. Call this its **coverage count**.
 3. Build a **priority list** for this article:
    - **Tier 1 (prefer strongly):** ORD words with coverage count 0 — never used in any article yet
@@ -126,7 +126,7 @@ Combine:
 - ORD words detected naturally in Step 3
 - ORD words baked in via approved swaps in Step 4
 
-This combined list feeds `vocab_highlights` (the reading glossary — may include past-HP words). But `featured_ord_words` is the ORD→LÄS reinforcement tag and takes **curated words only** (`past_exams = 'curated'`): daily ORD never introduces past-HP words (migration 022), so featuring them is dead reinforcement. Look up `past_exams` for each detected/swapped word and drop non-curated ones from the featured set (they stay in the body and may stay in `vocab_highlights`). Deduplicate. (`append-las-row.cjs` warns if a non-curated word reaches `featured_ord_words`.)
+This combined list feeds `vocab_highlights` (the reading glossary — may include past-HP words). But `featured_ord_words` is the ORD→LÄS reinforcement tag and takes **curated words only** (`past_exams = 'curated'`): daily ORD never introduces past-HP words (migration 022), so featuring them is dead reinforcement. Look up `past_exams` for each detected/swapped word and drop non-curated ones from the featured set (they stay in the body and may stay in `vocab_highlights`). Deduplicate. (`add-las-article.cjs` warns if a non-curated word reaches `featured_ord_words`.)
 
 ---
 
@@ -245,19 +245,19 @@ Order does not matter, but deduplicate.
 
 ---
 
-## Step 10 — Assemble and output the CSV row
+## Step 10 — Assemble the article record
 
-Output a single CSV row with these columns in exact order:
+Assemble the article with these keys (the writer script encodes the file):
 
 `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`
 
 > The `is_designed_content` column was added in migration `009_designed_content.sql`. Default `TRUE` for designed pedagogical material (the typical case); `FALSE` only when the article is based on a real published source. Never displayed to users — internal flag only.
 
-To add the row to the database, use the shared safe encoder `scripts/append-las-row.cjs` (same mechanism as `write-las-article` Step 9). It handles all CSV escaping, the `featured_ord_words` literal, word-count, next-id, validation (`correct` ∈ options, kort=2/lång=4, dup-title) and a parse-back check — so a stray quote can't silently break the seed pipeline.
+To add the article to the database, use the shared safe writer `scripts/add-las-article.cjs` (same mechanism as `write-las-article` Step 9). It auto-counts word-count, auto-assigns the next `id` (max in `las/` + 1), validates (`correct` ∈ options, kort=2/lång=4, dup-title, em-dash ban, curated-only featured words) and verifies the record parses back before writing one `las/<id>-<slug>.json` file. Each article is its own file, so a later edit never touches the others.
 
-1. Build a **plain JSON payload** (native values, no CSV escaping anywhere): `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body` (the **final** body, after approved swaps), `questions`, `vocab_highlights` (Step 8), `featured_ord_words` (Step 9 — already an array of strings). For a real published source set `is_designed_content: false` with the matching `source_url`/`source_name`; otherwise the defaults (`TRUE` / `Fattat`) apply. Write it to `_las_payload.json`.
-2. Preview + verify without writing: `node scripts/append-las-row.cjs _las_payload.json --dry-run`. Show the summary, resolve any ⚠ warnings, then ask: *"Ser det bra ut? Jag lägger till raden i `las-database.csv`."*
-3. On confirm: `node scripts/append-las-row.cjs _las_payload.json`. Then delete the temp payload.
+1. Build a **plain JSON payload** (native values): `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body` (the **final** body, after approved swaps), `questions`, `vocab_highlights` (Step 8), `featured_ord_words` (Step 9 — already an array of strings). For a real published source set `is_designed_content: false` with the matching `source_url`/`source_name`; otherwise the defaults (`true` / `Fattat`) apply. Write it to `_las_payload.json`.
+2. Preview + verify without writing: `node scripts/add-las-article.cjs _las_payload.json --dry-run`. Show the summary, resolve any ⚠ warnings, then ask: *"Ser det bra ut? Jag lägger till artikeln i `las/`."*
+3. On confirm: `node scripts/add-las-article.cjs _las_payload.json`. Then delete the temp payload.
 
 ---
 
@@ -270,4 +270,4 @@ To add the row to the database, use the shared safe encoder `scripts/append-las-
 - `question_count` matches the actual number of questions
 - `unit_position` matches: `kort` = 2 questions, `lång` = 4 questions
 - If Step 3 found zero ORD words and Step 4 produced zero approved swaps, flag this to the user — the article won't reinforce any vocabulary and that defeats part of the LÄS pedagogical purpose
-- Inga em-dash (—) i den slutliga kroppen eller i frågetexten; ersätt med punkt, komma eller kolon. Em-dash är en AI-signatur och blockeras hårt av `append-las-row.cjs`. Om en riktig källtext innehåller em-dash, byt ut den vid inläsning.
+- Inga em-dash (—) i den slutliga kroppen eller i frågetexten; ersätt med punkt, komma eller kolon. Em-dash är en AI-signatur och blockeras hårt av `add-las-article.cjs`. Om en riktig källtext innehåller em-dash, byt ut den vid inläsning.

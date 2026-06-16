@@ -274,11 +274,13 @@ Second reminder: sent 2 hours after the first if the session hasn't been done. O
 
 ## Content Seeding — When You Provide the CSVs
 
-The seed script (`scripts/seed.ts`) is already designed to accept your CSV files:
+The seed script (`scripts/seed.ts`) reads the ORD CSV and the `las/` article folder:
 
 ```
-npm run seed -- --ord=ord-database.csv --las=las-database.csv
+npx tsx scripts/seed.ts --ord=ord-database.csv --las-dir=las
 ```
+
+(LÄS articles are now one JSON file per article in `las/`; the legacy `--las=las-database.csv` flag still imports the old single CSV if needed.)
 
 This will:
 1. Read the ORD CSV and insert all words into the `words` table

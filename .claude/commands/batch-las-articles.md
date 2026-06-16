@@ -39,9 +39,9 @@ Parse all articles before proceeding. Confirm how many were received:
 
 Read both databases **once** for the entire batch — do not re-read between articles.
 
-**From `las-database.csv`:**
+**From the `las/` folder (one JSON file per article):**
 - Find the current maximum `id` — batch IDs start from `max_id + 1`
-- Build a **coverage map**: for every row, collect all words in `featured_ord_words` and count how many articles each word appears in
+- Build a **coverage map**: for every article file, collect all words in `featured_ord_words` and count how many articles each word appears in
 
 **From `ord-database.csv`:**
 - Load every ORD entry: `word`, `correct_synonym`, `accepted_synonyms`, `definition_sv`, `pos`, `domain`
@@ -135,27 +135,17 @@ Run quality checks silently. If any article fails a check (e.g. a passage_anchor
 
 ---
 
-## Step 6 — Output all CSV rows
+## Step 6 — Write all article files
 
-Assign IDs sequentially from `max_id + 1`.
+Assign IDs sequentially from `max_id + 1`. Each article becomes its own file in `las/`.
 
-Output all rows in one block, clearly separated:
+To add the batch, use the shared safe writer `scripts/add-las-article.cjs` (same mechanism as `write-las-article` Step 9), run **once per article**. It auto-counts word-count, validates (em-dash ban, length-tell, curated-only featured words, cross-article overlap) and verifies each record parses back before writing `las/<id>-<slug>.json`.
 
-```
-=== CSV-rader (klar att klistra in i las-database.csv) ===
-
-[rad för artikel 1]
-[rad för artikel 2]
-...
-```
-
-Column order:
+Each article file's keys:
 `id, title, source_url, source_name, domain, genre, word_count, difficulty, question_count, unit_position, past_hp, body, questions, vocab_highlights, featured_ord_words, is_designed_content, notes`
 
-To add the batch, use the shared safe encoder `scripts/append-las-row.cjs` (same mechanism as `write-las-article` Step 9), run **once per article**. It handles all CSV escaping, the `featured_ord_words` literal, word-count, validation and a parse-back check.
-
 1. Find the current max id. For each article build a **plain JSON payload** with an explicit sequential `id` (max+1, max+2, …) plus `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body` (final, post-swap), `questions`, `vocab_highlights`, `featured_ord_words` (array of strings). Write each to its own temp file (e.g. `_las_1.json`, `_las_2.json`).
-2. Preview the whole batch first — run each payload with `--dry-run`, show the combined summary, resolve any ⚠ warnings, then ask: *"Ser det bra ut? Jag lägger till raderna i `las-database.csv`."*
+2. Preview the whole batch first — run each payload with `--dry-run`, show the combined summary, resolve any ⚠ warnings, then ask: *"Ser det bra ut? Jag lägger till artiklarna i `las/`."*
 3. On confirm, run each payload without the flag, in id order. Then delete the temp files.
 
 ---
@@ -169,7 +159,7 @@ To add the batch, use the shared safe encoder `scripts/append-las-row.cjs` (same
 - question_count matches actual questions
 - unit_position matches: `kort` = 2 questions, `lång` = 4 questions
 - No article has zero ORD words — flag and suggest the user swap it out or re-generate with more vocabulary surface area
-- Inga em-dash (—) i någon kropp eller frågetext; ersätt med punkt, komma eller kolon. Em-dash är en AI-signatur och blockeras hårt av `append-las-row.cjs` per artikel (en em-dash stoppar den artikelns append, inte hela batchen)
+- Inga em-dash (—) i någon kropp eller frågetext; ersätt med punkt, komma eller kolon. Em-dash är en AI-signatur och blockeras hårt av `add-las-article.cjs` per artikel (en em-dash stoppar den artikelns append, inte hela batchen)
 
 ---
 

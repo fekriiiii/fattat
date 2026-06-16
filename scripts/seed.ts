@@ -49,7 +49,8 @@ function getArg(name: string): string | null {
 }
 
 const ordFile = getArg('ord')
-const lasFile = getArg('las')
+const lasFile = getArg('las')       // legacy: one big CSV
+const lasDir = getArg('las-dir')    // current: folder of per-article JSON files
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 
@@ -153,51 +154,116 @@ async function seedOrd(filePath: string) {
 }
 
 // ─── LÄS Seeding ──────────────────────────────────────────────────────────────
+//
+// Source of truth is the las/ folder: one JSON file per article. The legacy
+// single-CSV path still works (--las=file.csv) so old exports stay importable,
+// but new articles are written to las/ by scripts/add-las-article.cjs.
 
-async function seedLas(filePath: string) {
-  console.log(`\n📰 Seeding LÄS articles from: ${filePath}`)
+type RawArticle = {
+  id?: number
+  title: string
+  body: string
+  source_url: string
+  source_name: string          // raw — '' means "Fattat original" (branded below)
+  domain: string
+  genre: string
+  word_count: number
+  difficulty: number
+  unit_position: string
+  question_count: number
+  past_hp: string
+  questions: unknown[]
+  vocab_highlights: Array<{ word: string; definition?: string; definition_sv?: string }>
+  featured_ord_words: string[]
+  is_designed_content_raw?: string | boolean
+}
+
+// Accepts the Postgres literal {"a","b"}, a JSON array ["a","b"], or null.
+function parseFeatured(raw: unknown): string[] {
+  if (Array.isArray(raw)) return raw.map((w) => String(w).trim()).filter(Boolean)
+  if (typeof raw === 'string') return (raw.match(/"([^"]+)"/g) || []).map((s) => s.slice(1, -1))
+  return []
+}
+
+// Field that is either already-parsed (folder JSON) or a JSON string (CSV cell).
+function jsonArray(v: unknown, label: string, who: string): unknown[] {
+  if (Array.isArray(v)) return v
+  if (typeof v === 'string' && v.trim()) {
+    try { return JSON.parse(v) } catch { console.warn(`   ⚠️  Could not parse ${label} JSON for "${who}"`) }
+  }
+  return []
+}
+
+// Legacy: one CSV file -> RawArticle[]
+function loadLasCsv(filePath: string): RawArticle[] {
   const rows = readCsv(filePath) as Record<string, string>[]
-  console.log(`   Found ${rows.length} articles`)
+  console.log(`   Found ${rows.length} articles in ${filePath}`)
+  return rows.map((row) => ({
+    title: row.title?.trim() ?? '',
+    body: row.body?.trim() || '',
+    source_url: row.source_url?.trim() || '',
+    source_name: row.source_name?.trim() || '',
+    domain: row.domain?.trim() || '',
+    genre: row.genre?.trim() || '',
+    word_count: parseInt(row.word_count || '0', 10),
+    difficulty: parseInt(row.difficulty || '2', 10),
+    unit_position: row.unit_position?.trim() || 'lång',
+    question_count: parseInt(row.question_count || '0', 10),
+    past_hp: row.past_hp?.trim() || '',
+    questions: jsonArray(row.questions, 'questions', row.title),
+    vocab_highlights: jsonArray(row.vocab_highlights, 'vocab_highlights', row.title) as RawArticle['vocab_highlights'],
+    featured_ord_words: parseFeatured(row.featured_ord_words),
+    is_designed_content_raw: row.is_designed_content,
+  }))
+}
 
-  const articles = rows.map((row, i) => {
-    // Parse questions JSON
-    let questions: unknown[] = []
-    if (row.questions) {
-      try {
-        questions = JSON.parse(row.questions)
-      } catch {
-        console.warn(`   ⚠️  Could not parse questions JSON for article "${row.title}" (row ${i + 2})`)
-      }
+// Current: las/*.json -> RawArticle[] (sorted by filename so insert order is stable)
+function loadLasDir(dirPath: string): RawArticle[] {
+  const fullDir = path.isAbsolute(dirPath) ? dirPath : path.join(process.cwd(), dirPath)
+  if (!fs.existsSync(fullDir)) throw new Error(`Folder not found: ${fullDir}`)
+  const files = fs.readdirSync(fullDir).filter((f) => f.endsWith('.json')).sort()
+  console.log(`   Found ${files.length} article files in ${dirPath}/`)
+  return files.map((f) => {
+    const raw = JSON.parse(fs.readFileSync(path.join(fullDir, f), 'utf-8'))
+    return {
+      id: raw.id,
+      title: String(raw.title ?? '').trim(),
+      body: String(raw.body ?? '').trim(),
+      source_url: String(raw.source_url ?? '').trim(),
+      source_name: String(raw.source_name ?? '').trim(),
+      domain: String(raw.domain ?? '').trim(),
+      genre: String(raw.genre ?? '').trim(),
+      word_count: Number(raw.word_count) || 0,
+      difficulty: Number(raw.difficulty) || 2,
+      unit_position: String(raw.unit_position ?? 'lång').trim(),
+      question_count: Number(raw.question_count) || (Array.isArray(raw.questions) ? raw.questions.length : 0),
+      past_hp: String(raw.past_hp ?? '').trim(),
+      questions: Array.isArray(raw.questions) ? raw.questions : [],
+      vocab_highlights: Array.isArray(raw.vocab_highlights) ? raw.vocab_highlights : [],
+      featured_ord_words: parseFeatured(raw.featured_ord_words),
+      is_designed_content_raw: raw.is_designed_content,
     }
+  })
+}
 
-    // Parse vocab_highlights JSON and compute start/end indices in body text
-    let vocab_highlights: unknown[] = []
-    if (row.vocab_highlights && row.body) {
-      try {
-        const raw = JSON.parse(row.vocab_highlights) as Array<{
-          word: string
-          definition: string
-          definition_sv?: string
-        }>
-        vocab_highlights = raw.map((vh) => {
-          const position = findWordInText(row.body, vh.word)
-          return {
-            word: vh.word,
-            definition_sv: vh.definition_sv ?? vh.definition,
-            start_index: position?.start_index ?? -1,
-            end_index: position?.end_index ?? -1,
-          }
-        })
-        const notFound = vocab_highlights.filter((v: any) => v.start_index === -1)
-        if (notFound.length > 0) {
-          console.warn(
-            `   ⚠️  Could not find ${notFound.length} highlight word(s) in body for "${row.title}":`,
-            (notFound as any[]).map((v) => v.word).join(', ')
-          )
-        }
-      } catch {
-        console.warn(`   ⚠️  Could not parse vocab_highlights JSON for article "${row.title}" (row ${i + 2})`)
+async function seedLas(rawArticles: RawArticle[]) {
+  const articles = rawArticles.map((row) => {
+    // Compute start/end indices for each highlight word (needed for in-app highlighting)
+    const vocab_highlights = (row.vocab_highlights || []).map((vh) => {
+      const position = findWordInText(row.body, vh.word)
+      return {
+        word: vh.word,
+        definition_sv: vh.definition_sv ?? vh.definition ?? '',
+        start_index: position?.start_index ?? -1,
+        end_index: position?.end_index ?? -1,
       }
+    })
+    const notFound = vocab_highlights.filter((v) => v.start_index === -1)
+    if (notFound.length > 0) {
+      console.warn(
+        `   ⚠️  Could not find ${notFound.length} highlight word(s) in body for "${row.title}":`,
+        notFound.map((v) => v.word).join(', ')
+      )
     }
 
     // Step 17 — designed-content branding & flag
@@ -205,26 +271,29 @@ async function seedLas(filePath: string) {
     //   • Brand it as a Fattat original ("Fattat") so the UI doesn't show it as
     //     un-sourced or, worse, falsely attributed.
     //   • Mark is_designed_content TRUE for internal analytics.
-    // If a real source is given, preserve it and mark FALSE.
-    const rawSourceName = row.source_name?.trim() || ''
+    // If a real source is given, preserve it and mark FALSE (unless explicitly true).
+    const rawSourceName = row.source_name || ''
     const sourceName = rawSourceName === '' ? 'Fattat' : rawSourceName
-    const isDesignedContent = rawSourceName === '' ? true : (
-      row.is_designed_content?.trim().toLowerCase() === 'false' ? false : true
-    )
+    const isDesignedContent = rawSourceName === ''
+      ? true
+      : String(row.is_designed_content_raw ?? '').trim().toLowerCase() !== 'false'
 
     return {
-      title: row.title?.trim(),
-      body: row.body?.trim() || '',
-      source_url: row.source_url?.trim() || null,
+      title: row.title,
+      body: row.body,
+      source_url: row.source_url || null,
       source_name: sourceName,
-      domain: row.domain?.trim() || 'allmän',
-      genre: row.genre?.trim() || 'populärvetenskap',
-      word_count: parseInt(row.word_count || '0', 10),
-      difficulty: parseInt(row.difficulty || '2', 10),
-      unit_position: row.unit_position?.trim() || 'lång',
-      question_count: parseInt(row.question_count || '0', 10),
-      questions,
+      domain: row.domain || 'allmän',
+      genre: row.genre || 'populärvetenskap',
+      word_count: row.word_count,
+      difficulty: row.difficulty,
+      unit_position: row.unit_position || 'lång',
+      question_count: row.question_count,
+      questions: row.questions,
       vocab_highlights,
+      // The ORD→LÄS reinforcement tag. Previously omitted here, so the column sat
+      // empty in the DB and the feature was a silent no-op — now seeded properly.
+      featured_ord_words: row.featured_ord_words,
       is_designed_content: isDesignedContent,
     }
   })
@@ -282,10 +351,12 @@ async function main() {
   console.log('🌱 Fattat Seed Script')
   console.log('━'.repeat(50))
 
-  if (!ordFile && !lasFile) {
-    console.log('\nNo CSV files specified. Usage:')
-    console.log('  npm run seed -- --ord=ord-database.csv --las=las-database.csv\n')
-    console.log('Both files should be in the project root, or provide full paths.')
+  if (!ordFile && !lasFile && !lasDir) {
+    console.log('\nNothing specified. Usage:')
+    console.log('  npx tsx scripts/seed.ts --ord=ord-database.csv --las-dir=las\n')
+    console.log('  --ord=<file.csv>   vocabulary words')
+    console.log('  --las-dir=<folder> LÄS articles, one JSON file per article (current)')
+    console.log('  --las=<file.csv>   LÄS articles from the legacy single CSV (still supported)')
     process.exit(0)
   }
 
@@ -293,8 +364,13 @@ async function main() {
     await seedOrd(ordFile)
   }
 
-  if (lasFile) {
-    await seedLas(lasFile)
+  if (lasDir || lasFile) {
+    console.log(`\n📰 Seeding LÄS articles${lasDir ? ` from folder: ${lasDir}/` : ` from CSV: ${lasFile}`}`)
+    if (lasDir && lasFile) {
+      console.log('   (both --las-dir and --las given — using the folder, ignoring the CSV)')
+    }
+    const raw = lasDir ? loadLasDir(lasDir) : loadLasCsv(lasFile as string)
+    await seedLas(raw)
   }
 
   // Print summary counts
