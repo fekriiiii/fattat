@@ -166,7 +166,7 @@ export default function SessionCompletePage() {
           )}
           {isExtra && (
             <p className="text-[14px] text-dark/65 mt-1.5">
-              Bra jobbat — påverkar inte FSRS-schemat.
+              Bra jobbat — påverkar inte din dagliga progress.
             </p>
           )}
         </div>

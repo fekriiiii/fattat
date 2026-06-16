@@ -143,7 +143,7 @@ function ResultsContent() {
         </div>
         <p className="text-[11px] text-dark/45 mt-1.5 leading-relaxed">
           Grov uppskattning baserad på antal rätt. Exakt HP beror på provets svårighetsgrad och
-          våra prognoser kalibreras mot verkliga HP-resultat över tid.
+          vi lär oss från verkliga HP-resultat och uppdaterar prognosen över tid.
         </p>
       </div>
 

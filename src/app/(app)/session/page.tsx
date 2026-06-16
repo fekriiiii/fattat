@@ -315,11 +315,11 @@ export default function SessionPage() {
           <div>
             <h1 className="text-xl font-bold text-dark">Dagens session är klar</h1>
             <p className="text-sm text-dark/65 mt-1.5 leading-relaxed">
-              FSRS schemalägger nya ord till imorgon — vila är en del av inlärningen.
+              Vi sparar nya ord till imorgon — vila är en del av inlärningen.
               Vill du ändå köra extra repetition på dina svaga ord?
             </p>
             <p className="text-xs text-dark/45 mt-2 leading-relaxed">
-              Extra repetition påverkar inte FSRS-schemat eller streaken.
+              Extra repetition påverkar inte din dagliga progress eller streaken.
             </p>
           </div>
           <div className="flex flex-col gap-2 mt-2">
@@ -500,7 +500,7 @@ export default function SessionPage() {
             <div className="flex-1">
               <p className="text-sm font-semibold text-dark leading-tight">Här finns en kunskapslucka</p>
               <p className="text-xs text-dark/55 mt-0.5">
-                Tre fel i rad inom <span className="font-medium">{domainGap}</span>. Vi fortsätter — och en läsartikel om ämnet väntar i LÄS-delen.
+                Du tappar på <span className="font-medium">{domainGap}</span>. Vi fokuserar på det — och en läsartikel om ämnet väntar i LÄS-delen.
               </p>
             </div>
             <button onClick={dismissDomainGap} className="text-dark/30 hover:text-dark/60 transition-colors mt-0.5">

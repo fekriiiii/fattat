@@ -334,7 +334,7 @@ export default async function DashboardPage() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-dark">Dagens session klar</p>
-            <p className="text-xs text-dark/55 mt-0.5 leading-relaxed">FSRS schemalägger nya ord till imorgon — vila ger bättre minne.</p>
+            <p className="text-xs text-dark/55 mt-0.5 leading-relaxed">Vi sparar nya ord till imorgon — vila är en del av inlärningen.</p>
           </div>
         </div>
       ) : (
@@ -357,7 +357,7 @@ export default async function DashboardPage() {
                 {nextExamLabel ?? 'Övningsprov tillgängligt'}
               </p>
               <p className="text-[11px] text-dark/65 mt-0.5">
-                ORD + LÄS · 30 min · provtryck utan FSRS-uppdateringar
+                ORD + LÄS · 30 min · påverkar inte din dagliga plan
               </p>
             </div>
             <span className="text-dark/20 text-lg">›</span>
@@ -424,7 +424,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <p className="text-[11px] text-dark/45 mt-1 leading-relaxed">
-              Grov uppskattning — kalibreras mot verkliga HP-resultat när tillräckligt med data finns.
+              Grov uppskattning — vi lär oss från verkliga HP-resultat och uppdaterar prognosen över tid.
             </p>
             {subsectionsIncomplete && (
               <Link

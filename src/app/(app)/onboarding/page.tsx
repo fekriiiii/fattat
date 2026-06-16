@@ -220,7 +220,7 @@ export default function OnboardingPage() {
             </div>
 
             <div className="flex flex-col gap-2 w-full">
-              <CredibilityChip label="FSRS-schemaläggning" hint="Forskningsbaserad repetition" />
+              <CredibilityChip label="Minnesbaserad repetition" hint="Forskningsbaserad inlärning" />
               <CredibilityChip label="Personlig HP-prognos" hint="Uppdateras varje pass" />
               <CredibilityChip label="Smart artikelval" hint="Återkopplar dina senaste ord" />
             </div>
@@ -644,9 +644,7 @@ function FsrsStep({ onNext }: { onNext: () => void }) {
       </div>
 
       <p className="text-sm text-dark/55 text-center leading-relaxed">
-        Algoritmen heter{' '}
-        <strong className="text-dark font-bold">FSRS</strong> — den schemalägger varje
-        ord att dyka upp precis när minnet är på väg att försvinna. Varje minut i
+        Fattat schemalägger varje ord att dyka upp precis när minnet är på väg att försvinna. Varje minut i
         Fattat gör maximal skillnad.
       </p>
 
