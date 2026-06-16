@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/Button'
+import { MorphemeHints } from './MorphemeBreakdown'
 import type { Word } from '@/types/database'
 import type { OrdOption } from './OrdQuestion'
 
@@ -104,6 +105,16 @@ export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext, del
           )
         })}
       </div>
+
+      {/* Byggstenar — decode the word and options by their parts. On a correct
+          answer keep it snappy (headword + correct synonym); on a wrong answer
+          decode every option, since not knowing what the alternatives mean is
+          the real bottleneck. Renders nothing when nothing is decodable. */}
+      <MorphemeHints
+        words={isCorrect
+          ? [word.word, word.correct_synonym]
+          : [word.word, ...options.map((o) => o.text)]}
+      />
 
       <div className="relative">
         <Button fullWidth size="lg" onClick={onNext} disabled={!canAdvance}>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Button } from '@/components/ui/Button'
+import { MorphemeHints } from './MorphemeBreakdown'
 import { isAcceptedAnswer } from '@/lib/utils/levenshtein'
 import type { Word } from '@/types/database'
 
@@ -93,6 +94,8 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
           )}
         </div>
 
+        <MorphemeHints words={[word.word, word.correct_synonym]} />
+
         <Button fullWidth onClick={onNext}>Nästa</Button>
       </div>
     )
@@ -124,6 +127,8 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
             </p>
           )}
         </div>
+
+        <MorphemeHints words={[word.word, word.correct_synonym]} />
 
         <div className="text-center">
           {flagged ? (
