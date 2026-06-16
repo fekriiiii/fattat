@@ -65,6 +65,31 @@ function fail(m) { console.error('✗ FEL: ' + m); process.exit(1); }
 const countWords = (s) =>
   String(s).trim().split(/\s+/).filter((t) => /[\p{L}\p{N}]/u.test(t)).length;
 
+// RFC4180 parse — needed for the curated guard, since a naive split(',') misreads
+// columns on rows with quoted commas (e.g. definitions) and falsely flags curated
+// words as past-HP.
+function parseCSV(s) {
+  const rows = [];
+  let row = [], field = '', i = 0, inQ = false;
+  while (i < s.length) {
+    const c = s[i];
+    if (inQ) {
+      if (c === '"') {
+        if (s[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQ = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if (c === '"') { inQ = true; i++; continue; }
+    if (c === ',') { row.push(field); field = ''; i++; continue; }
+    if (c === '\r') { i++; continue; }
+    if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+    field += c; i++;
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
 // Accepts ["a","b"] or the {"a","b"} literal -> ["a","b"]
 function featuredWords(f) {
   if (Array.isArray(f)) return f.map((w) => String(w).trim()).filter(Boolean);
@@ -174,20 +199,17 @@ for (const w of featuredWords(payload.featured_ord_words)) {
 // Curated-guard: featured-ord ska vara curated (migration 022). Past-HP-ord
 // tränas aldrig dagligen, så att featurea dem ger död ORD→LÄS-förstärkning.
 try {
-  const ordCsv = fs.readFileSync('ord-database.csv', 'utf8').replace(/^﻿/, '');
-  const lines = ordCsv.split(/\r?\n/);
-  const oHead = lines[0].split(',');
+  const ordRows = parseCSV(fs.readFileSync('ord-database.csv', 'utf8').replace(/^﻿/, ''));
+  const oHead = ordRows[0];
   const wIdx = oHead.indexOf('word');
   const peIdx = oHead.indexOf('past_exams');
   if (wIdx !== -1 && peIdx !== -1) {
-    // light CSV split is enough: we only need word + past_exams (both simple cells)
+    const peByWord = new Map();
+    for (const r of ordRows.slice(1)) if (r[wIdx]) peByWord.set(r[wIdx].toLowerCase(), r[peIdx]);
     for (const w of featuredWords(payload.featured_ord_words)) {
-      const re = new RegExp('(^|,)"?' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"?,', 'i');
-      const hit = lines.find((ln) => re.test(ln));
-      if (!hit) { warn(`featured-ordet "${w}" finns inte i ord-database.csv`); continue; }
-      const cells = hit.split(',');
-      const pe = (cells[peIdx] || '').replace(/"/g, '');
-      if (pe && pe !== 'curated') warn(`featured-ordet "${w}" är past-HP (past_exams=${pe}) — tränas inte i daglig ORD, ger död ORD→LÄS-förstärkning`);
+      const pe = peByWord.get(w.toLowerCase());
+      if (pe === undefined) warn(`featured-ordet "${w}" finns inte i ord-database.csv`);
+      else if (pe !== 'curated') warn(`featured-ordet "${w}" är past-HP (past_exams=${pe}) — tränas inte i daglig ORD, ger död ORD→LÄS-förstärkning`);
     }
   }
 } catch (e) {

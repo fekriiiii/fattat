@@ -1,0 +1,87 @@
+{
+  "id": 13,
+  "title": "Tidens riktning",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "vetenskap",
+  "genre": "populärvetenskap",
+  "word_count": 283,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Varför minns vi det förflutna men inte framtiden? Frågan låter filosofisk, men enligt fysikern Elsa Wikander vid Lunds universitet har den ett förvånansvärt konkret svar, och svaret stavas entropi. I varje slutet system ökar oordningen med tiden, och det är denna ständiga ökning som ger tiden dess riktning.\n\nEtt vardagligt exempel räcker för att se principen. En kaffekopp på skrivbordet svalnar alltid mot rummets temperatur, aldrig tvärtom. Värmen sprids från koppen till luften som en termisk utjämning, och varje enskild partikel i vätskan rör sig från det ordnade mot det utspridda. Att se filmen baklänges, där kallt kaffe spontant blir varmt, skulle omedelbart avslöjas som omöjligt. Naturen har en favoritriktning.\n\nDet märkliga, påpekar Wikander, är att fysikens grundläggande lagar i sig är symmetriska i tiden. En ekvation som beskriver två kolliderande kulor fungerar lika bra framlänges som baklänges. Riktningen uppstår först när man räknar många delar samtidigt. Sannolikheten att tusen sådana delar av en ren slump ordnar sig i ett enda hörn är inte exakt noll, men den är så nära noll att vi aldrig ser det inträffa.\n\nOordningen är därför ingen kraft som drar, utan snarare en bokföring av det möjliga. Universum rör sig inte mot kaos för att något driver det dit, utan för att de oordnade tillstånden helt enkelt är ofantligt mycket fler än de ordnade. Att upprätthålla en konstant nivå av ordning, så som en levande cell gör, kräver ständig tillförsel av energi utifrån.\n\nWikander brukar avsluta sina föreläsningar med en bild som dröjer sig kvar. Livet, säger hon, är inget undantag från denna ström. Det är en virvel som för en kort stund håller emot, närd av solens ljus, innan också den till sist följer med strömmen utför.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "huvudtanke",
+      "stem": "Vilket påstående sammanfattar bäst textens huvudtanke?",
+      "options": {
+        "A": "Tidens riktning beror inte på någon drivande kraft, utan på att de oordnade tillstånden är så många fler att utvecklingen mot dem blir oundviklig.",
+        "B": "Att en kaffekopp alltid svalnar mot rummets temperatur visar att värme oundvikligen rör sig från det varma till det kalla.",
+        "C": "Fysikens grundläggande lagar är symmetriska i tiden och skiljer därför i sig inte alls på vad som är dåtid och vad som är framtid.",
+        "D": "Tidens riktning uppkommer genom att en yttre och i grunden osynlig kraft oavbrutet driver hela universum mot en allt större och mer utbredd grad av oordning."
+      },
+      "correct": "A",
+      "passage_anchor": "Oordningen är därför ingen kraft som drar, utan snarare en bokföring av det möjliga. Universum rör sig inte mot kaos för att något driver det dit, utan för att de oordnade tillstånden helt enkelt är ofantligt mycket fler än de ordnade.",
+      "explanation": "Huvudtanken är att tidens riktning är statistisk: oordnade tillstånd är vida fler, inte att en kraft driver fram förloppet.",
+      "distractor_types": {
+        "B": "ytlig_nyckelordsläsning",
+        "C": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "detalj_fakta",
+      "stem": "Vad framgår av texten om möjligheten att oordning av sig själv övergår i ordning?",
+      "options": {
+        "A": "Det är inte uteslutet, men sannolikheten är så försvinnande liten att det i praktiken aldrig inträffar.",
+        "B": "Det är helt omöjligt, eftersom naturlagarna uttryckligen förbjuder ett förlopp i den riktningen.",
+        "C": "Det sker fortlöpande och fullt mätbart hos enskilda delar, men aldrig i de större system som råkar bestå av väldigt många delar.",
+        "D": "Det låter sig göras så snart tillräckligt mycket värme tillförs systemet utifrån."
+      },
+      "correct": "A",
+      "passage_anchor": "Sannolikheten att tusen sådana delar av en ren slump ordnar sig i ett enda hörn är inte exakt noll, men den är så nära noll att vi aldrig ser det inträffa.",
+      "explanation": "Texten säger att sannolikheten inte är exakt noll men så nära noll att det aldrig syns, alltså möjligt men försvinnande osannolikt.",
+      "distractor_types": {
+        "B": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt",
+        "D": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "entropi",
+      "definition": "Mått på graden av oordning eller spridning i ett system."
+    },
+    {
+      "word": "termisk",
+      "definition": "Som hör samman med värme eller temperaturförändringar."
+    },
+    {
+      "word": "partikel",
+      "definition": "Mycket liten beståndsdel av materia."
+    },
+    {
+      "word": "konstant",
+      "definition": "Som inte ändras över tid eller under olika förhållanden."
+    },
+    {
+      "word": "ekvation",
+      "definition": "Matematiskt uttryck där två sidor är lika med varandra."
+    }
+  ],
+  "featured_ord_words": [
+    "entropi",
+    "termisk",
+    "partikel",
+    "konstant",
+    "ekvation"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

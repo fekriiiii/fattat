@@ -1,0 +1,82 @@
+{
+  "id": 12,
+  "title": "Kvällens ordning",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "lyrik_prosa",
+  "word_count": 298,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Mormor tänder lampan klockan sju, som hon alltid gjort, och rummet fylls av ett ljus som tycks komma långt bortifrån. Hon säger att kvällen har sin egen ordning, att man inte ska skynda på mörkret. Jag förstod aldrig den ritualen som barn. Nu sitter jag i samma stol och gör precis samma sak, utan att riktigt veta när jag började.\n\nDet finns en skirhet över de här timmarna, något så tunt att det knappt bär. Gardinen rör sig utan att någon vind kommit in. Porslinet i skåpet glimmar arkaiskt, som om det tillhörde en tid före min egen, en tid jag bara ärvt i andra hand. Mormor pratar om sin mor, och om hennes mor, och rösterna staplas på varandra tills jag inte längre vet vems minne det är jag bär.\n\nUtanför fönstret slocknar trädgården långsamt. Det ligger ingen sorg i det, även om orden låter så. Snarare en elegi utan gråt, en sång om det som varit och ändå inte vill ta slut. Hon viker en duk. Hon rättar till en tavla på väggen. Varje rörelse är liten och exakt, inövad under sjuttio år tills handen vet vägen själv.\n\nJag tänker att det är detta man menar med att höra hemma: att kunna kvällens alla steg utan att tänka efter, att veta var ljuset ska falla redan innan man tänt det. När hon är borta kommer rummet att stå kvar, men ordningen försvinner med henne. Eller också tar jag över den, klumpigt, och lär en dag mina egna barn att inte skynda på mörkret.\n\nKlockan blir åtta. Hon reser sig, långsamt, och släcker. Vi blir sittande en stund i halvdunklet, och jag förstår plötsligt att jag aldrig kommer att minnas exakt hur hon såg ut, bara hur det kändes att sitta kvar här medan hon ännu fanns.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man sluta sig till om berättarens förhållande till kvällsritualen?",
+      "options": {
+        "A": "Han har med tiden tagit till sig samma vanor han som barn inte förstod, utan att de någonsin förklarats för honom.",
+        "B": "Han utför numera ritualen mest av plikt mot mormodern, trots att den egentligen säger honom föga.",
+        "C": "Han oroar sig framför allt för att inte kunna minnas exakt hur mormodern en gång såg ut.",
+        "D": "Han räknar med att rummet och hela dess invanda ordning ska bestå alldeles oförändrade också långt efter att mormodern en gång är borta."
+      },
+      "correct": "A",
+      "passage_anchor": "Jag förstod aldrig den ritualen som barn. Nu sitter jag i samma stol och gör precis samma sak, utan att riktigt veta när jag började.",
+      "explanation": "Att han gör samma sak han som barn inte förstod, utan att veta när det började, visar ett arv genom upprepning snarare än förklaring.",
+      "distractor_types": {
+        "B": "nära_men_inte_riktigt",
+        "C": "sant_men_fel_fråga",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken tanke ligger närmast textens huvudinnehåll?",
+      "options": {
+        "A": "Att höra hemma är att obemärkt ärva en annan människas sätt att leva, ett arv som inte kan skiljas från henne själv.",
+        "B": "En skildring av ålderdomens ensamhet och av den växande rädslan inför döden som kvällarna väcker.",
+        "C": "En betraktelse över hur gamla föremål, gammalt porslin och ärvda ting bär på och troget bevarar en hel familjs nedärvda historia.",
+        "D": "Att varje ny generation till sist tvingas överge sina föräldrars vanor för att finna sina egna."
+      },
+      "correct": "A",
+      "passage_anchor": "Jag tänker att det är detta man menar med att höra hemma: att kunna kvällens alla steg utan att tänka efter, att veta var ljuset ska falla redan innan man tänt det.",
+      "explanation": "Texten gör tillhörighet till något man ärver ordlöst genom upprepade små handlingar, oskiljaktigt från personen själv.",
+      "distractor_types": {
+        "B": "ytlig_nyckelordsläsning",
+        "C": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "skirhet",
+      "definition": "Egenskapen att vara lätt och genomskinligt vacker."
+    },
+    {
+      "word": "elegi",
+      "definition": "Långsam vemodig dikt om förlust eller saknad."
+    },
+    {
+      "word": "ritual",
+      "definition": "Bestämd handling eller ordning utförd vid högtidliga tillfällen."
+    },
+    {
+      "word": "arkaisk",
+      "definition": "Som hör till en mycket gammal tid eller ser så ut."
+    }
+  ],
+  "featured_ord_words": [
+    "skirhet",
+    "elegi",
+    "ritual",
+    "arkaisk"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
