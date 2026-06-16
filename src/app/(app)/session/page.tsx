@@ -391,57 +391,24 @@ export default function SessionPage() {
 
   const percent = progressPercent()
 
-  // ─── FATIGUE OVERLAY ──────────────────────────────────────────────────────────
-  if (fatigueDetected) {
-    return (
-      <div className="flex flex-col min-h-screen bg-cream">
-        <div className="flex-1 flex items-center justify-center px-6">
-          <div className="max-w-sm w-full bg-white rounded-card border border-amber-200/70 shadow-raised p-6 flex flex-col gap-4 motion-safe:animate-scale-in">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                <AlertTriangle className="text-amber-600" size={20} />
-              </div>
-              <h2 className="text-lg font-bold text-dark leading-tight">
-                Du börjar tappa fokus
-              </h2>
-            </div>
-            <p className="text-sm text-dark/65 leading-relaxed">
-              Vi sparar resten till imorgon bitti när du är fräsch. Det du gjort idag räknas — och hjärnan befäster minnen bäst när den vilar.
-            </p>
-            <Button
-              fullWidth
-              onClick={async () => {
-                const ord = responses.filter((r) => r.type === 'ord')
-                const las = responses.filter((r) => r.type === 'las')
-                if (sessionId) {
-                  await fetch('/api/session/complete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      sessionId,
-                      ordCount: ord.length,
-                      ordCorrect: ord.filter((r) => r.isCorrect).length,
-                      lasCount: las.length,
-                      lasCorrect: las.filter((r) => r.isCorrect).length,
-                    }),
-                  }).catch(() => {})
-                  fetch('/api/streak/update', { method: 'POST' }).catch(() => {})
-                }
-                router.push(`/session/complete?sid=${sessionId}`)
-              }}
-            >
-              Avsluta för idag
-            </Button>
-            <button
-              onClick={dismissFatigue}
-              className="text-sm text-dark/40 underline underline-offset-2 text-center"
-            >
-              Fortsätt ändå
-            </button>
-          </div>
-        </div>
-      </div>
-    )
+  const endSessionForToday = async () => {
+    const ord = responses.filter((r) => r.type === 'ord')
+    const las = responses.filter((r) => r.type === 'las')
+    if (sessionId) {
+      await fetch('/api/session/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          ordCount: ord.length,
+          ordCorrect: ord.filter((r) => r.isCorrect).length,
+          lasCount: las.length,
+          lasCorrect: las.filter((r) => r.isCorrect).length,
+        }),
+      }).catch(() => {})
+      fetch('/api/streak/update', { method: 'POST' }).catch(() => {})
+    }
+    router.push(`/session/complete?sid=${sessionId}`)
   }
 
   // ─── ORD ─────────────────────────────────────────────────────────────────────
@@ -504,6 +471,26 @@ export default function SessionPage() {
               </p>
             </div>
             <button onClick={dismissDomainGap} className="text-dark/30 hover:text-dark/60 transition-colors mt-0.5">
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* Fatigue banner — accuracy AND speed have both dropped, suggesting
+            fatigue rather than just hard words. Advisory only, never blocks. */}
+        {fatigueDetected && !showingFeedback && (
+          <div className="mx-4 mt-3 mb-1 bg-amber-50 border border-amber-200/70 shadow-card rounded-card px-4 py-3 flex items-start gap-3 motion-safe:animate-fade-up">
+            <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-dark leading-tight">Du börjar tappa fokus</p>
+              <p className="text-xs text-dark/55 mt-0.5">
+                Det du gjort idag räknas — hjärnan befäster minnen bäst när den vilar.{' '}
+                <button onClick={endSessionForToday} className="font-bold text-primary underline underline-offset-2">
+                  Avsluta för idag
+                </button>
+              </p>
+            </div>
+            <button onClick={dismissFatigue} className="text-dark/30 hover:text-dark/60 transition-colors mt-0.5">
               <X size={14} />
             </button>
           </div>

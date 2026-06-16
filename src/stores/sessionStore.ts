@@ -182,9 +182,12 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
           const last3 = ordResponses.slice(-3)
           const avgMs =
             last3.length >= 3 ? last3.reduce((sum, r) => sum + r.responseMs, 0) / last3.length : 0
-          // Fatigued if: 5+ wrong in last 7, OR taking >12s average in last 3
+          // Fatigued if BOTH accuracy and speed have dropped together: 5+ wrong
+          // in last 7 AND taking >12s average in last 3. Either signal alone
+          // (e.g. a streak of hard words answered at normal speed) is a
+          // difficulty signal, not fatigue, and shouldn't trigger this.
           fatigueDetected =
-            (last7.length >= 7 && wrongInLast7 >= 5) || (last3.length >= 3 && avgMs > 12000)
+            last7.length >= 7 && wrongInLast7 >= 5 && last3.length >= 3 && avgMs > 12000
         }
       }
 
