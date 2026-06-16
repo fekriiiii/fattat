@@ -270,3 +270,4 @@ To add the row to the database, use the shared safe encoder `scripts/append-las-
 - `question_count` matches the actual number of questions
 - `unit_position` matches: `kort` = 2 questions, `lång` = 4 questions
 - If Step 3 found zero ORD words and Step 4 produced zero approved swaps, flag this to the user — the article won't reinforce any vocabulary and that defeats part of the LÄS pedagogical purpose
+- Inga em-dash (—) i den slutliga kroppen eller i frågetexten; ersätt med punkt, komma eller kolon. Em-dash är en AI-signatur och blockeras hårt av `append-las-row.cjs`. Om en riktig källtext innehåller em-dash, byt ut den vid inläsning.

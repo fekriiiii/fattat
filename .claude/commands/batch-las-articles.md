@@ -169,6 +169,7 @@ To add the batch, use the shared safe encoder `scripts/append-las-row.cjs` (same
 - question_count matches actual questions
 - unit_position matches: `kort` = 2 questions, `lång` = 4 questions
 - No article has zero ORD words — flag and suggest the user swap it out or re-generate with more vocabulary surface area
+- Inga em-dash (—) i någon kropp eller frågetext; ersätt med punkt, komma eller kolon. Em-dash är en AI-signatur och blockeras hårt av `append-las-row.cjs` per artikel (en em-dash stoppar den artikelns append, inte hela batchen)
 
 ---
 

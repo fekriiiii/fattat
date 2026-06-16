@@ -34,19 +34,17 @@ The skill has two modes:
 - Run Steps 1–2 (database reads) then jump to Step 3 (coverage report) and stop. Do not write an article.
 
 **Write mode** — invoked normally (no argument, or with specific domain/genre/theme):
-- Run all steps through Step 9.
+- Run all steps through Step 9. **There is exactly ONE approval gate: the complete draft (body + questions, shown together) in Step 7.** Setup (Step 1/3b) and ORD-word selection (Step 4) are auto-derived and merely *announced*, never gated; the append (Step 9) runs automatically on that single "ja", relying on the script's guards. Do not ask for separate sign-off on inputs, the word list, the body, or the append — one "ja", not five.
 
 ---
 
-## Step 1 — Gather inputs (Write mode only)
+## Step 1 — Determine inputs (Write mode only) — no gate
 
-Ask the user for:
-1. **Domän** — one of: `medicin`, `vetenskap`, `samhälle`, `kultur`, `ekonomi`, `juridik` — or `"välj"` (skill picks from slot gap analysis)
-2. **Genre** — one of: `populärvetenskap`, `debatt`, `akademisk`, `reportage`, `juridisk`, `personlig_essä`, `lyrik_prosa`, `litterär_prosa` — or `"välj"`
-3. **unit_position** — `kort` eller `lång` — or `"välj"`
-4. **Tema** (valfritt) — ett ord eller en mening. Om blankt, väljer skillen ett ämne.
-
-If the user provides any of these, honor them. For any field left as `"välj"`, derive from Step 3.
+Take these from the invocation if the user supplied them; otherwise auto-derive **every** one from the Step 3 gap analysis. **Do not ask** — announce the resolved choice in a single line before writing (e.g. *"Väljer: Slot C — `juridik` / `juridisk` / lång. Tema: X."*). The user steers by rejecting the final draft, not by a setup gate.
+1. **Domän** — `medicin`, `vetenskap`, `samhälle`, `kultur`, `ekonomi`, `juridik`
+2. **Genre** — `populärvetenskap`, `debatt`, `akademisk`, `reportage`, `juridisk`, `personlig_essä`, `lyrik_prosa`, `litterär_prosa`
+3. **unit_position** — `kort` / `lång`
+4. **Tema** (valfritt) — derive an uncovered subject if not given.
 
 ---
 
@@ -122,19 +120,9 @@ Target count:
 - **lång**: 8–12 ORD words
 - **kort**: 4–6 ORD words
 
-### 4c — Show selection to user
+### 4c — Select (no gate)
 
-```
-Planerade ORD-ord att baka in (X ord, domän: [domän]):
-
-• [word] — "[definition_sv]" [Tier X]
-• [word] — "[definition_sv]" [Tier X]
-...
-```
-
-Ask: *"Ser urvalet bra ut, eller vill du byta ut något?"*
-
-Apply any changes. This is the only gate before writing starts.
+Pick the words internally — no separate approval. They surface in the final draft (Step 7) for the single review, and `append-las-row.cjs` enforces curated-only + no cross-article overlap. If the user named a theme/angle, prefer words that serve it.
 
 ---
 
@@ -170,6 +158,7 @@ Apply any changes. This is the only gate before writing starts.
 - **No pedagogical scaffolding**: never write "Som vi ska se", "Det är viktigt att notera", "I denna text diskuterar vi"
 - **Swedish discourse markers**: "Det framgår att", "Forskning visar att", "Enligt X har det visats att", "Det råder delade meningar om"
 - **Source voice**: sounds like it appeared in a real Swedish publication (Forskning & Framsteg, Läkartidningen, DN Debatt, Riksrevisionen, Juridisk Tidskrift)
+- **Inga em-dash (—)**: använd punkt, komma eller kolon i stället. Em-dash är den tydligaste signaturen på AI-skriven text. Gäller brödtext *och* frågetext (stem/alternativ/förklaring). Kolon för utvikning och en-dash (–) för intervall är okej. Hård spärr i `append-las-row.cjs` som blockerar append om en em-dash slinker med.
 
 ### ORD word integration rules
 
@@ -200,9 +189,7 @@ Längd: ~X ord
 Slot: [A/B/C/D] — [genre] / [domän] / [unit_position]
 ```
 
-Ask: *"Ser det bra ut? Skriv 'ja' för att gå vidare, eller beskriv vad du vill ändra."*
-
-Apply revisions if requested, then proceed with the confirmed final body.
+Do not show or gate the body on its own. Hold it and present it together with the questions at the single gate in Step 7.
 
 ---
 
@@ -280,7 +267,7 @@ Verktyg: A=[tool] · C=[tool] · D=[tool]
 Blindtest: [why a skimmer can't pick [X] on length/keyword/plausibility]
 ```
 
-Ask: *"Ser frågorna bra ut? Skriv 'ja' eller berätta vad som behöver justeras."*
+**This is the single approval gate.** Present the complete draft in ONE message — the body (UTKAST block from Step 6) followed by all questions (format above) — then ask once: *"Ser hela utkastet bra ut? Skriv 'ja' så lägger jag till artikeln — annars säg vad du vill ändra."* On "ja", go straight to Step 9 and append automatically with no further questions. If the user requests changes, revise and re-show only what changed, then re-ask the same single question.
 
 ---
 
@@ -313,16 +300,12 @@ Steps:
 
 1. Assemble the confirmed article as a **plain JSON payload** (native values — no CSV escaping anywhere). Required keys: `title`, `domain`, `genre`, `unit_position`, `difficulty`, `body`, `questions` (array), `vocab_highlights` (array), `featured_ord_words` (**array of strings**, e.g. `["prognos","diffus"]` — the script builds the `{"..."}` literal). Optional (defaults applied): `id` (max+1), `word_count` (counted from body), `question_count` (= questions.length), `source_url` (`""`), `source_name` (`"Fattat"`), `past_hp` (`""`), `is_designed_content` (`true` → `TRUE`), `notes` (`""`). Write it to a temp file, e.g. `_las_payload.json`.
 
-2. **Preview + verify** without writing anything:
+2. **Dry-run, then append — automatically** (the single "ja" from Step 7 already authorized this; do NOT ask again):
    ```
    node scripts/append-las-row.cjs _las_payload.json --dry-run
-   ```
-   Show the printed summary (id, domän/genre/unit, ordräkning, frågor, featured) to the user and resolve any ⚠ warnings. Then ask: *"Ser det bra ut? Jag lägger till raden i `las-database.csv`."*
-
-3. On confirm, append for real (same command without the flag):
-   ```
    node scripts/append-las-row.cjs _las_payload.json
    ```
+   Only pause if the dry-run prints a ⚠ warning that genuinely needs a human decision (e.g. a length/curated/overlap issue you can't resolve yourself) — surface just that. A benign length warning for a body inside the HP empirical range (783–1192 words) is fine to note in passing and proceed.
 
 4. Delete the temp payload file.
 
@@ -344,4 +327,5 @@ Column order in the CSV, for reference: `id, title, source_url, source_name, dom
 - question_count matches actual question count
 - unit_position matches: `kort` = 2 questions, `lång` = 4 questions
 - featured_ord_words matches ORD words actually present in confirmed body
+- Inga em-dash (—) i brödtext eller frågetext (ersätt med punkt, komma eller kolon; hård spärr i `append-las-row.cjs`)
 - Slot classification of this article is correct (will be used in updated slot table)

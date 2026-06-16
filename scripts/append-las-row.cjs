@@ -148,6 +148,21 @@ payload.questions.forEach((q, idx) => {
   if (dlens.length && clen > maxD) warn(`Fråga ${idx + 1}: rätt svar (${q.correct}) är längst (${clen} tecken mot ${maxD}) — längd-tell; gör minst en distraktor minst lika lång`);
 });
 
+// Em-dash-spärr (founder-regel): em-dash (—, U+2014) i genererad text är den
+// tydligaste AI-signaturen. Gäller brödtext + frågetext (stem/alternativ/
+// förklaring), INTE källfält. Hård spärr: ersätt med punkt, komma eller kolon.
+// En-dash (–, U+2013) lämnas i fred; den används legitimt för intervall.
+const EM_DASH = '—';
+const emDashHits = [];
+if (String(payload.body).includes(EM_DASH)) emDashHits.push('body');
+payload.questions.forEach((q, idx) => {
+  const fields = { stem: q.stem, explanation: q.explanation, ...(q.options || {}) };
+  for (const [name, val] of Object.entries(fields)) {
+    if (val != null && String(val).includes(EM_DASH)) emDashHits.push(`fråga ${idx + 1}.${name}`);
+  }
+});
+if (emDashHits.length) fail('em-dash (—) hittades i: ' + emDashHits.join(', ') + '. Em-dash är förbjuden i genererad text (AI-tell). Ersätt med punkt, komma eller kolon.');
+
 // ---- derive ---------------------------------------------------------------
 const existingIds = dataRows.map((r) => parseInt(r[0], 10)).filter((n) => !isNaN(n));
 const nextId = payload.id != null ? payload.id : (existingIds.length ? Math.max(...existingIds) + 1 : 1);

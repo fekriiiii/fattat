@@ -660,6 +660,8 @@ Längdskala (empiriskt mätt på 52 textsegment över 16 provpass):
 
 10. **Genus-/maktperspektiv återkommer**: Flera texter har genus- eller maktperspektiv (Nya yrken, Flickboken och yrkeslivet, Bankerna, Utsatta gruppers hälsa) — speglar samtida samhällsdiskurs.
 
+11. **Interpunktion — tankstreck är en-dash, aldrig em-dash**: Äkta HP använder mellanslags-omgivet **en-dash (`–`)** som parentetiskt tankstreck, t.ex. PP4 24-vt "Akademiskt skrivande": *"Rektorns ord drabbar – ganska brutalt, måste man säga – unga kvinnor"* och *"beror ändå inte bara – kanske inte ens i första hand – på att den ger utrymme"*. **Em-dash (`—`) förekommer aldrig** i HP-brödtext; den är den tydligaste signaturen på AI-genererad text och är hårt spärrad i `append-las-row.cjs` (gäller brödtext + frågetext). Bylines i HP saknar dessutom streck helt — bara författarnamnet (t.ex. "Merete Mazzarella", "Maria Ågren"), högerställt efter texten. Generera därför med `–` (eller punkt/komma/kolon), aldrig `—`.
+
 ---
 
 # Bilaga: Distraktordesign — hur HP bygger svarsalternativen
