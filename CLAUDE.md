@@ -4,6 +4,9 @@
 
 ---
 
+## The Seed Command
+npx tsx scripts/seed.ts --ord=ord-database.csv --las=las-database.csv
+
 ## How to Work With the Founder
 
 The founder is **non-technical**. They understand the product deeply but don't write code. They are actively developing their business thinking — reading books, listening to podcasts — and may ask strategic questions (pricing, co-founders, positioning, fundraising, mental models) that reflect evolving or shifting views. Treat these as real discussions, not distractions. Engage with the thinking, challenge it if warranted, and connect it back to Fattat's specific situation.
