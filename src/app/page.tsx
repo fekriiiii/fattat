@@ -23,13 +23,6 @@ export default function LandingPage() {
         <div className="grid lg:grid-cols-[1.1fr,1fr] gap-12 lg:gap-16 items-center">
           {/* Left: pitch */}
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/15 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
-                Pluggar HP med Fattat live · 140 dagar
-              </span>
-            </div>
-
             <h1 className="text-[44px] sm:text-[60px] lg:text-[68px] font-bold leading-[0.98] tracking-[-0.025em] mb-6">
               <span className="text-primary">ORD och LÄS.</span>
               <br />Byggt för att fastna.
@@ -48,8 +41,8 @@ export default function LandingPage() {
                   Få ett mejl när Fattat öppnar
                 </h2>
                 <p className="text-[13px] text-dark/55 leading-relaxed">
-                  Du som står på listan får tillgång först — innan vi öppnar
-                  för allmänheten i höst.
+                  Vi bygger fortfarande. Lämna din mejl och du hör av oss
+                  när det är dags.
                 </p>
               </div>
               <WaitlistForm />
@@ -105,33 +98,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* DOGFOODING */}
-      <section className="px-5 sm:px-8 py-20 max-w-6xl mx-auto">
-        <div className="bg-dark text-cream rounded-3xl p-8 sm:p-12 lg:p-16">
-          <p className="text-[12px] font-bold uppercase tracking-[0.12em] text-primary mb-5">
-            Följ resan
-          </p>
-          <h2 className="text-[28px] sm:text-[40px] lg:text-[48px] font-bold leading-[1.05] tracking-[-0.02em] mb-5 max-w-3xl">
-            Jag skriver HP i höst. Och gör allt öppet.
-          </h2>
-          <p className="text-[17px] sm:text-[19px] text-cream/65 leading-[1.55] mb-8 max-w-2xl">
-            Jag är 16 och skriver HP i höst. Varje dag spelar jag in min session, visar hur min verbala del utvecklas och vad Fattat säger om mina svaga punkter.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <SocialLink href="https://tiktok.com/@fattat.se" label="TikTok" />
-            <SocialLink href="https://instagram.com/fattat.se" label="Instagram" />
-            <SocialLink href="https://youtube.com/@fattathp" label="YouTube" />
-          </div>
-        </div>
-      </section>
-
       {/* FINAL CTA — second waitlist surface for people who scrolled past */}
       <section className="px-5 sm:px-8 py-24 max-w-3xl mx-auto text-center">
         <h2 className="text-[32px] sm:text-[44px] font-bold leading-[1.05] tracking-[-0.02em] mb-4">
-          Öppnar i höst.
+          Fattat byggs just nu.
         </h2>
         <p className="text-[17px] text-dark/65 mb-8">
-          Anmäl dig nu och få ett mejl när det är dags. Inget mer än så.
+          Lämna din mejl och få besked när det är öppet för fler.
         </p>
         <div className="max-w-md mx-auto text-left bg-white rounded-2xl border border-dark/8 shadow-[0_4px_24px_-8px_rgba(31,41,55,0.08)] p-6">
           <WaitlistForm />
@@ -161,19 +134,5 @@ function FeatureCard({ number, title, body }: { number: string; title: string; b
       <h3 className="text-[19px] font-bold tracking-tight mb-2.5">{title}</h3>
       <p className="text-[15px] text-dark/65 leading-relaxed">{body}</p>
     </div>
-  )
-}
-
-function SocialLink({ href, label }: { href: string; label: string }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-cream/10 hover:bg-cream/20 text-cream font-semibold text-sm transition-colors"
-    >
-      {label}
-      <span className="text-cream/60">→</span>
-    </a>
   )
 }
