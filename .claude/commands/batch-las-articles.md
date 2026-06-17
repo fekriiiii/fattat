@@ -1,8 +1,49 @@
-# Batch Format LÄS Articles — Add Multiple to Database
+# Batch LÄS Articles — Generate or Format Multiple
 
-Process 5–10 LÄS articles in one session. Optimised for speed: databases are read once, coverage tracking updates across the batch, and swap approvals happen in a single round rather than article-by-article.
+Add several LÄS articles to the database in one pass. Optimised for speed: databases are read once, coverage tracking updates across the batch, and review happens in a single round rather than article-by-article. Use `/write-las-article` for careful single-article work.
 
-Use this command when you have multiple pre-generated articles ready. Use `/format-las-article` for careful single-article work with more review checkpoints.
+---
+
+## Two modes
+
+**Generate mode — the default.** Write several *new* articles from scratch, planned as a set against the slot model, with the same craft as `/write-las-article`, then reviewed together at one gate. This is the default whenever the skill is invoked without pasted articles — e.g. "bygg databasen", "skriv en batch", "kör batch", or just `/batch-las-articles [N]`. **Do not ask the user to paste anything in this mode.**
+
+**Format mode.** Format several *pre-generated* articles the user pastes in (Codex, Gemini, manual, …). Use this **only** when the user actually pastes articles in the `===ARTIKEL N===` format, or explicitly says "formatera dessa". It lives under "Format mode" further down.
+
+---
+
+## Generate mode (default)
+
+Generates N articles from scratch — one databases read, one slot plan, one review gate for the whole set.
+
+### G1 — Read databases once
+Read the `las/` folder and `ord-database.csv` a single time for the whole batch (same as Step 2 below): current max id, the featured-word coverage map, and every curated ORD word with `word / definition_sv / domain / past_exams`.
+
+### G2 — Plan the batch against the slots
+Classify existing articles into Slots A/B/C (the slot model is in `/write-las-article`). Show the slot-status table, then **propose the specific N articles** that best fill the gaps, in priority order: most underfilled slot first, then any missing genres, keeping the kort:lång ratio near 1:2 and the two lång domains in a set distinct.
+- **Count:** take it from the invocation (`/batch-las-articles 3` → 3). If none is given, propose a sensible set (default 3, a near-complete provpass-set). **Confirm the one-line plan before generating — this is the only setup gate.** Announce each as `Slot X — domän / genre / unit`.
+
+### G3 — Generate each article
+For every planned article, run `/write-las-article` Steps 4–8 silently (no per-article output yet):
+- **Step 4** — select curated-only ORD words (Tier 1/2, domain-fit, not already featured anywhere in `las/` or earlier in this batch). lång 8–12, kort 4–6.
+- **Step 5–6** — write the body in the genre's register (the register table + HP markers live in `/write-las-article`). Each target word appears **exactly once**; hit the length target (lång ≥ 950, kort 250–400); **no em-dash**.
+- **Step 7** — write the questions for the genre's type mix, following `Bilaga: Distraktordesign` in `analysis/_LAS_analys.md`: eight tools, correct answer = a reworded abstraction/synthesis (never an echo of the anchor), all four options length-matched so **the correct answer is never the longest**, ≥1 `sant_men_fel_fråga` and ≥1 `nära_men_inte_riktigt` per question.
+- **Step 8** — compile `vocab_highlights` + curated-only `featured_ord_words`.
+
+### G4 — Validate every article before showing it
+For each article, check and fix **before** the gate: word count in range, no em-dash, **each featured word present exactly once**, no stray uncontrolled ORD words, and a `--dry-run` of its payload through `scripts/add-las-article.cjs` that returns clean (this is what catches the length-tell, curated-only, and cross-article-overlap warnings). Resolve every warning yourself; surface only one that genuinely needs a human call.
+
+### G5 — One combined review gate
+Present the **whole batch in a single message** — each article's body followed by its questions, with a one-line blind-test note per question — then ask once:
+> *"Ser hela batchen bra ut? Skriv 'ja' så skriver jag alla till `las/` — annars säg vilken artikel (eller fråga) du vill ändra."*
+
+On "ja": write each article via `scripts/add-las-article.cjs` (see Step 6), delete the temp files, then show the coverage report + updated slot table, and offer to seed (`npx tsx scripts/seed.ts --las-dir=las`) and commit. If the user wants changes to one article, revise just that one, re-show it, and re-ask the same single question.
+
+---
+
+## Format mode (paste existing articles)
+
+Use the steps below **only** in Format mode — when the user pastes their own drafts in.
 
 ---
 
