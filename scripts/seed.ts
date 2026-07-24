@@ -253,7 +253,7 @@ async function seedLas(rawArticles: RawArticle[]) {
       const position = findWordInText(row.body, vh.word)
       return {
         word: vh.word,
-        definition_sv: vh.definition_sv ?? vh.definition ?? '',
+        definition: vh.definition ?? vh.definition_sv ?? '',
         start_index: position?.start_index ?? -1,
         end_index: position?.end_index ?? -1,
       }

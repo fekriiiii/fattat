@@ -29,7 +29,13 @@ export interface LasQuestion {
 
 export interface VocabHighlight {
   word: string
-  definition: string
+  // The article files and the seed script both write `definition`. Rows seeded
+  // before 2026-07 carry the same text under `definition_sv`, because the seed
+  // script renamed the field on the way in while the UI kept reading
+  // `definition` — so the tooltip rendered blank for every article ever seeded.
+  // Both names are read (see VocabTooltip) so old rows work without a re-seed.
+  definition?: string
+  definition_sv?: string
 }
 
 export interface WeeklyGoal {

@@ -37,7 +37,9 @@ export function VocabTooltip({ highlight, onClose }: Props) {
           <X size={20} />
         </button>
         <p className="text-xl font-bold text-dark mb-2">{highlight.word}</p>
-        <p className="text-base text-dark/70 leading-relaxed">{highlight.definition}</p>
+        <p className="text-base text-dark/70 leading-relaxed">
+          {highlight.definition ?? highlight.definition_sv}
+        </p>
       </div>
     </div>
   )
