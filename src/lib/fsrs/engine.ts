@@ -105,27 +105,25 @@ export function ratingFromAnswer(isCorrect: boolean): Rating {
   return isCorrect ? Rating.Good : Rating.Again
 }
 
-export type AnswerMode = 'mcq' | 'typing'
-
-// Latency→rating thresholds must account for the answer format's motor time.
-// MCQ is a single tap after reading ~5 options; typing requires producing a
-// whole Swedish synonym on a mobile keyboard (~3–5s of typing alone for a
-// confident recall). With shared thresholds, correct typing answers landed in
-// Hard (>7s) almost every time — the exact "Hard misuse" pattern the FSRS
-// authors warn the algorithm cannot adapt to: intervals get suppressed and
-// graduated words eat review quota they don't need. Hard must mean "recalled
-// with difficulty", not "recalled while typing".
+// Latency→rating thresholds. Every ORD answer is now a single tap after reading
+// ~5 options, so one set of thresholds covers everything.
+//
+// History worth keeping: there used to be a second, slower set for the typed
+// answer format, because producing a whole Swedish synonym on a mobile keyboard
+// costs ~3–5s of motor time alone and correct typed answers were landing in Hard
+// almost every time — the "Hard misuse" pattern the FSRS authors warn the
+// algorithm cannot adapt to (suppressed intervals, inflated review load). Typing
+// was removed on 2026-07-24, so the second set went with it.
+//
+// The same trap is now guarded on the client instead: familiar words hold their
+// options back for a recall pause, and the response timer starts when the options
+// appear — never at mount. If that ever regresses, every paused word starts
+// reading as Hard and the bug is back in a new costume.
 export function ratingFromAnswerWithLatency(
   isCorrect: boolean,
-  responseMs: number,
-  mode: AnswerMode = 'mcq'
+  responseMs: number
 ): Rating {
   if (!isCorrect) return Rating.Again
-  if (mode === 'typing') {
-    if (responseMs < 6000) return Rating.Easy
-    if (responseMs > 15000) return Rating.Hard
-    return Rating.Good
-  }
   if (responseMs < 2000) return Rating.Easy
   if (responseMs > 7000) return Rating.Hard
   return Rating.Good

@@ -28,10 +28,11 @@ export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext, del
   const [progress, setProgress] = useState(delayMs > 0 ? 0 : 1)
   const canAdvance = progress >= 1
 
-  // Forced read window. The MCQ pattern lets users guess and graduate to
-  // typing without absorbing the definition or example — then they crash
-  // in typing mode. The pause is the only thing standing between a lucky
-  // guess and shallow learning.
+  // Forced read window. Multiple choice makes it trivial to tap past the
+  // definition and example without reading either, which turns a lucky guess
+  // into no learning at all. This pause is the only thing standing between the
+  // two. (It originally also protected the typed-answer format from words that
+  // had graduated on luck; typing is gone since 2026-07-24, the reason isn't.)
   useEffect(() => {
     if (delayMs <= 0) { setProgress(1); return }
     const start = Date.now()

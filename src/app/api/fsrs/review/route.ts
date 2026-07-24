@@ -79,20 +79,20 @@ export async function POST(req: NextRequest) {
     )
 
     const card = existingCard ? dbRowToCard(existingCard) : createCard()
-    // Infer the answer format server-side from the graduation gate: cards with
-    // mcq_correct_streak < 2 (or no card yet) render as MCQ in the session UI,
-    // graduated cards render as typing. Same predicate the client uses, so no
-    // client-supplied mode field to trust.
-    const wasTyping = ((existingCard?.mcq_correct_streak as number | undefined) ?? 0) >= 2
-    const rating = ratingFromAnswerWithLatency(isCorrect, responseMs, wasTyping ? 'typing' : 'mcq')
+    // One threshold set now that every answer is an MCQ tap. The pause on
+    // familiar words is excluded client-side (the timer starts when the options
+    // appear), so nothing has to be compensated for here.
+    const rating = ratingFromAnswerWithLatency(isCorrect, responseMs)
     appliedRating = rating
     const recordLogItem = scheduleCard(card, rating, requestRetention)
     const updatedCard = recordLogItem.card
 
-    // MCQ → typing graduation gate. While streak < 2 the user is in MCQ mode;
-    // 2 consecutive correct MCQ answers graduate the word to typing, a wrong
-    // answer resets the streak. Once graduated (streak >= 2) we freeze it —
-    // typing answers don't affect the gate.
+    // Familiarity gate. This counter used to decide MCQ vs typing; since typing
+    // was removed (2026-07-24) it decides whether the word gets the recall pause
+    // before its options appear. Same shape: 2 consecutive correct answers mark
+    // the word familiar, a wrong answer before that resets the streak, and once
+    // it reaches 2 it is frozen — a word the student has demonstrably known stays
+    // worth pausing on even after a later slip.
     const currentStreak = (existingCard?.mcq_correct_streak as number | undefined) ?? 0
     const newStreak = currentStreak >= 2
       ? currentStreak

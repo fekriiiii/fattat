@@ -4,8 +4,6 @@ import { useEffect, useCallback, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSessionStore } from '@/stores/sessionStore'
 import { SessionProgress } from '@/components/session/SessionProgress'
-import { OrdTyping } from '@/components/ord/OrdTyping'
-import { OrdFeedbackTyping } from '@/components/ord/OrdFeedbackTyping'
 import { OrdQuestion } from '@/components/ord/OrdQuestion'
 import { OrdFeedback } from '@/components/ord/OrdFeedback'
 import { ArticleReader } from '@/components/las/ArticleReader'
@@ -22,6 +20,12 @@ import { haptics } from '@/lib/utils/haptics'
 
 const ORD_LABELS = ['A', 'B', 'C', 'D', 'E'] as const
 const LAS_LABELS = ['A', 'B', 'C', 'D'] as const
+
+// How long familiar words hold their options back. ~3s is long enough to force
+// a real retrieval attempt and short enough not to feel like the app hung. Only
+// applied to words already answered correctly twice (roughly half a session),
+// which keeps the added time near a minute rather than three.
+const RECALL_PAUSE_MS = 3000
 
 export default function SessionPage() {
   const router = useRouter()
@@ -181,7 +185,13 @@ export default function SessionPage() {
       text: question.options[dbLabel],
       isCorrect: dbLabel === question.correct,
     }))
-    setCurrentLasOptions(shuffleOptions(raw).map((o, i) => ({ ...o, label: LAS_LABELS[i] })))
+    // NOT shuffled, unlike ORD. ORD options come from fixed CSV columns with the
+    // correct synonym always first, so shuffling there is mandatory. LAS options
+    // are authored per question in the order the real exam would print them, an
+    // article is never served to the same user twice, and the answer letters are
+    // evenly spread across the corpus — so shuffling bought nothing while making
+    // every explanation that named a letter wrong on screen.
+    setCurrentLasOptions(raw.map((o, i) => ({ ...o, label: LAS_LABELS[i] })))
   }, [currentArticle?.id, currentLasQuestionIndex])
 
   // Navigate to complete when done. Must AWAIT the complete API so completed_at
@@ -221,32 +231,6 @@ export default function SessionPage() {
     })()
     return () => { cancelled = true }
   }, [phase]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Handle ORD answer (typing version — review words)
-  const handleOrdAnswer = useCallback(
-    (typedText: string, isCorrect: boolean) => {
-      const word = store.currentOrdWord()
-      if (!word || !sessionId) return
-      const responseMs = Date.now() - answerStartTime
-      isCorrect ? haptics.correct() : haptics.wrong()
-      selectAnswer(typedText)
-      submitAnswer({
-        type: 'ord',
-        wordId: word.id,
-        domain: word.domain,
-        chosenLabel: typedText,
-        correctLabel: word.correct_synonym,
-        isCorrect,
-        responseMs,
-      })
-      fetch('/api/fsrs/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, wordId: word.id, isCorrect, responseMs }),
-      })
-    },
-    [store, sessionId, answerStartTime, selectAnswer, submitAnswer]
-  )
 
   // Handle ORD answer (MCQ version — new words seeing a word for the first time)
   const handleOrdAnswerMcq = useCallback(
@@ -391,11 +375,15 @@ export default function SessionPage() {
 
   const percent = progressPercent()
 
-  const endSessionForToday = () => {
+  // Awaits /complete for the same reason the phase-complete effect above does:
+  // completed_at must be written before the user can reach the dashboard, or a
+  // quick bounce into Studera hits /api/session/build on a still-open row and
+  // the daily-done gate lets a second daily session through (double FSRS quota).
+  const endSessionForToday = async () => {
     const ord = responses.filter((r) => r.type === 'ord')
     const las = responses.filter((r) => r.type === 'las')
     if (sessionId) {
-      fetch('/api/session/complete', {
+      await fetch('/api/session/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -500,34 +488,25 @@ export default function SessionPage() {
             question→feedback→next question — so the loop feels responsive
             rather than swapping content statically. motion-safe only. */}
         <div key={`${currentWord.id}-${showingFeedback ? 'fb' : 'q'}`} className="motion-safe:animate-slide-in">
-        {isNewWord ? (
-          showingFeedback && lastOrdResponse ? (
-            <OrdFeedback
-              word={currentWord}
-              options={currentOrdOptions}
-              chosenLabel={lastOrdResponse.chosenLabel}
-              isCorrect={lastOrdResponse.isCorrect}
-              onNext={advanceFromFeedback}
-            />
-          ) : (
-            <OrdQuestion
-              word={currentWord}
-              options={currentOrdOptions}
-              selectedLabel={selectedLabel}
-              onSelect={handleOrdAnswerMcq}
-            />
-          )
+        {showingFeedback && lastOrdResponse ? (
+          <OrdFeedback
+            word={currentWord}
+            options={currentOrdOptions}
+            chosenLabel={lastOrdResponse.chosenLabel}
+            isCorrect={lastOrdResponse.isCorrect}
+            onNext={advanceFromFeedback}
+          />
         ) : (
-          showingFeedback && lastOrdResponse ? (
-            <OrdFeedbackTyping
-              word={currentWord}
-              typedText={lastOrdResponse.chosenLabel}
-              isCorrect={lastOrdResponse.isCorrect}
-              onNext={advanceFromFeedback}
-            />
-          ) : (
-            <OrdTyping word={currentWord} onAnswer={handleOrdAnswer} />
-          )
+          <OrdQuestion
+            word={currentWord}
+            options={currentOrdOptions}
+            selectedLabel={selectedLabel}
+            onSelect={handleOrdAnswerMcq}
+            // New/ungraduated words go straight to the options; familiar ones
+            // get the recall pause first. See RECALL_PAUSE_MS.
+            revealDelayMs={isNewWord ? 0 : RECALL_PAUSE_MS}
+            onReveal={markAnswerStart}
+          />
         )}
         </div>
       </div>
