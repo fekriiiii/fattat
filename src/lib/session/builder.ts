@@ -142,7 +142,7 @@ export async function buildDailySession(
   if (skipLas) {
     balanceMessage = 'Idag är en ORD-dag. Vi kör endast ord. LÄS-artiklar dyker upp måndag, onsdag och fredag.'
   } else if (skipOrd) {
-    balanceMessage = 'Idag är en LÄS-dag. Vi kör endast artiklar. ORD-ord dyker upp tisdag, torsdag och lördag.'
+    balanceMessage = 'Idag är en LÄS-dag. Vi kör endast läsförståelse. ORD-ord dyker upp tisdag, torsdag och lördag.'
   }
 
   return {
@@ -262,26 +262,27 @@ async function fetchArticles(
   const kortSorted = ([...(kortData ?? [])] as Article[]).sort((a, b) => score(b) - score(a))
   const langSorted = ([...(langData ?? [])] as Article[]).sort((a, b) => score(b) - score(a))
 
-  const results: Article[] = []
-  if (kortSorted[0]) results.push(kortSorted[0])
+  // ONE article per session. This used to return 1 kort + 2 lång, i.e. ~2100
+  // words of reading and 12-15 questions on top of the whole ORD block, which
+  // put LÄS alone past 20 minutes and made the daily session something you have
+  // to schedule rather than just do. It also burned the article bank three times
+  // faster than necessary, and the bank is the real constraint before 18 okt.
+  //
+  // Format is chosen FIRST, weighted by how many unseen articles each pool still
+  // holds; the best-scoring article inside that pool then wins. Taking the single
+  // top-scoring article across both pools instead would quietly starve the kort
+  // pool: weak-type score counts matching questions, and a lång article has 4
+  // questions to a kort article's 2, so lång would win almost every time and the
+  // student would never practise the short format. Weighting by remaining stock
+  // also drains the bank evenly and re-balances itself as we add articles.
+  const pools = [kortSorted, langSorted].filter((p) => p.length > 0)
+  if (pools.length === 0) return []
 
-  // Pick lång articles preferring both domain diversity and weak-type interleaving.
-  // Second article avoids the same domain AND avoids repeating weak types already in the first.
-  if (langSorted.length > 0) {
-    results.push(langSorted[0])
-    if (langSorted.length > 1) {
-      const firstDomain = langSorted[0].domain
-      const firstWeakTypes = new Set(langSorted[0].questions.map(q => q.type).filter(t => weakQuestionTypes.has(t)))
-      const second = langSorted.slice(1).find(a =>
-        a.domain !== firstDomain &&
-        (firstWeakTypes.size === 0 || a.questions.some(q => weakQuestionTypes.has(q.type) && !firstWeakTypes.has(q.type)))
-      ) ?? langSorted.slice(1).find(a => a.domain !== firstDomain)
-        ?? langSorted[1]
-      results.push(second)
-    }
-  }
+  const totalRemaining = pools.reduce((n, p) => n + p.length, 0)
+  let roll = Math.random() * totalRemaining
+  const pool = pools.find((p) => (roll -= p.length) < 0) ?? pools[0]
 
-  return results
+  return [pool[0]]
 }
 
 // Returns question types where the user's accuracy is below 50% (min 3 attempts).

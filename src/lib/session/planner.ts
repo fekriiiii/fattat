@@ -170,7 +170,7 @@ function buildMessage(p: {
   baselineLasAcc: number
 }): string {
   const lasWarning = p.baselineLasAcc < p.baselineOrdAcc - 0.2
-    ? ' Din läsförståelse är ditt svagaste område. Prioritera att läsa alla artiklar i varje session.'
+    ? ' Din läsförståelse är ditt svagaste område. Prioritera läsdelen och ta dig tid med texten innan du svarar.'
     : ''
 
   if (p.daysLeft <= 0) {
