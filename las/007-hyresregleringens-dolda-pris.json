@@ -24,7 +24,7 @@
       },
       "correct": "C",
       "passage_anchor": "Att försvara systemet i dess nuvarande form är inte att stå på de utsattas sida – det är att cementera deras utanförskap. […] Den som vill värna de svaga bör rikta stödet direkt till hushållet, inte till en bostad vars låga hyra råkar tillfalla den som för tillfället bor i den.",
-      "explanation": "Texten säger att regleringen blivit ett hinder för de svaga den skulle skydda, och att stödet bör riktas till hushållet snarare än till bostaden – svaret väger ihop tesen och den föreslagna lösningen.",
+      "explanation": "Texten säger att regleringen blivit ett hinder för de svaga den skulle skydda, och att stödet bör riktas till hushållet snarare än till bostaden. Rätt svar väger ihop tesen och den föreslagna lösningen.",
       "distractor_types": {
         "A": "nära_men_inte_riktigt",
         "B": "ytlig_nyckelordsläsning",
@@ -57,17 +57,17 @@
       "type": "detalj_fakta",
       "stem": "Vad framgår av texten om den finländska avvecklingen av hyresregleringen?",
       "options": {
-        "A": "Att hyrorna efter en inledande uppgång stabiliserades när byggandet tog fart och att rörligheten ökade.",
+        "A": "Att avvecklingen genomfördes abrupt och utlöste en omfattande social oro runt om i landet.",
         "B": "Att hyrorna sjönk i stort sett omedelbart efter avvecklingen tack vare ett snabbt ökande bostadsbyggande.",
-        "C": "Att avvecklingen genomfördes abrupt och utlöste en omfattande social oro runt om i landet.",
+        "C": "Att hyrorna efter en inledande uppgång stabiliserades när byggandet tog fart och att rörligheten ökade.",
         "D": "Att Finland behöll reglerade hyror i det äldre beståndet men släppte nyproduktionen helt fri."
       },
-      "correct": "A",
+      "correct": "C",
       "passage_anchor": "Erfarenheterna från Finland, som under nittiotalet avvecklade sin hyresreglering, visar att hyrorna efter en inledande uppgång stabiliserades när nyproduktionen tog fart – och att rörligheten på marknaden ökade så att fler hushåll kunde flytta dit arbete och studier fanns.",
       "explanation": "Enligt anchoret steg hyrorna först och stabiliserades sedan när byggandet ökade, samtidigt som rörligheten på marknaden ökade.",
       "distractor_types": {
+        "A": "ytlig_nyckelordsläsning",
         "B": "nära_men_inte_riktigt",
-        "C": "ytlig_nyckelordsläsning",
         "D": "sant_men_fel_fråga"
       },
       "notes": ""

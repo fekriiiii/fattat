@@ -24,7 +24,7 @@
       },
       "correct": "C",
       "passage_anchor": "Khalili menar att en sådan kalkyl missar vad biblioteket faktiskt upprätthåller. – Räkna inte bara utlånen, säger hon. Räkna alla som inte har någon annanstans att ta vägen.",
-      "explanation": "Khalili säger att kalkylen missar vad biblioteket upprätthåller och att man måste räkna även dem som saknar någon annanstans att ta vägen – alltså att värdet är socialt och inte syns i utlåningssiffrorna.",
+      "explanation": "Khalili säger att kalkylen missar vad biblioteket upprätthåller och att man måste räkna även dem som saknar någon annanstans att ta vägen, alltså att värdet är socialt och inte syns i utlåningssiffrorna.",
       "distractor_types": {
         "A": "nära_men_inte_riktigt",
         "B": "sant_men_fel_fråga",
@@ -44,7 +44,7 @@
       },
       "correct": "B",
       "passage_anchor": "Biblioteket framstår i det ljuset som en påfallande egalitär institution. […] Frågan är hur länge ett rum som inte mäts i intäkter får finnas kvar mitt i en stad där snart sagt allt annat kostar.",
-      "explanation": "Texten ringar in biblioteket som en avgiftsfri, egalitär plats vars existens hotas i en allt mer kommersialiserad stad – vilket alternativ B sammanfattar.",
+      "explanation": "Texten ringar in biblioteket som en avgiftsfri, egalitär plats vars existens hotas i en allt mer kommersialiserad stad. Rubriken om den fria mötesplatsen som krymper fångar både vad platsen är och vad som hotar den.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "C": "ytlig_nyckelordsläsning",

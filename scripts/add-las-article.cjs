@@ -144,15 +144,40 @@ payload.questions.forEach((q, idx) => {
 });
 
 // Question-quality guard — the tell AI HP-questions keep producing: the correct
-// answer is the longest option. Option POSITION is deliberately NOT checked: the
-// session/test/diagnostic pages shuffle options and relabel A–D at render, so the
-// stored correct letter never reaches the user — only option *lengths* survive.
+// answer is the longest option.
+//
+// NOTE (2026-07-24): this used to say option POSITION need not be checked because
+// the session/test/diagnostic pages shuffled options at render. That is no longer
+// true — LAS options are now rendered in authored order (shuffling was removed
+// because it silently invalidated every explanation that named a letter). The
+// stored letter now IS what the user sees, so position is checked below.
 payload.questions.forEach((q, idx) => {
   const opts = q.options || {};
   const clen = String(opts[q.correct] || '').trim().length;
   const dlens = Object.keys(opts).filter((k) => k !== q.correct).map((k) => String(opts[k]).trim().length);
   const maxD = dlens.length ? Math.max(...dlens) : 0;
   if (dlens.length && clen > maxD) warn(`Fråga ${idx + 1}: rätt svar (${q.correct}) är längst (${clen} tecken mot ${maxD}) — längd-tell; gör minst en distraktor minst lika lång`);
+});
+
+// Position-tell guard. Options are no longer shuffled, so an article whose
+// answers all sit on one letter is guessable without reading. Hard-fails only on
+// the unambiguous case (every answer identical) and warns on 3-of-4, since with
+// so few questions per article a mild lean is just chance.
+const letters = payload.questions.map((q) => q.correct);
+if (letters.length >= 3) {
+  const counts = letters.reduce((m, l) => ((m[l] = (m[l] || 0) + 1), m), {});
+  const [top, n] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  if (n === letters.length) fail(`alla ${letters.length} rätta svar ligger på ${top}. Alternativen shufflas inte längre — sprid ut de rätta svaren.`);
+  else if (n >= letters.length - 1) warn(`${n} av ${letters.length} rätta svar ligger på ${top} — sprid gärna ut dem.`);
+}
+
+// Letter-reference guard. An explanation that says "alltså svar D" is wrong the
+// moment anyone reorders the options, and it teaches nothing: the student should
+// learn WHY an answer is right, not which slot it sat in. Eight such explanations
+// had to be rewritten on 2026-07-24. Hard block.
+payload.questions.forEach((q, idx) => {
+  const m = String(q.explanation || '').match(/\b(svar|svaret|alternativ|alternativet|rubrik|rubriken|option)\s+[A-D]\b/i);
+  if (m) fail(`fråga ${idx + 1}: förklaringen pekar på svaret med bokstav ("${m[0]}"). Beskriv vad som gör svaret rätt i stället.`);
 });
 
 // Em-dash-spärr (founder-regel): em-dash (—, U+2014) i genererad text är den

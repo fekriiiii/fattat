@@ -130,7 +130,8 @@ export default function DiagnosticPage() {
       text: question.options[dbLabel],
       isCorrect: dbLabel === question.correct,
     }))
-    setCurrentLasOptions(shuffleOptions(raw).map((o, i) => ({ ...o, label: LAS_LABELS[i] })))
+    // Not shuffled — see the note in the daily session page. ORD still is.
+    setCurrentLasOptions(raw.map((o, i) => ({ ...o, label: LAS_LABELS[i] })))
   }, [currentArticle?.id, currentLasQuestionIndex])
 
   useEffect(() => {

@@ -24,7 +24,7 @@
       },
       "correct": "B",
       "passage_anchor": "Det mindre långtgående är jämkning, varigenom villkoret anpassas så att det inte längre framstår som otillbörligt medan avtalet i övrigt lämnas orört. Det mer ingripande alternativet är att villkoret lämnas helt utan avseende, något som i förekommande fall kan utsträckas till en ogiltigförklaring av avtalet i dess helhet.",
-      "explanation": "Anchoret beskriver två grader av ingripande – jämkning som justerar villkoret och att det lämnas utan avseende, ända till ogiltigförklaring – vilket svar B sammanfattar utan att återge nyckelorden.",
+      "explanation": "Anchoret beskriver två grader av ingripande: jämkning som justerar villkoret, och att villkoret lämnas utan avseende ända till ogiltigförklaring. Rätt alternativ är det som säger att domstolen kan välja mellan att justera villkoret och att sätta det ur spel, sammanfattat utan att återge textens nyckelord.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "C": "nära_men_inte_riktigt",
@@ -44,7 +44,7 @@
       },
       "correct": "C",
       "passage_anchor": "Genom att avstå från att på förhand räkna upp vilka villkor som är otillåtna har lagstiftaren gjort det möjligt att låta tillämpningen utvecklas i takt med att nya avtalstyper och nya former av missbruk uppstår, utan att lagtexten ständigt måste revideras.",
-      "explanation": "Anchoret anger att den öppna lydelsen ska låta tillämpningen utvecklas med nya avtalstyper utan att lagen måste skrivas om – precis det svar C uttrycker.",
+      "explanation": "Anchoret anger att den öppna lydelsen ska låta tillämpningen utvecklas med nya avtalstyper utan att lagen måste skrivas om. Det är precis vad alternativet om att innebörden ska kunna utvecklas med nya avtalstyper uttrycker.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "B": "rätt_fakta_påhittat_motiv",
@@ -64,7 +64,7 @@
       },
       "correct": "B",
       "passage_anchor": "Lagstiftarens svar blev den generalklausul som år 1976 infördes som 36 § i avtalslagen – i praktiken en betydande inskränkning av den avtalsfrihet som dittills ansetts närmast okränkbar. […] Generalklausulen låter sig mot denna bakgrund bäst förstås som en säkerhetsventil. Den upphäver inte avtalsfriheten och var aldrig avsedd att göra det; tvärtom förutsätter den att huvudregeln alltjämt är att avtal ska hållas.",
-      "explanation": "Tesen byggs av två ställen – klausulen är en inskränkning av avtalsfriheten men upphäver den inte, utan är en säkerhetsventil där bundenhet vägs mot skälighet – vilket svar B fångar.",
+      "explanation": "Tesen byggs av två ställen: klausulen är en inskränkning av avtalsfriheten men upphäver den inte, utan fungerar som en säkerhetsventil där bundenhet vägs mot skälighet. Rubriken om en medveten avvägning mellan bindande avtal och skälighet är den enda som fångar den dubbelheten.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "C": "sant_för_en_del",
@@ -84,7 +84,7 @@
       },
       "correct": "D",
       "passage_anchor": "Det är just därför som senare inträffade förhållanden uttryckligen anges som ett av de moment domstolen har att beakta: skäligheten ska bedömas inte enbart utifrån hur avtalet såg ut på papperet vid undertecknandet, utan utifrån hur det faktiskt kommit att verka. Samtidigt har lagstiftaren markerat att tröskeln är hög; en part som endast gjort en dålig affär kan inte räkna med att befrias från den.",
-      "explanation": "Stycket både konkretiserar bedömningsgrunden senare inträffade förhållanden och markerar att tröskeln är hög (en dålig affär räcker inte) – alltså svar D.",
+      "explanation": "Stycket både konkretiserar bedömningsgrunden senare inträffade förhållanden och markerar att tröskeln för ingripande är hög: att en affär blivit dålig räcker inte. Rätt alternativ är det som nämner båda leden, alltså konkretiseringen och den höga tröskeln.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "B": "nära_men_inte_riktigt",

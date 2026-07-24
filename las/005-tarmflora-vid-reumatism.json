@@ -44,7 +44,7 @@
       },
       "correct": "A",
       "passage_anchor": "Författarna föreslår att stammen, genom att konkurrera ut den oförändrade Prevotella copri, dämpar just IL-17-signaleringen – och att detta är en delvis annan väg än de som dagens biologiska läkemedel verkar via.",
-      "explanation": "Författarnas föreslagna mekanism är att stammen konkurrerar ut den oförändrade Prevotella copri och dämpar IL-17-signaleringen – alltså svar A.",
+      "explanation": "Författarnas föreslagna mekanism är att stammen konkurrerar ut den oförändrade Prevotella copri och dämpar IL-17-signaleringen. Rätt alternativ är det som håller ihop båda leden: utkonkurrering av den ursprungliga bakterien och en dämpad inflammatorisk signal.",
       "distractor_types": {
         "B": "sant_men_fel_fråga",
         "C": "nära_men_inte_riktigt",
@@ -84,7 +84,7 @@
       },
       "correct": "B",
       "passage_anchor": "Om mekanismen håller i större studier öppnar det för en helt ny behandlingsprincip vid RA – en som verkar via tarmen snarare än via blodet och som i bästa fall kan komplettera dagens läkemedel hos den tredjedel av patienterna som idag inte får tillräcklig effekt. […] Resultaten ska samtidigt tolkas med försiktighet.",
-      "explanation": "Texten väger en lovande ny behandlingsprincip mot uttryckliga brasklappar om osäkerhet – vilket rubrik B fångar.",
+      "explanation": "Texten väger en lovande ny behandlingsprincip mot uttryckliga brasklappar om osäkerhet. Rubriken om lovande men osäkra effekter är den enda som bär båda halvorna; de övriga pekar ut en orsak som texten aldrig fastslår.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "C": "sant_för_en_del",

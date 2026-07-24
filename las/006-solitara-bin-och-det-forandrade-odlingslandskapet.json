@@ -44,7 +44,7 @@
       },
       "correct": "A",
       "passage_anchor": "Laboratoriestudier har visat att subletal exponering för imidakloprid, den vanligaste substansen i gruppen, hämmar binas förmåga att bygga och underhålla de kognitiva kartor som styr insekternas navigering mellan bo och blomkälla.",
-      "explanation": "Texten anger att substansen hämmar binas kognitiva kartor som styr navigeringen mellan bo och blomkälla – alltså deras orienteringsförmåga.",
+      "explanation": "Texten anger att substansen hämmar binas kognitiva kartor som styr navigeringen mellan bo och blomkälla, alltså deras orienteringsförmåga.",
       "distractor_types": {
         "B": "sant_men_fel_fråga",
         "C": "nära_men_inte_riktigt",
@@ -84,7 +84,7 @@
       },
       "correct": "B",
       "passage_anchor": "Forskning publicerad det senaste decenniet pekar dock mot att det är just de vilda arterna – framför allt de solitära – som bär upp de ekosystemtjänster som tambin inte kan ersätta. […] Forskarnas slutsats är att resiliens hos vildbi-samhällen är fullt möjlig under förutsättning att åtgärder vidtas tidigt och samordnat – men att den kräver ett långsiktigt landskapsperspektiv, inte enstaka insatser.",
-      "explanation": "Texten behandlar både hoten mot de vilda bina och möjligheterna till återhämtning – vilket rubrik B fångar i sin helhet.",
+      "explanation": "Texten behandlar både hoten mot de vilda bina och möjligheterna till återhämtning. Rubriken som nämner hot och vägar tillbaka är den enda som täcker båda halvorna; de övriga fastnar i var sin del av texten.",
       "distractor_types": {
         "A": "sant_men_fel_fråga",
         "C": "sant_för_en_del",
