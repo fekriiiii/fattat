@@ -170,7 +170,7 @@ function buildMessage(p: {
   baselineLasAcc: number
 }): string {
   const lasWarning = p.baselineLasAcc < p.baselineOrdAcc - 0.2
-    ? ' Din läsförståelse är ditt svagaste område — prioritera att läsa alla artiklar i varje session.'
+    ? ' Din läsförståelse är ditt svagaste område. Prioritera att läsa alla artiklar i varje session.'
     : ''
 
   if (p.daysLeft <= 0) {
@@ -182,7 +182,7 @@ function buildMessage(p: {
   }
 
   if (!p.isHeavy) {
-    return `Du behöver lära dig ${p.newWordsNeeded} nya ord — ${p.dailyNewWords} ord per dag. Det tar ungefär ${p.estimatedMinutesPerDay} minuter i Fattat per dag.${lasWarning}`
+    return `Du behöver lära dig ${p.newWordsNeeded} nya ord, ${p.dailyNewWords} ord per dag. Det tar ungefär ${p.estimatedMinutesPerDay} minuter i Fattat per dag.${lasWarning}`
   }
 
   return `Att nå ${p.targetHp.toFixed(2)} HP kräver ${p.dailyNewWords} nya ord per dag (${p.estimatedMinutesPerDay} min/dag). Vid ett lugnare tempo på 10 ord per dag kan du nå ${p.achievableHp.toFixed(2)} HP.${lasWarning}`

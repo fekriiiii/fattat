@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
   if (proposed.getTime() >= examDate.getTime()) {
     return NextResponse.json(
-      { error: 'Too close to exam — cannot push further' },
+      { error: 'Too close to exam: cannot push further' },
       { status: 400 }
     )
   }
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     d.setDate(d.getDate() + 1)
     if (d.getTime() >= examDate.getTime()) {
       return NextResponse.json(
-        { error: 'No free slot before exam — cannot reschedule' },
+        { error: 'No free slot before exam: cannot reschedule' },
         { status: 400 }
       )
     }

@@ -11,7 +11,7 @@ import { useCountUp } from '@/hooks/useCountUp'
 // Milestone copy shown under the streak flame. Day-streak milestones are the
 // habit loop's biggest reward moments — name them.
 function streakMilestone(streak: number): string | null {
-  if (streak === 7) return 'En hel vecka i rad — nu är det en rutin.'
+  if (streak === 7) return 'En hel vecka i rad. Nu är det en rutin.'
   if (streak === 14) return 'Två veckor utan att missa en dag.'
   if (streak === 30) return 'En månad. Det här är disciplin på riktigt.'
   if (streak === 50) return '50 dagar. Få kommer hit.'
@@ -115,20 +115,20 @@ export default function SessionCompletePage() {
   const lasPctAnimated = useCountUp(lasPct, loaded)
 
   const excellentMessages = [
-    'Utmärkt session — du lär dig.',
+    'Utmärkt session. Du lär dig.',
     'Starkt! Den här sortens dag bygger minne.',
     'Skarpt. Hjärnan jobbar ordentligt idag.',
-    'Imponerande — du är på god väg.',
+    'Imponerande. Du är på god väg.',
   ]
   const goodMessages = [
-    'Bra jobbat — varje session för dig framåt.',
+    'Bra jobbat. Varje session för dig framåt.',
     'Solid insats. Du rör dig i rätt riktning.',
     'Bra. Fortsätt så här.',
-    'Konsekvent arbete ger resultat — du håller kursen.',
+    'Konsekvent arbete ger resultat. Du håller kursen.',
   ]
   const toughMessages = [
-    'Svåra ord sitter bäst efteråt — det här var väl använd tid.',
-    'Motstånd är en del av inlärningen — FSRS tar hand om resten.',
+    'Svåra ord sitter bäst efteråt. Det här var väl använd tid.',
+    'Motstånd är en del av inlärningen. Vi tar hand om resten.',
     'Tuffa sessioner bygger starka minnen. Kom igen imorgon.',
     'Det är precis de svåra orden du behöver träna. Bra att du körde.',
   ]
@@ -161,12 +161,12 @@ export default function SessionCompletePage() {
           </h1>
           {!isExtra && streak !== null && streak > 0 && (
             <p className="text-[14px] text-dark/65 mt-1.5">
-              {streak === 1 ? 'Bra start — kom igen imorgon!' : `Du är inne på dag ${streak} i rad`}
+              {streak === 1 ? 'Bra start. Kom igen imorgon!' : `Du är inne på dag ${streak} i rad`}
             </p>
           )}
           {isExtra && (
             <p className="text-[14px] text-dark/65 mt-1.5">
-              Bra jobbat — påverkar inte din dagliga progress.
+              Bra jobbat. Påverkar inte din dagliga progress.
             </p>
           )}
         </div>
@@ -217,7 +217,7 @@ export default function SessionCompletePage() {
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />
           <p className="text-[13px] text-dark/65">
-            {newWordsStarted === 1 ? '1 nytt ord påbörjat' : `${newWordsStarted} nya ord påbörjade`} — FSRS tar dem vidare imorgon
+            {newWordsStarted === 1 ? '1 nytt ord påbörjat' : `${newWordsStarted} nya ord påbörjade`}. De kommer tillbaka imorgon.
           </p>
         </div>
       )}
@@ -238,7 +238,7 @@ export default function SessionCompletePage() {
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-bold text-dark mb-0.5">Vill du ha en daglig påminnelse?</p>
             <p className="text-[11px] text-dark/65 leading-relaxed mb-3">
-              Fattat skickar ett nudge vid din valda tid — bara om du inte redan studerat den dagen.
+              Fattat skickar ett nudge vid din valda tid, bara om du inte redan studerat den dagen.
             </p>
             <button
               onClick={handleEnableNotifications}

@@ -81,7 +81,7 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
             {word.word}
           </h2>
           <span className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/15 motion-safe:animate-pop-in">
-            Rätt — {word.correct_synonym}
+            Rätt: {word.correct_synonym}
           </span>
         </div>
 
@@ -132,7 +132,7 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
 
         <div className="text-center">
           {flagged ? (
-            <p className="text-xs text-dark/40">Tack — vi kollar på det.</p>
+            <p className="text-xs text-dark/40">Tack, vi kollar på det.</p>
           ) : (
             <button
               onClick={handleFlag}
@@ -154,7 +154,7 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
       <div className="flex flex-col gap-7 px-5 pt-8 pb-6">
         <div className="text-center">
           <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-dark/40 mb-2">
-            Skriv synonymen — från minnet
+            Skriv synonymen, från minnet
           </p>
           <h2 className="text-3xl font-bold text-dark/25 tracking-tight leading-none">
             _ _ _ _ _
@@ -208,7 +208,7 @@ export function OrdFeedbackTyping({ word, typedText, isCorrect, onNext }: Props)
           Rätt svar: {word.correct_synonym}
         </span>
         {retrieveError && (
-          <p className="text-[11px] text-dark/45 mt-2">Vi tar det igen — du minns nästa gång.</p>
+          <p className="text-[11px] text-dark/45 mt-2">Vi tar det igen. Du minns nästa gång.</p>
         )}
       </div>
 

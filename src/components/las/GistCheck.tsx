@@ -29,7 +29,7 @@ export function GistCheck({ onSubmit }: Props) {
           Vad är textens huvudtanke?
         </h2>
         <p className="text-[13px] text-dark/55 leading-snug mt-2">
-          Skriv en mening ur minnet — utan att titta tillbaka. Att formulera kärnan själv är det som gör att texten fastnar.
+          Skriv en mening ur minnet, utan att titta tillbaka. Att formulera kärnan själv är det som gör att texten fastnar.
         </p>
       </div>
 

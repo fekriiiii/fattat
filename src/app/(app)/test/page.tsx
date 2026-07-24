@@ -339,12 +339,12 @@ export default function TestPage() {
               <strong>{novelCount} nya ord från äkta HP-prov</strong>.
             </p>
             <p className="text-[14px] text-dark/70 leading-relaxed">
-              Det riktiga provet fungerar likadant — du möter alltid okända ord.
+              Det riktiga provet fungerar likadant. Du möter alltid okända ord.
               Det här mäter både ditt aktuella ordförråd <em>och</em> hur du tar
               dig an nya ord.
             </p>
             <p className="text-[13px] text-dark/55 leading-relaxed">
-              På resultatsidan ser du båda delarna separat — så du vet vad som
+              På resultatsidan ser du båda delarna separat, så du vet vad som
               är repetition och vad som är HP-nivå just nu.
             </p>
           </div>

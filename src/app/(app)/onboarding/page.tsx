@@ -215,7 +215,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-3">
               <h1 className="text-6xl font-bold text-dark tracking-tight">Fattat</h1>
               <p className="text-dark/55 text-base leading-relaxed">
-                Verbal HP. Byggd som en personlig modell — inte en quizapp.
+                Verbal HP. Byggd som en personlig modell, inte en quizapp.
               </p>
             </div>
 
@@ -234,7 +234,7 @@ export default function OnboardingPage() {
           word ? (
             <div className="flex flex-col">
               <p className="text-xs text-dark/40 text-center pt-4 pb-2">
-                En riktig fråga — precis som i appen
+                En riktig fråga, precis som i appen
               </p>
               <OrdQuestion
                 word={word}
@@ -254,7 +254,7 @@ export default function OnboardingPage() {
         {step === 'ord_feedback' && word && chosenLabel && (
           <div className="flex flex-col">
             <p className="text-xs text-dark/40 text-center pt-4 pb-2">
-              En riktig fråga — precis som i appen
+              En riktig fråga, precis som i appen
             </p>
             <OrdFeedback
               word={word}
@@ -281,7 +281,7 @@ export default function OnboardingPage() {
         {step === 'name' && (
           <FormStep
             title="Vad ska vi kalla dig?"
-            subtitle="Valfritt — används bara för hälsningar i appen."
+            subtitle="Valfritt. Används bara för hälsningar i appen."
           >
             <input
               type="text"
@@ -300,7 +300,7 @@ export default function OnboardingPage() {
         {step === 'exam' && (
           <FormStep
             title="När skriver du provet?"
-            subtitle="Välj din provomgång — datumet styr nedräkningen och din dagliga kvot."
+            subtitle="Välj din provomgång. Datumet styr nedräkningen och din dagliga kvot."
           >
             <ExamDatePicker value={examDate} onChange={setExamDate} />
 
@@ -316,7 +316,7 @@ export default function OnboardingPage() {
         {step === 'previous_hp' && (
           <FormStep
             title="Har du gjort HP förut?"
-            subtitle="Vi använder ditt resultat för totalbetyget — och för att smalna av prognosen redan från start."
+            subtitle="Vi använder ditt resultat för totalbetyget, och för att smalna av prognosen redan från start."
           >
             <div className="bg-white rounded-card p-4 border border-dark/[0.05] shadow-card">
               <div className="flex items-baseline justify-between mb-2">
@@ -359,7 +359,7 @@ export default function OnboardingPage() {
                 onClick={previousHpSkip}
                 className="text-sm text-dark/50 hover:text-dark/70 py-2 transition-colors"
               >
-                Hoppa över — det är min första gång
+                Hoppa över, det är min första gång
               </button>
             </div>
           </FormStep>
@@ -369,7 +369,7 @@ export default function OnboardingPage() {
         {step === 'previous_subsections' && (
           <FormStep
             title="Vet du dina MEK och ELF-resultat?"
-            subtitle="MEK (meningskomplettering) och ELF (engelsk läsförståelse) är de två delproven Fattat inte tränar. Anger du dem snävar prognosen ihop sig — annars gissar vi smart."
+            subtitle="MEK (meningskomplettering) och ELF (engelsk läsförståelse) är de två delproven Fattat inte tränar. Anger du dem snävar prognosen ihop sig. Annars gissar vi smart."
           >
             <PrecisionIndicator
               hasMek={previousMekScore !== null}
@@ -449,7 +449,7 @@ export default function OnboardingPage() {
         {step === 'intention' && (
           <FormStep
             title="När och var ska du studera?"
-            subtitle='Ett konkret "när och var" tredubblar sannolikheten att du faktiskt gör det. (Det heter implementation intention — och det är inbyggt i din plan.)'
+            subtitle='Ett konkret "när och var" tredubblar sannolikheten att du faktiskt gör det. (Det heter implementation intention, och det är inbyggt i din plan.)'
           >
             <div>
               <label className="text-sm font-medium text-dark/70 block mb-1.5">
@@ -528,7 +528,7 @@ function RevealStep({ onNext }: { onNext: () => void }) {
           Varför det funkar
         </p>
         <h2 className="text-2xl font-bold text-dark leading-snug">
-          Du testade dig — innan du visste svaret
+          Du testade dig, innan du visste svaret
         </h2>
       </div>
 
@@ -569,7 +569,7 @@ function RevealStep({ onNext }: { onNext: () => void }) {
         style={{ animation: 'fadeInUp 0.4s ease both 0.55s' }}
       >
         Det kallas{' '}
-        <strong className="text-dark font-bold">retrieval practice</strong> — att
+        <strong className="text-dark font-bold">retrieval practice</strong>, att
         hämta fram ett svar aktiverar minnet på ett sätt som passiv läsning aldrig kan.
       </p>
 
@@ -669,7 +669,7 @@ function IntelligenceIntroStep({ onNext }: { onNext: () => void }) {
       </div>
 
       <p className="text-sm text-dark/55 text-center leading-relaxed">
-        Fem snabba steg. Varje svar formar din plan — i realtid.
+        Fem snabba steg. Varje svar formar din plan, i realtid.
       </p>
 
       <div className="flex flex-col gap-2">
@@ -835,10 +835,10 @@ function PrecisionIndicator({
       </div>
       <p className="text-xs text-dark/55 leading-relaxed">
         {filled === 0
-          ? `Anger du MEK och ELF smalnar bandet med ${reduction.toFixed(2)} HP — mer trovärdig prognos från dag ett.`
+          ? `Anger du MEK och ELF smalnar bandet med ${reduction.toFixed(2)} HP. Mer trovärdig prognos från dag ett.`
           : filled === 1
-            ? `Snart där — ${(baseUnc - currentUnc).toFixed(2)} HP smalare redan. Ett delprov till för full precision.`
-            : `Maximal precision från start. Vi gissar inte på din nivå — vi vet.`}
+            ? `Snart där. ${(baseUnc - currentUnc).toFixed(2)} HP smalare redan. Ett delprov till för full precision.`
+            : `Maximal precision från start. Vi gissar inte på din nivå. Vi vet.`}
       </p>
     </div>
   )
@@ -890,7 +890,7 @@ function GapPreview({
         <>
           <p className="text-sm leading-relaxed text-dark/70">
             {gap.isHeavy
-              ? `Ungefär ${gap.estimatedMinutesPerDay} minuter om dagen — ett ambitiöst mål som kräver daglig träning utan längre avbrott.`
+              ? `Ungefär ${gap.estimatedMinutesPerDay} minuter om dagen, ett ambitiöst mål som kräver daglig träning utan längre avbrott.`
               : `Ungefär ${gap.estimatedMinutesPerDay} minuter om dagen. Ett realistiskt tempo om du studerar varje dag.`}
           </p>
           <p className="text-[11px] text-dark/40 mt-2">
@@ -901,7 +901,7 @@ function GapPreview({
 
       {noExam && (
         <p className="text-[10px] text-dark/40 mt-3">
-          Provdatum hoppades över — vi räknar med 12 veckor som standard.
+          Provdatum hoppades över. Vi räknar med 12 veckor som standard.
         </p>
       )}
     </div>
@@ -982,7 +982,7 @@ function SummaryStep({
           {greeting}din personliga<br />träningsmodell är redo.
         </h1>
         <p className="text-sm text-dark/55 mt-2">
-          Det här är vad algoritmen vet om dig — innan du gjort ett enda pass.
+          Det här är vad algoritmen vet om dig, innan du gjort ett enda pass.
         </p>
       </div>
 
@@ -1014,12 +1014,12 @@ function SummaryStep({
         </p>
         <p className="text-sm text-dark/70 leading-relaxed mb-3">
           Ett kort kalibreringspass på <strong>~30 minuter</strong>. 20 ordfrågor + 2 läsförståelsetexter.
-          Algoritmen lär sig dig — och din prognos låser sig till verkligheten.
+          Algoritmen lär sig dig, och din prognos låser sig till verkligheten.
         </p>
         <ul className="text-xs text-dark/60 space-y-1">
-          <li>• Inga rätt-eller-fel poäng — bara kalibrering</li>
+          <li>• Inga rätt-eller-fel poäng, bara kalibrering</li>
           <li>• Resultatet syns i din dashboard direkt efteråt</li>
-          <li>• FSRS-kön startar utifrån vad du svarade</li>
+          <li>• Dina första ord väljs utifrån vad du svarade</li>
         </ul>
       </div>
 

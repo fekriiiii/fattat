@@ -133,16 +133,16 @@ export async function buildDailySession(
 
   let focusMessage: string | null = null
   if (focusApplied) {
-    focusMessage = `Fokus: ${capitalize(preferredDomain!)} — ord från det här området kommer först.`
+    focusMessage = `Fokus: ${capitalize(preferredDomain!)}. Ord från det här området kommer först.`
   } else if (focusRequested) {
-    focusMessage = `Inga ${preferredDomain}-ord väntar idag — kör vanlig session.`
+    focusMessage = `Inga ${preferredDomain}-ord väntar idag. Kör vanlig session.`
   }
 
   let balanceMessage: string | null = null
   if (skipLas) {
-    balanceMessage = 'Idag är en ORD-dag — vi kör endast ord. LÄS-artiklar dyker upp måndag, onsdag och fredag.'
+    balanceMessage = 'Idag är en ORD-dag. Vi kör endast ord. LÄS-artiklar dyker upp måndag, onsdag och fredag.'
   } else if (skipOrd) {
-    balanceMessage = 'Idag är en LÄS-dag — vi kör endast artiklar. ORD-ord dyker upp tisdag, torsdag och lördag.'
+    balanceMessage = 'Idag är en LÄS-dag. Vi kör endast artiklar. ORD-ord dyker upp tisdag, torsdag och lördag.'
   }
 
   return {
@@ -192,7 +192,7 @@ async function detectCatchUp(
   if (daysSinceLast > 2 && dueCount > 30) {
     return {
       catchUpMode: true,
-      catchUpMessage: `Jag ser att du har varit borta ${daysSinceLast} dagar. Vi tar de 20 viktigaste orden först för att värma upp — ${dueCount} ord väntar totalt.`,
+      catchUpMessage: `Jag ser att du har varit borta ${daysSinceLast} dagar. Vi tar de 20 viktigaste orden först för att värma upp. ${dueCount} ord väntar totalt.`,
     }
   }
   return { catchUpMode: false, catchUpMessage: null }

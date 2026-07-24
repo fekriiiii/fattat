@@ -57,7 +57,7 @@ export function OrdFeedback({ word, options, chosenLabel, isCorrect, onNext, del
           'inline-block text-[11px] font-bold uppercase tracking-[0.08em] px-[14px] py-1.5 rounded-full ring-1 ring-inset motion-safe:animate-pop-in',
           isCorrect ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/15' : 'bg-rose-50 text-rose-600 ring-rose-600/15'
         )}>
-          {isCorrect ? `Rätt — ${correctOption?.text}` : `Rätt svar: ${word.correct_synonym}`}
+          {isCorrect ? `Rätt: ${correctOption?.text}` : `Rätt svar: ${word.correct_synonym}`}
         </span>
         {!isCorrect && (
           <p className="text-[13px] text-dark/60 mt-2">

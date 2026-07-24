@@ -38,7 +38,7 @@ export default function LoginPage() {
           password: password.trim(),
         })
         if (signInError) {
-          setInfo('Konto skapat — logga nu in.')
+          setInfo('Konto skapat. Logga nu in.')
           setMode('login')
         } else {
           router.push('/dashboard')

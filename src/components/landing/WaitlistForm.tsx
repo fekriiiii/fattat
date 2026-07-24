@@ -50,7 +50,7 @@ export function WaitlistForm() {
   if (state.kind === 'success') {
     return (
       <div className="bg-primary/8 border border-primary/20 rounded-card px-5 py-6">
-        <p className="font-bold text-dark mb-1">Tack — du står på listan.</p>
+        <p className="font-bold text-dark mb-1">Tack! Du står på listan.</p>
         <p className="text-sm text-dark/65 leading-relaxed">
           Du hör av oss när Fattat öppnar. Ses i flödet under tiden.
         </p>

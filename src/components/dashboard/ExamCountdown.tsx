@@ -28,7 +28,7 @@ export function ExamCountdown({ examDate, targetScore }: Props) {
   if (daysLeft < 0) {
     return (
       <div className="bg-primary/8 rounded-card px-4 py-3">
-        <p className="text-sm text-dark/60">Provet har passerat — uppdatera ditt datum i profilen.</p>
+        <p className="text-sm text-dark/60">Provet har passerat. Uppdatera ditt datum i profilen.</p>
       </div>
     )
   }

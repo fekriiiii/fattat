@@ -29,7 +29,7 @@ export function DomainMap({ stats }: Props) {
         <p className="card-label mb-2">
           Domäner
         </p>
-        <p className="text-sm text-dark/55">Inga data ännu — börja med en session.</p>
+        <p className="text-sm text-dark/55">Inga data ännu. Börja med en session.</p>
       </div>
     )
   }

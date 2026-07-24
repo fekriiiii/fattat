@@ -151,7 +151,7 @@ export function ArticleReader({ article, onDoneReading }: Props) {
       {!done && (
         <div className="px-4 pb-2">
           <Button fullWidth onClick={handleDone}>
-            Jag är klar — visa frågorna
+            Jag är klar, visa frågorna
           </Button>
         </div>
       )}

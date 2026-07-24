@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export const metadata = { title: 'Integritetspolicy — Fattat' }
+export const metadata = { title: 'Integritetspolicy | Fattat' }
 
 export default function PrivacyPage() {
   return (
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
             </p>
             <p>
               <strong>Appen (när öppen):</strong> ditt konto, dina svar i
-              studiesessioner, FSRS-data och inställningar du själv anger.
+              studiesessioner, din repetitionshistorik och inställningar du själv anger.
             </p>
           </Section>
 
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
             <p>
               Vi skickar dig ett mejl när Fattat öppnar. Vi använder
               kanaldatan internt för att förstå vilka plattformar som leder
-              till intresse — aggregerat, inte kopplat till dig personligen.
+              till intresse, aggregerat och inte kopplat till dig personligen.
             </p>
           </Section>
 

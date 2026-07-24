@@ -37,7 +37,7 @@ const TYPE_LABELS: Record<string, string> = {
 const DISTRACTOR_HINTS: Record<string, string> = {
   går_för_långt:        'Ditt svar gick längre än vad texten faktiskt säger.',
   ytlig_läsning:        'Svaret låter rimligt vid en snabb läsning, men stämmer inte riktigt med texten.',
-  rätt_fakta_fel_fråga: 'Det du valde stämmer med texten — men svarar inte på just den här frågan.',
+  rätt_fakta_fel_fråga: 'Det du valde stämmer med texten, men svarar inte på just den här frågan.',
   nära_men_inte_riktigt:'Nära! Men svaret missar något viktigt.',
 }
 
@@ -46,8 +46,8 @@ const DISTRACTOR_HINTS: Record<string, string> = {
 // instruction is one of the few reading-comprehension interventions with
 // consistent meta-analytic support.
 const TYPE_STRATEGIES: Record<string, string> = {
-  huvudtanke:    'Strategi: huvudtanken ska täcka hela texten, inte bara ett stycke. Fel svar är ofta sant — men för smalt.',
-  detalj_fakta:  'Strategi: detaljfrågor avgörs av exakta formuleringar. Hitta raden i texten — lita inte på minnesbilden av den.',
+  huvudtanke:    'Strategi: huvudtanken ska täcka hela texten, inte bara ett stycke. Fel svar är ofta sant, men för smalt.',
+  detalj_fakta:  'Strategi: detaljfrågor avgörs av exakta formuleringar. Hitta raden i texten. Lita inte på minnesbilden av den.',
   detalj_kausal: 'Strategi: frågan gäller varför något händer. Leta efter orsaksord i texten: eftersom, därför, leder till.',
   syfte_funktion:'Strategi: syftesfrågor handlar om varför författaren skrev något, inte vad som står. Vilken roll spelar stycket i helheten?',
   slutledning:   'Strategi: en korrekt slutledning ska gå att försvara med textens egna ord. Kan du peka på raden som tvingar fram slutsatsen?',
@@ -83,13 +83,13 @@ export function LasFeedback({ question, options, chosenLabel, isCorrect, isLastQ
       {confidentButWrong && (
         <div className="bg-amber-50 ring-1 ring-inset ring-amber-600/15 rounded-[14px] px-4 py-3">
           <p className="text-[13px] text-amber-800 leading-snug font-medium">
-            Du var säker — men texten säger något annat. Det här är dagens viktigaste förklaring att läsa: när din känsla och texten pekar åt olika håll vinner alltid texten.
+            Du var säker, men texten säger något annat. Det här är dagens viktigaste förklaring att läsa: när din känsla och texten pekar åt olika håll vinner alltid texten.
           </p>
         </div>
       )}
       {guessedRight && (
         <p className="text-[13px] text-dark/55 leading-snug">
-          Rätt — men du gissade. Läs förklaringen så att det sitter av rätt anledning nästa gång.
+          Rätt, men du gissade. Läs förklaringen så att det sitter av rätt anledning nästa gång.
         </p>
       )}
 
@@ -123,7 +123,7 @@ export function LasFeedback({ question, options, chosenLabel, isCorrect, isLastQ
         <div className="bg-primary/[0.06] rounded-[12px] px-4 py-3">
           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-primary/60 mb-1">Din sammanfattning</p>
           <p className="text-[13px] text-dark/75 leading-snug italic">&ldquo;{gistText}&rdquo;</p>
-          <p className="text-[12px] text-dark/50 leading-snug mt-1.5">Jämför med rätt svar — fångade din mening samma kärna?</p>
+          <p className="text-[12px] text-dark/50 leading-snug mt-1.5">Jämför med rätt svar: fångade din mening samma kärna?</p>
         </div>
       )}
 

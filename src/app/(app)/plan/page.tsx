@@ -253,7 +253,7 @@ export default async function PlanPage() {
               </p>
               <p className="text-sm text-dark/65 leading-relaxed">
                 {gap.isHeavy
-                  ? `Det är ett ambitiöst mål. Studerar du varje dag utan avbrott kan du nå det — men det krävs konsekvent träning hela vägen.`
+                  ? `Det är ett ambitiöst mål. Studerar du varje dag utan avbrott kan du nå det, men det krävs konsekvent träning hela vägen.`
                   : `Det är ungefär ${gap.dailyNewWords} nya ord per session. Studerar du varje dag når du målet med marginal.`}
               </p>
             </>
@@ -320,7 +320,7 @@ export default async function PlanPage() {
             {allDomains.length > 0 && (
               <div className="bg-white border border-dark/[0.05] shadow-card rounded-card px-5 py-5">
                 <p className="card-label mb-3">
-                  Domänkarta — ORD
+                  Domänkarta: ORD
                 </p>
                 <div className="flex flex-col gap-3">
                   {allDomains.map((d) => (
@@ -495,25 +495,25 @@ function generateCoachInsight(
     const wordStr = joinWords(topFragile.map((w) => w.word))
     if (weakestDomain && weakestDomain.accuracy < 0.75) {
       parts.push(
-        `Du tappar mest på ${weakestDomain.domain}-ord — ${Math.round(weakestDomain.accuracy * 100)}% rätt. ` +
-        `De ord som fastnat minst är ${wordStr}. FSRS schemalägger dem tätare tills de sitter.`
+        `Du tappar mest på ${weakestDomain.domain}-ord: ${Math.round(weakestDomain.accuracy * 100)}% rätt. ` +
+        `De ord som fastnat minst är ${wordStr}. Vi lägger dem tätare tills de sitter.`
       )
     } else {
       parts.push(
         `${joinWords(topFragile.map((w) => w.word))} ${topFragile.length === 1 ? 'är det ord som' : 'är de ord som'} lappat flest gånger. ` +
-        `De dyker upp igen snart — FSRS repeterar dem tills de fastnar.`
+        `De dyker upp igen snart, och fortsätter komma tills de fastnar.`
       )
     }
   } else if (weakestDomain && weakestDomain.accuracy < 0.7) {
     parts.push(
-      `${weakestDomain.domain.charAt(0).toUpperCase() + weakestDomain.domain.slice(1)}-ord är ditt svagaste område just nu — ` +
+      `${weakestDomain.domain.charAt(0).toUpperCase() + weakestDomain.domain.slice(1)}-ord är ditt svagaste område just nu, ` +
       `${Math.round(weakestDomain.accuracy * 100)}% rätt på de senaste ${weakestDomain.total} orden. ` +
       `Fattat väljer fler ord och texter från det här området automatiskt.`
     )
   } else if (weakestDomain) {
     parts.push(
-      `Du är i bra form — ${weakestDomain.domain} är fortfarande ditt svagaste område men du ligger på ${Math.round(weakestDomain.accuracy * 100)}%. ` +
-      `Håll igång så sköter FSRS resten.`
+      `Du är i bra form. ${weakestDomain.domain} är fortfarande ditt svagaste område men du ligger på ${Math.round(weakestDomain.accuracy * 100)}%. ` +
+      `Håll igång så sköter vi resten.`
     )
   }
 
@@ -521,11 +521,11 @@ function generateCoachInsight(
     const label = (LAS_TYPE_LABELS[weakestLas.type] ?? weakestLas.type).toLowerCase()
     if (weakestLas.type === 'slutledning') {
       parts.push(
-        `I LÄS missar du mest ${label}sfrågor (${Math.round(weakestLas.accuracy * 100)}%) — de kräver att du läser mellan raderna, inte bara hittar rätt stycke.`
+        `I LÄS missar du mest ${label}sfrågor (${Math.round(weakestLas.accuracy * 100)}%). De kräver att du läser mellan raderna, inte bara hittar rätt stycke.`
       )
     } else if (weakestLas.type === 'huvudtanke') {
       parts.push(
-        `I LÄS är ${label} din svagaste frågetyp (${Math.round(weakestLas.accuracy * 100)}%) — fokusera på vad texten argumenterar för, inte bara vad den beskriver.`
+        `I LÄS är ${label} din svagaste frågetyp (${Math.round(weakestLas.accuracy * 100)}%). Fokusera på vad texten argumenterar för, inte bara vad den beskriver.`
       )
     } else {
       parts.push(

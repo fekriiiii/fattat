@@ -42,8 +42,8 @@ export function balanceLabel(b: SessionBalance): string {
 
 export function balanceExplanation(b: SessionBalance): string {
   if (b === 'ord_heavy')
-    return 'Din LÄS är starkare än ditt ordförråd — vi kör ORD varje dag och LÄS måndag, onsdag och fredag så du bygger ordförrådet utan att tappa läsförmågan.'
+    return 'Din LÄS är starkare än ditt ordförråd. Vi kör ORD varje dag och LÄS måndag, onsdag och fredag så du bygger ordförrådet utan att tappa läsförmågan.'
   if (b === 'las_heavy')
-    return 'Ditt ordförråd är starkare än din LÄS — vi kör LÄS varje dag och ORD tisdag, torsdag och lördag så du tränar läsförståelse utan att tappa orden.'
-  return 'Du är jämn på ORD och LÄS — vi kör båda i varje session så ordförrådet förstärker läsningen och tvärtom.'
+    return 'Ditt ordförråd är starkare än din LÄS. Vi kör LÄS varje dag och ORD tisdag, torsdag och lördag så du tränar läsförståelse utan att tappa orden.'
+  return 'Du är jämn på ORD och LÄS. Vi kör båda i varje session så ordförrådet förstärker läsningen och tvärtom.'
 }

@@ -177,7 +177,7 @@ function ResultsContent() {
           ) : (
             <p className="text-sm text-dark/65 leading-relaxed">
               {gap.isHeavy
-                ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar — ett ambitiöst mål som kräver konsekvent daglig träning.`
+                ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar, ett ambitiöst mål som kräver konsekvent daglig träning.`
                 : `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar. Studerar du varje dag når du målet med god marginal.`}
             </p>
           )}

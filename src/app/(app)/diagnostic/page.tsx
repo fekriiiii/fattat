@@ -204,7 +204,7 @@ export default function DiagnosticPage() {
           <div>
             <h1 className="text-xl font-bold text-dark">Kunde inte starta diagnosprovet</h1>
             <p className="text-sm text-dark/65 mt-1.5 leading-relaxed">
-              Något gick fel — kolla din uppkoppling och försök igen.
+              Något gick fel. Kolla din uppkoppling och försök igen.
             </p>
           </div>
           <button

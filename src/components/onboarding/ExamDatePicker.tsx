@@ -51,7 +51,7 @@ export function ExamDatePicker({ value, onChange, allowSkip = true }: Props) {
 
       {customDate && (
         <p className="text-[11px] text-dark/40 text-center pt-1">
-          Tidigare valt datum: {formatCustom(customDate)} — välj ett av alternativen ovan för att uppdatera.
+          Tidigare valt datum: {formatCustom(customDate)}. Välj ett av alternativen ovan för att uppdatera.
         </p>
       )}
     </div>

@@ -315,7 +315,7 @@ export default function SessionPage() {
           <div>
             <h1 className="text-xl font-bold text-dark">Dagens session är klar</h1>
             <p className="text-sm text-dark/65 mt-1.5 leading-relaxed">
-              Vi sparar nya ord till imorgon — vila är en del av inlärningen.
+              Vi sparar nya ord till imorgon. Vila är en del av inlärningen.
               Vill du ändå köra extra repetition på dina svaga ord?
             </p>
             <p className="text-xs text-dark/45 mt-2 leading-relaxed">
@@ -358,7 +358,7 @@ export default function SessionPage() {
           <div>
             <h1 className="text-xl font-bold text-dark">Kunde inte starta sessionen</h1>
             <p className="text-sm text-dark/65 mt-1.5 leading-relaxed">
-              Något gick fel — kolla din uppkoppling och försök igen. Dina framsteg är sparade.
+              Något gick fel. Kolla din uppkoppling och försök igen. Dina framsteg är sparade.
             </p>
           </div>
           <div className="flex flex-col gap-2 mt-2">
@@ -391,11 +391,11 @@ export default function SessionPage() {
 
   const percent = progressPercent()
 
-  const endSessionForToday = async () => {
+  const endSessionForToday = () => {
     const ord = responses.filter((r) => r.type === 'ord')
     const las = responses.filter((r) => r.type === 'las')
     if (sessionId) {
-      await fetch('/api/session/complete', {
+      fetch('/api/session/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -467,7 +467,7 @@ export default function SessionPage() {
             <div className="flex-1">
               <p className="text-sm font-semibold text-dark leading-tight">Här finns en kunskapslucka</p>
               <p className="text-xs text-dark/55 mt-0.5">
-                Du tappar på <span className="font-medium">{domainGap}</span>. Vi fokuserar på det — och en läsartikel om ämnet väntar i LÄS-delen.
+                Du tappar på <span className="font-medium">{domainGap}</span>. Vi fokuserar på det, och en läsartikel om ämnet väntar i LÄS-delen.
               </p>
             </div>
             <button onClick={dismissDomainGap} className="text-dark/30 hover:text-dark/60 transition-colors mt-0.5">
@@ -484,7 +484,7 @@ export default function SessionPage() {
             <div className="flex-1">
               <p className="text-sm font-semibold text-dark leading-tight">Du börjar tappa fokus</p>
               <p className="text-xs text-dark/55 mt-0.5">
-                Det du gjort idag räknas — hjärnan befäster minnen bäst när den vilar.{' '}
+                Det du gjort idag räknas. Hjärnan befäster minnen bäst när den vilar.{' '}
                 <button onClick={endSessionForToday} className="font-bold text-primary underline underline-offset-2">
                   Avsluta för idag
                 </button>

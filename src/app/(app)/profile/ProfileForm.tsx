@@ -225,7 +225,7 @@ export function ProfileForm({ profile, email, sessionBalance: initialBalance }: 
           ) : permission === 'denied' ? (
             <div className="flex items-center gap-2 px-4 py-3 bg-dark/5 rounded-card border border-dark/10">
               <BellOff size={14} className="text-dark/40 shrink-0" />
-              <span className="text-sm text-dark/50">Blockerade i webbläsaren — aktivera i inställningar</span>
+              <span className="text-sm text-dark/50">Blockerade i webbläsaren. Aktivera i inställningar</span>
             </div>
           ) : (
             <button

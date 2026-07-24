@@ -174,7 +174,7 @@ export function ScoreTrajectory({ points, targetScore, daysToExam, examDateLabel
       {!onTrack && targetScore != null && (
         <p className="text-xs text-dark/65 mt-1.5">
           {nearTrack
-            ? 'Du är nära — öka studietempot lite för att nå ditt mål.'
+            ? 'Du är nära. Öka studietempot lite för att nå ditt mål.'
             : 'Studera mer konsekvent varje dag för att stänga gapet.'}
         </p>
       )}

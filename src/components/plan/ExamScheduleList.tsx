@@ -127,10 +127,10 @@ function startOfToday(): Date {
 
 function errorMessage(status: number, raw?: string): string {
   if (status === 403) return 'Du har inga ombokningar kvar i denna provplan.'
-  if (status === 400 && raw === 'Too close to exam — cannot push further')
-    return 'För nära provdagen — kan inte skjuta detta övningsprov längre fram.'
-  if (status === 400 && raw === 'No free slot before exam — cannot reschedule')
-    return 'Ingen ledig dag före provet — kan inte boka om.'
+  if (status === 400 && raw === 'Too close to exam: cannot push further')
+    return 'För nära provdagen. Kan inte skjuta detta övningsprov längre fram.'
+  if (status === 400 && raw === 'No free slot before exam: cannot reschedule')
+    return 'Ingen ledig dag före provet. Kan inte boka om.'
   if (status === 404 && raw === 'Date not in schedule') return 'Datumet finns inte i planen.'
   return 'Något gick fel. Försök igen.'
 }

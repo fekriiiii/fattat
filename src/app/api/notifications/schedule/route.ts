@@ -55,8 +55,8 @@ export async function GET(req: Request) {
 
     const time = profile.preferred_notify_at.slice(0, 5)
     const body = profile.study_cue
-      ? `${profile.study_cue} — dags för din Fattat-session. 15 minuter.`
-      : `Det är ${time} — dags för din Fattat-session. 15 minuter.`
+      ? `${profile.study_cue}: dags för din Fattat-session. 15 minuter.`
+      : `Det är ${time}, dags för din Fattat-session. 15 minuter.`
     for (const sub of subs) {
       const ok = await sendPushNotification(
         { endpoint: sub.endpoint, p256dh: sub.p256dh, auth_key: sub.auth_key },

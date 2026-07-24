@@ -67,7 +67,7 @@ function TestResultsInner() {
           <p className="text-xs font-bold text-red-600 mb-1">Tiden tog slut</p>
           <p className="text-[11px] text-dark/65 leading-relaxed">
             Du svarade på {ordAnswered + lasAnswered} av {ordTotal + lasTotal} frågor.
-            Obesvarade frågor räknas som fel — det är så provet fungerar i verkligheten.
+            Obesvarade frågor räknas som fel. Det är så provet fungerar i verkligheten.
           </p>
         </div>
       )}
@@ -86,7 +86,7 @@ function TestResultsInner() {
         {showOrdSplit && (
           <div className="bg-white border border-dark/8 rounded-card px-4 py-4 flex flex-col gap-3">
             <p className="text-[11px] font-bold uppercase tracking-widest text-dark/40">
-              ORD — uppdelat
+              ORD: uppdelat
             </p>
             <SplitRow
               label="Ord du tränat på"
@@ -98,7 +98,7 @@ function TestResultsInner() {
               label="Nya HP-ord"
               correct={ordNovelCorrect}
               total={ordNovelTotal}
-              hint="Hur du tar dig an okända ord — som på riktiga provet."
+              hint="Hur du tar dig an okända ord, som på riktiga provet."
             />
           </div>
         )}
@@ -111,7 +111,7 @@ function TestResultsInner() {
       </div>
 
       <p className="text-xs text-dark/65 text-center leading-relaxed px-2">
-        Provet täcker ORD + LÄS — halva verbala provpasset. MEK, ELF och kvantitativa delprov är uppskattade till genomsnittet. För fullständig provdagssimulering: använd gamla HP-prov från UHR med tidtagning.
+        Provet täcker ORD + LÄS, halva verbala provpasset. MEK, ELF och kvantitativa delprov är uppskattade till genomsnittet. För fullständig provdagssimulering: använd gamla HP-prov från UHR med tidtagning.
       </p>
 
       <Button fullWidth onClick={handleDone}>

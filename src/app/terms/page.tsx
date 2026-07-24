@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export const metadata = { title: 'Villkor — Fattat' }
+export const metadata = { title: 'Villkor | Fattat' }
 
 export default function TermsPage() {
   return (
@@ -15,7 +15,7 @@ export default function TermsPage() {
             <p>
               Fattat är en app under utveckling för förberedelse inför
               Högskoleprovets verbala del (ORD och LÄS). Tjänsten är ännu
-              inte öppen för allmänheten — denna sida driver en väntelista.
+              inte öppen för allmänheten. Denna sida driver en väntelista.
             </p>
           </Section>
 
@@ -39,8 +39,8 @@ export default function TermsPage() {
 
           <Section title="Innehåll och upphovsrätt">
             <p>
-              Innehållet i Fattat — ord, definitioner, läsartiklar och
-              frågor — är skapat av oss eller licensierat. Du får använda
+              Innehållet i Fattat (ord, definitioner, läsartiklar och
+              frågor) är skapat av oss eller licensierat. Du får använda
               materialet för egen studie men inte kopiera eller
               vidaredistribuera det.
             </p>

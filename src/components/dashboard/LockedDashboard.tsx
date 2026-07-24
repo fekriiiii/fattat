@@ -20,7 +20,7 @@ export function LockedDashboard({ displayName }: { displayName: string | null })
           <div className="flex-1">
             <h2 className="text-[18px] font-bold leading-tight">Gör diagnostiken</h2>
             <p className="text-[13px] text-cream/65 mt-1.5 leading-relaxed">
-              Ett kort prov (~30 min) som kalibrerar FSRS, sätter din baslinje och bygger din studieplan. Utan det kan vi inte rekommendera ord eller artiklar åt dig.
+              Ett kort prov (~30 min) som ställer in svårighetsgraden, sätter din baslinje och bygger din studieplan. Utan det kan vi inte rekommendera ord eller artiklar åt dig.
             </p>
           </div>
         </div>

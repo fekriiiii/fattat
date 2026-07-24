@@ -39,9 +39,9 @@ export function StudyPlanCard({
   }
 
   const message = newWordsNeeded === 0
-    ? 'Du är på rätt nivå — håll tempot.'
+    ? 'Du är på rätt nivå. Håll tempot.'
     : isHeavy
-      ? `${newWordsNeeded} ord kvar på ${daysLeft} dagar — ambitiöst mål.`
+      ? `${newWordsNeeded} ord kvar på ${daysLeft} dagar. Ambitiöst mål.`
       : `${newWordsNeeded} ord kvar på ${daysLeft} dagar.`
 
   return (

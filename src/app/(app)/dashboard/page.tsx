@@ -275,7 +275,7 @@ export default async function DashboardPage() {
         <div className="bg-white shadow-card border border-dark/[0.05] rounded-card p-5 flex flex-col gap-3.5 motion-safe:animate-fade-up motion-safe:[animation-delay:80ms]">
           <p className="card-label">Så här funkar en session</p>
           <div className="flex flex-col gap-2.5 text-[13px] text-dark/65 leading-relaxed">
-            <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>FSRS väljer rätt ord baserat på din nivå</span></div>
+            <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>Vi väljer ut orden du är på väg att glömma</span></div>
             <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>ORD-frågor först, sedan en läsförståelsetext</span></div>
             <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>Direkt feedback efter varje fråga</span></div>
             <div className="flex gap-2.5"><span className="w-1.5 h-1.5 rounded-full bg-primary mt-[7px] shrink-0" /><span>Ca 10–15 minuter per dag räcker</span></div>
@@ -289,7 +289,7 @@ export default async function DashboardPage() {
               {gap.newWordsNeeded === 0
                 ? 'Du är redan på rätt nivå. Fortsätt med dagliga sessioner för att hålla dig i form.'
                 : gap.isHeavy
-                  ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar — ett ambitiöst mål som kräver konsekvent daglig träning.`
+                  ? `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar, ett ambitiöst mål som kräver konsekvent daglig träning.`
                   : `${gap.newWordsNeeded} ord att lära sig på ${gap.daysLeft} dagar. Studerar du varje dag når du målet med god marginal.`}
             </p>
           </div>
@@ -334,7 +334,7 @@ export default async function DashboardPage() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-dark">Dagens session klar</p>
-            <p className="text-xs text-dark/55 mt-0.5 leading-relaxed">Vi sparar nya ord till imorgon — vila är en del av inlärningen.</p>
+            <p className="text-xs text-dark/55 mt-0.5 leading-relaxed">Vi sparar nya ord till imorgon. Vila är en del av inlärningen.</p>
           </div>
         </div>
       ) : (
@@ -424,7 +424,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <p className="text-[11px] text-dark/45 mt-1 leading-relaxed">
-              Grov uppskattning — vi lär oss från verkliga HP-resultat och uppdaterar prognosen över tid.
+              Grov uppskattning. Vi lär oss från verkliga HP-resultat och uppdaterar prognosen över tid.
             </p>
             {subsectionsIncomplete && (
               <Link
