@@ -102,11 +102,7 @@ Rate 1, 2, or 3:
 The exam code the user provided in Step 1, e.g. `2025-H`.
 
 ### `accepted_synonyms`
-Other Swedish words or phrases that could correctly replace the target word but are **not** already listed as `correct_synonym` or any distractor. Comma-separated, no spaces after commas. Leave blank if none are obvious.
-
-These are used by the app's typing variant so correct alternative answers aren't marked wrong.
-
-Example: for *prognos* (correct_synonym: *förutsägelse*), accepted_synonyms might be `spådom,prediktion`.
+**Leave this blank.** It fed the app's typing variant (accept correct alternatives a student might type). Typing was removed 2026-07-24 in favour of recognition-only multiple choice, and no runtime code reads the column anymore. Keep it as an empty column so the CSV shape stays stable for `seed.ts`; do not generate alternatives.
 
 ### `notes`
 Only fill in if there is something genuinely worth flagging for future review:

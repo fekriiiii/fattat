@@ -161,7 +161,7 @@ Four wrong options. Quality rules — this is the hardest part:
   - **Register trap** — right domain, wrong specificity (for *anstånd*: `dröjsmål`)
   - **Antonym-adjacent trap** — opposite or near-opposite (for *expandera*: `krympa` is too obvious — use `stagnera` instead)
   - **False-friend trap** — looks like a translation but means something else
-- **Never include a true synonym as a distractor.** If you would also accept it as correct, move it to `accepted_synonyms`.
+- **Never include a true synonym as a distractor.** If you would also accept it as correct, it can't be a distractor — drop it and pick a different distractor. (It used to go in `accepted_synonyms`; that column is now dead, see below.)
 
 ### `definition_sv`
 A short Swedish definition. **Style rules from the profile (mandatory):**
@@ -196,11 +196,7 @@ The domain provided by the user in Step 1. Every row in the batch shares this do
 **Always `curated`** for Phase 2 rows. This is the signal that distinguishes Phase 2 entries from Phase 1.
 
 ### `accepted_synonyms`
-Other Swedish words/phrases that could correctly replace the target word but are **not** already in `correct_synonym` or any distractor. Comma-separated, no spaces after commas.
-
-**Target:** ~91% of rows should have at least one accepted synonym (per the profile). Mean is ~2 alternatives. Range 1–4.
-
-Leave blank only if no plausible alternatives exist.
+**Leave this blank.** As of 2026-07-24 no runtime code reads this column. It existed only to grade the typed-answer format (accept alternatives a student might type), and typing was removed that day in favour of recognition-only multiple choice. Keep the empty column so the CSV shape stays stable for `seed.ts`, but do not spend effort generating alternatives — it is dead work. (The old target of ~91% fill / ~2 alternatives per row no longer applies.)
 
 ### `notes`
 Add a short tag only when one of these applies (per the profile, ~42% of rows have notes):
@@ -227,14 +223,13 @@ Before showing results, verify each row programmatically:
 - `domain` matches the user's Step 1 input.
 - `difficulty` is 1, 2, or 3.
 - `past_exams` is exactly `curated`.
-- `accepted_synonyms`, if present, contains only Swedish words/phrases not already in `correct_synonym` or distractors. Comma-separated, no spaces after commas.
+- `accepted_synonyms` is left blank (dead column, see its field section).
 - `notes`, if present, draws from the allowed tag list (extend if needed but stay terse).
 
 **Batch-level checks:**
 - POS mix is within ±10pp of the target (~46/26/19/6/2).
 - Difficulty mix is within ±10pp of the target (or user override).
 - Multi-word `correct_synonym` rate is within 20–40%.
-- `accepted_synonyms` fill rate is ≥85%.
 - `notes` fill rate is between 30% and 55%.
 - **Semantic-balance checks** (new — see Section "Semantic balance"):
   - At least 1 fixed phrase / idiomatic entry per 30 words.
