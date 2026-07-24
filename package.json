@@ -9,6 +9,7 @@
     "lint": "next lint",
     "seed": "tsx scripts/seed.ts",
     "las:lint": "node scripts/lint-las-corpus.cjs",
+    "ord:lint": "node scripts/lint-ord-corpus.cjs",
     "las:verify": "tsx scripts/verify-las-seed.ts",
     "db:types": "supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/database.ts"
   },

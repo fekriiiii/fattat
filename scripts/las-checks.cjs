@@ -335,12 +335,22 @@ function checkCorpus(articles) {
   }
   const spread = Object.entries(counts).sort();
   notes.push('svarsfördelning: ' + spread.map(([l, n]) => `${l} ${n} (${Math.round((n / total) * 100)}%)`).join(', '));
+  // Real HP spreads the answer letter close to evenly (ANALYS_INDEX: 17.6% to
+  // 22.4% across A–E for ORD; with four LÄS options, even is 25%). Anything
+  // outside roughly 18–32% is a pattern a student can learn to exploit, which
+  // means our items would be measuring the wrong thing.
   if (total >= 40) {
+    const under = [];
     for (const [letter, n] of spread) {
       const pct = (n / total) * 100;
-      if (pct > 35) warnings.push(`${Math.round(pct)}% av alla rätta svar ligger på ${letter} (${n}/${total}) — snedfördelat, gissningsbart över tid`);
-      if (pct < 15) warnings.push(`bara ${Math.round(pct)}% av de rätta svaren ligger på ${letter} (${n}/${total}) — snedfördelat`);
+      if (pct > 32) warnings.push(`${Math.round(pct)}% av alla rätta svar ligger på ${letter} (${n}/${total}) — snedfördelat, gissningsbart över tid`);
+      if (pct < 18) {
+        warnings.push(`bara ${Math.round(pct)}% av de rätta svaren ligger på ${letter} (${n}/${total}) — snedfördelat`);
+        under.push(letter);
+      }
     }
+    // Actionable, so the next batch corrects the imbalance instead of repeating it.
+    if (under.length) notes.push(`nästa batch: lägg fler rätta svar på ${under.join(' och ')}`);
   }
 
   // -- format pool balance ---------------------------------------------------

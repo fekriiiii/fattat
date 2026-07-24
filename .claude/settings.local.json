@@ -21,5 +21,9 @@
       "Read(//c/Users/theli/.claude/skills/**)",
       "Read(//c/Users/theli/.claude/plugins/**)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "n8n-mcp",
+    "supabase"
+  ]
 }

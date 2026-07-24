@@ -151,7 +151,10 @@ The single best Swedish synonym for the word. Rules:
 
 ### `distractor_1`, `distractor_2`, `distractor_3`, `distractor_4`
 Four wrong options. Quality rules — this is the hardest part:
-- **Match the correct synonym's word count.** If correct is single-word, distractors should be single-word (~76% of batch). If correct is multi-word, distractors should be multi-word.
+- **The correct answer must never be the odd one out.** At least one distractor has to share the correct synonym's word-count class: if the correct answer is a phrase, at least one distractor is a phrase; if it is a single word, at least one distractor is a single word. The other three are free.
+  This rule was settled on 2026-07-24 by measuring the 537 real past-HP items in `ord-database.csv`, not by taste. In real HP the correct answer is multi-word **31.1%** of the time, so blanket form-matching is wrong — but it is the *only* multi-word option in just **1.1%** of items, and the only single-word option in **0.0%** (zero of 537). Uniqueness of form is the tell, not the form itself.
+  This is also what makes words like *katharsis*, *fontanell* and *unikum* writable: they have no single-word synonym, and that is fine as long as one distractor is also a phrase.
+  Enforced by `node scripts/lint-ord-corpus.cjs`, which hard-fails a violating row.
 - Each distractor must be a **real Swedish word/phrase** — never invented.
 - Distractors must be **plausibly wrong**: words that an unsure test-taker might pick because they sound similar, are in the same semantic field, or share register — but are *not* synonyms of the target.
 - **No outright giveaways** (don't include a near-synonym of any distractor that's obviously off-topic for the target).
@@ -241,6 +244,19 @@ Before showing results, verify each row programmatically:
 
 If any row fails a per-row check, **fix it before output** — do not ask the user to fix manually.
 If any batch-level check is significantly off, regenerate the offending subset.
+
+**Then run the corpus lint** once the rows are appended to `ord-database.csv`:
+
+```
+node scripts/lint-ord-corpus.cjs
+```
+
+Zero errors is the bar. It enforces the odd-one-out rule, catches a distractor
+that is also listed as an accepted synonym (which makes an item unanswerable),
+duplicate headwords (which would give FSRS two cards for one word), em-dash in
+any user-visible column, and example sentences that do not contain their own
+headword. Past-HP rows are exempt from the authoring rules — they reproduce real
+exams verbatim and must never be "fixed".
 
 ---
 

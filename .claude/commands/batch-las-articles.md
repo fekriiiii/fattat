@@ -204,6 +204,50 @@ Each article file's keys:
 
 ---
 
+## Answer-letter balance (decided 2026-07-24, from the corpus)
+
+Real HP spreads the correct answer close to evenly across the options
+(`analysis/ANALYS_INDEX.md`: 17.6% to 22.4% across A–E). Our LÄS corpus had
+drifted to **A 32% / B 32% / C 25% / D 12%** — D at half its expected share.
+Over a hundred articles that becomes a pattern a student can exploit, which
+means the item stops measuring reading comprehension.
+
+**Before generating a batch**, run:
+
+```
+node scripts/lint-las-corpus.cjs --quiet
+```
+
+and read the `nästa batch:` line in the corpus section. It names the
+under-represented letters. Place correct answers so the batch pulls the corpus
+toward 25% per letter rather than repeating the existing lean. Do this by
+choosing which option slot the correct answer occupies while writing, not by
+shuffling afterwards: LÄS options are rendered in authored order and the
+explanations and `distractor_types` are keyed to the stored letter.
+
+Per-article, the existing rule still holds: never put every answer on one letter.
+
+---
+
+## Run the corpus lint before you finish
+
+After the last article is appended:
+
+```
+node scripts/lint-las-corpus.cjs
+```
+
+Zero errors is the bar for a batch being done. The lint runs the same
+`checkArticle()` that `add-las-article.cjs` runs per article, plus the
+corpus-wide checks (answer spread, kort/lång balance, duplicate ids and titles,
+domain concentration, featured-word reuse) that no single article can see.
+Report the summary line and any remaining warnings to the founder.
+
+If the batch is going to be seeded, follow with `npm run las:verify` after the
+seed to confirm the database actually matches the files.
+
+---
+
 ## Coverage summary at the end
 
 After all rows are confirmed and appended, show:
