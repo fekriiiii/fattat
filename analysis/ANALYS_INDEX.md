@@ -1,4 +1,7 @@
-# ORD + LÄS — analysindex för Högskoleprovet 2013–2025
+# ORD + LÄS — analysfynd för Högskoleprovet 2013–2025
+
+> **Navigering ligger numera i `CLAUDE.md` → "Document Index"** (uppdaterat 2026-07-24). Detta
+> dokument behålls för sina *fynd* på korpusnivå, inte som filregister.
 
 Detta är översiktsdokumentet för en datadriven genomgång av **75 PDF:er** från Högskoleprovet — 49 verbala provpass + 26 facit — där ORD- och LÄS-sektionerna analyserats.
 
@@ -21,8 +24,7 @@ Detta är översiktsdokumentet för en datadriven genomgång av **75 PDF:er** fr
 | [ORD_databas.md](ORD_databas.md) | Fullständig katalog över **490 ordförståelseuppgifter** — varje uppslagsord med alla fem alternativ A–E, rätt svar markerat. Grupperade per provomgång. |
 | [ORD_analys.md](ORD_analys.md) | Statistik och pluggstrategi: fördelning av rätt svar, **nyckelordsfrånvaron** (0 ord återkommer), distraktor-återanvändning, ord-typsfördelning, ordlängd vs uppgiftsnummer, alfabetisk index. |
 | [LAS_katalog.md](LAS_katalog.md) | Katalog över LÄS-texter i samtliga 49 provpass: titlar, bylines, ordmängd per avsnitt, temasammanställning. |
-| [_LAS_analys.md](_LAS_analys.md) | Djupare läsförståelse-analys för 16 utvalda provpass: per-text klassificering av domän, stil, källa, längd och frågetyp (HT, DET, INF, ÅSY, ORD, STR, KRI). |
-| [_LAS_genererade.md](_LAS_genererade.md) | Pågående projekt: AI-genererade övningsuppgifter i HP-stil. |
+| [_LAS_analys.md](_LAS_analys.md) | Djupare läsförståelse-analys för 16 utvalda provpass: per-text klassificering av domän, stil, källa, längd och frågetyp (HT, DET, INF, ÅSY, ORD, STR, KRI). Innehåller även bilagan om distraktordesign. |
 
 ## Viktigaste analytiska fynd
 
