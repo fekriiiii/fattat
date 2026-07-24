@@ -175,8 +175,14 @@ if (letters.length >= 3) {
 // moment anyone reorders the options, and it teaches nothing: the student should
 // learn WHY an answer is right, not which slot it sat in. Eight such explanations
 // had to be rewritten on 2026-07-24. Hard block.
+// The keyword is matched case-insensitively (it can start a sentence), but the
+// letter must be an UPPERCASE A-D. Real letter references always capitalise the
+// option ("svar D", "Alternativ B"); requiring uppercase avoids false positives
+// on ordinary Swedish where a keyword is followed by a word starting with a-d +
+// a non-ASCII vowel, e.g. "rubrik bär" / "svaret där" (the trailing å/ä/ö reads
+// as a word boundary to \b, so a case-insensitive [A-D] would match the "b").
 payload.questions.forEach((q, idx) => {
-  const m = String(q.explanation || '').match(/\b(svar|svaret|alternativ|alternativet|rubrik|rubriken|option)\s+[A-D]\b/i);
+  const m = String(q.explanation || '').match(/\b(?:[Ss]var(?:et)?|[Aa]lternativ(?:et)?|[Rr]ubrik(?:en)?|[Oo]ption)\s+[A-D]\b/);
   if (m) fail(`fråga ${idx + 1}: förklaringen pekar på svaret med bokstav ("${m[0]}"). Beskriv vad som gör svaret rätt i stället.`);
 });
 
