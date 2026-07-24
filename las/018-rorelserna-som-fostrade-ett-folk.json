@@ -1,0 +1,82 @@
+{
+  "id": 18,
+  "title": "Rörelserna som fostrade ett folk",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "historia",
+  "genre": "populärvetenskap",
+  "word_count": 268,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Under 1800-talets senare hälft växte tre stora folkrörelser fram i Sverige nästan samtidigt: nykterhetsrörelsen, väckelserörelsen och arbetarrörelsen. De skilde sig åt i syfte, men delade en organisationsform som var ny för sin tid. Medlemmarna betalade avgifter, förde protokoll, valde styrelser och samlades regelbundet i lokaler de ofta hade byggt själva. För många var det första gången de tog plats i ett sammanhang som styrdes av regler snarare än av börd eller förmögenhet.\n\nHistoriker har länge betonat att rörelsernas verkliga betydelse låg någon annanstans än i deras uttalade mål. Nykterhetslogen bekämpade förvisso brännvinet, men det som satte det djupaste eftermälet var något mer vardagligt. I logen lärde sig en ung lantarbetare att begära ordet, föreslå en dagordning och rösta om ett förslag. En sådan folkförsamling fungerade som en skola i självstyre för människor som annars aldrig fick föra sin egen talan.\n\nDenna fostran fick följder långt utanför möteslokalen. När rösträtten till slut vidgades fanns det redan hundratusentals svenskar som kunde driva en förening, hantera en kassa och hålla samman en grupp med skilda viljor. Den sammanhållning som rörelserna byggde vilade inte på släktband eller by, utan på ett frivilligt åtagande mellan främlingar med ett gemensamt intresse. Att lita på någon man valt att samarbeta med, snarare än fötts intill, var i sig en ny och inövad erfarenhet.\n\nDärför beskriver flera forskare rörelserna som en tyst men avgörande förberedelse för demokratin. De förändrade inte bara vad svenskarna tyckte, utan hur de över huvud taget bar sig åt när de skulle bestämma något tillsammans. Just den förmågan, snarare än någon enskild politisk seger, är det arv som visat sig mest varaktigt.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar bäst textens huvudinnehåll?",
+      "options": {
+        "A": "Nykterhetsrörelsens hårda kamp mot brännvinet under det sena 1800-talet",
+        "B": "Hur folkrörelserna lärde svenskarna att verka tillsammans",
+        "C": "Rösträttens utvidgning och dess politiska konsekvenser",
+        "D": "De frikyrkliga samfundens framväxt på den svenska landsbygden"
+      },
+      "correct": "B",
+      "passage_anchor": "De förändrade inte bara vad svenskarna tyckte, utan hur de över huvud taget bar sig åt när de skulle bestämma något tillsammans.",
+      "explanation": "Texten återkommer genomgående till att rörelsernas viktigaste bidrag var att lära människor organisera sig och fatta gemensamma beslut, inte deras enskilda sakfrågor. Rätt rubrik är den som fångar just den förmågan, medan de tre andra griper tag i ett enskilt spår som texten bara nämner i förbigående.",
+      "distractor_types": {
+        "A": "ytlig_nyckelordsläsning",
+        "C": "sant_men_fel_fråga",
+        "D": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "slutledning",
+      "stem": "Vad menar texten att rörelserna framför allt bidrog med inför demokratins genombrott?",
+      "options": {
+        "A": "En rörelse skicklig på att hålla samman grupper med skilda viljor bakom ett och samma politiska parti.",
+        "B": "En utbredd praktisk vana vid att organisera människor och jämka mellan deras olika mål.",
+        "C": "Ett nät av egna möteslokaler som de framväxande politiska partierna senare kunde ta över.",
+        "D": "En stark folklig opinion mot alkoholen som till slut tvingade fram politiska reformer."
+      },
+      "correct": "B",
+      "passage_anchor": "När rösträtten till slut vidgades fanns det redan hundratusentals svenskar som kunde driva en förening, hantera en kassa och hålla samman en grupp med skilda viljor.",
+      "explanation": "Texten säger att det redan innan rösträtten fanns många som behärskade själva hantverket att organisera sig och väga samman olika viljor. Rätt svar beskriver den förmågan i allmänna ordalag. Alternativet om att samla grupper bakom ett enda parti snävar in förmågan till partipolitik, vilket texten uttryckligen säger att den inte handlade om, och de om lokaler och alkoholopinion tar upp saker texten nämner men inte pekar ut som arvet.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "C": "ytlig_nyckelordsläsning",
+        "D": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "folkrörelse",
+      "definition": "Stor frivillig sammanslutning av många människor kring ett gemensamt samhällsmål."
+    },
+    {
+      "word": "eftermäle",
+      "definition": "Det omdöme eller minne som lever kvar efter någon eller något."
+    },
+    {
+      "word": "folkförsamling",
+      "definition": "Samling av människor som möts för att gemensamt överlägga och besluta."
+    },
+    {
+      "word": "sammanhållning",
+      "definition": "Känslan och förmågan att hålla ihop som grupp."
+    }
+  ],
+  "featured_ord_words": [
+    "folkrörelse",
+    "eftermäle",
+    "folkförsamling",
+    "sammanhållning"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

@@ -1,0 +1,82 @@
+{
+  "id": 19,
+  "title": "Att ha rätt är inte att vara vis",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "filosofi",
+  "genre": "resonerande",
+  "word_count": 260,
+  "difficulty": 3,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Vi förväxlar ofta att ha rätt med att vara klok. En person kan sitta inne med det riktiga svaret på nästan varje fråga och ändå sakna något väsentligt. Det som saknas är inte kunskap, utan förmågan att bära sin kunskap på ett sätt som gör den användbar för andra.\n\nAntikens tänkare räknade ödmjukhet till just en sådan förmåga. Den som är verkligt förnuftig vet inte bara vad hon vet, utan också var hennes vetande tar slut. Att kunna säga att man kan ha fel är inte ett tecken på svaghet, utan på en ovanligt klar blick för det egna tänkandets gränser. Paradoxen är att den som lättast erkänner sin okunnighet ofta är den som förstått mest. Den tvärsäkre, däremot, har sällan prövat sin övertygelse mot den möjlighet att han har fel som hela tiden står öppen.\n\nHärav följer att klokhet snarare är en hållning än ett innehav. Den kloke samlar inte fakta som mynt i en börs, utan prövar ständigt om det han tror sig veta håller. En sådan hållning har alltid en riktad avsikt: den vill förstå, inte segra. Skillnaden märks tydligast i ett samtal. Den som bara vill vinna letar efter motståndarens svagaste punkt; den som vill förstå letar efter det starkaste i motståndarens sak.\n\nDärför är klokhet till sist en dygd och inte en talang. En talang har man eller har man inte, men en dygd övar man upp genom att gång på gång välja förståelsen framför triumfen. Just detta val, upprepat tillräckligt många gånger, är vad som skiljer den vise från den som råkar ha rätt.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "tolkning",
+      "stem": "Vad menar textförfattaren med att klokhet är \"en hållning och inte ett innehav\"?",
+      "options": {
+        "A": "Att kloka personer i regel äger betydligt mindre kunskap än andra men ändå bär den med större lätthet.",
+        "B": "Att klokhet visar sig i hur man prövar sitt vetande, inte i hur mycket man samlat på sig.",
+        "C": "Att den som vill framstå som klok bör undvika att uttala sig med säkerhet.",
+        "D": "Att kunskap saknar värde om den inte omedelbart kan användas av andra."
+      },
+      "correct": "B",
+      "passage_anchor": "Den kloke samlar inte fakta som mynt i en börs, utan prövar ständigt om det han tror sig veta håller.",
+      "explanation": "Bilden ställer ett förråd av fakta mot en pågående prövning av dem, och texten lägger klokheten i prövningen. Rätt svar fångar den motsättningen. De övriga tar fasta på enstaka formuleringar om mängd, säkerhet och användbarhet och gör dem till huvudpoäng, vilket texten inte gör.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "C": "sant_men_fel_fråga",
+        "D": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "slutledning",
+      "stem": "Varför beskriver texten klokhet som en dygd snarare än en talang?",
+      "options": {
+        "A": "Därför att den, till skillnad från en talang, kan tillägnas genom att man handlar rätt om och om igen.",
+        "B": "Därför att den finns naturligt hos vissa människor men helt saknas hos andra.",
+        "C": "Därför att den kräver mer kunskap än vad en talang någonsin gör.",
+        "D": "Därför att den ytterst består i att man alltid väljer det som är bekvämast för stunden snarare än det som är rätt."
+      },
+      "correct": "A",
+      "passage_anchor": "en dygd övar man upp genom att gång på gång välja förståelsen framför triumfen",
+      "explanation": "Texten skiljer dygd från talang just på att en dygd tillägnas genom hur man handlar, gång på gång, medan en talang är given. Rätt svar återger den skillnaden utan att låna textens egna ord. Alternativet om något medfött beskriver i stället en talang, det om ett kunskapskrav lägger till ett villkor texten aldrig ställer, och det sista vränger valet till att gälla det lätta i stället för det rätta.",
+      "distractor_types": {
+        "B": "omvänd_riktning",
+        "C": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "ödmjukhet",
+      "definition": "Insikt om sina egna begränsningar och avsaknad av högmod."
+    },
+    {
+      "word": "förnuftig",
+      "definition": "Som tänker klart och handlar med gott omdöme."
+    },
+    {
+      "word": "avsikt",
+      "definition": "Det man vill uppnå med en handling; syfte."
+    },
+    {
+      "word": "dygd",
+      "definition": "God karaktärsegenskap som man tillägnar sig genom övning."
+    }
+  ],
+  "featured_ord_words": [
+    "ödmjukhet",
+    "förnuftig",
+    "avsikt",
+    "dygd"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
