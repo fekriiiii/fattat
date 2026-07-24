@@ -166,6 +166,34 @@ Table explanations: `docs/IMPLEMENTATION_PLAN.md` → "Database Structure"
 
 ---
 
+## Commit & Deploy Strategy
+
+Agreed with the founder 2026-07-24, after a session where 9 fixes were held uncommitted, one repo-wide sweep entangled 34 files, and a first attempt bundled four unrelated changes into a single commit. Each rule below exists because something specific went wrong.
+
+**1. Commit each finished unit of work — proactively, without asking.**
+A "unit" is one thing describable in a sentence and revertable alone. Do not ask "should I commit this?"; the founder is non-technical, rarely commits unprompted, and once let ~150 files pile up for months. Asking moves the decision to the wrong person and produces backlogs.
+
+**2. Never commit code that doesn't compile.**
+Typecheck and `npm run build` green *before* committing. This is what makes each commit a safe return point rather than just a timestamp, and it's what lets the founder revert any single commit without breaking the app.
+
+**3. Repo-wide sweeps get their own commit, ordered first or last — never interleaved.**
+The 2026-07-24 em-dash sweep touched 34 files in the middle of feature work and forced two unrelated concerns to share a commit. Mechanical passes (copy sweeps, renames, formatting) must not be interleaved with behavioural changes.
+
+**4. Never push without the founder's explicit OK.**
+Unchanged and most important: push to `main` auto-deploys production at fattat.se via Vercel. Pushing is publishing, not a technical step. Commits stack locally until the founder says go.
+
+**5. Fixed pre-push checklist, walked and reported every time:**
+   - production build green
+   - every migration the code depends on is applied to the production Supabase (the live site can otherwise run code months ahead of the prod schema)
+   - a plain-Swedish summary of what changes **for the user**, not what changed in the code
+
+**6. Deploy in deliberate batches, not per commit.**
+With the founder as sole user there is no value in nine pushes a day, only nine chances to ship something half-finished. Accumulate, then deploy a coherent batch.
+
+**Still true:** solo workflow, commit straight to `main`, no branches (branching adds overhead with no reviewer). Commit messages explain *why*, not just what — the founder reads them to understand their own project.
+
+---
+
 ## Content Workflow
 
 Two slash commands in `.claude/commands/`:
@@ -388,7 +416,6 @@ Files: `src/lib/session/builder.ts`, `src/app/api/diagnostic/complete/route.ts`,
 | Performance-adaptive exam scheduling (v2) | `src/lib/session/planner.ts` | Low |
 | ~~Founder creates account live on Day 0 video~~ — superseded 2026-06-11: public series paused; founder trains privately for HP 2026-10-18. New must-dos: HP-anmälan 11–18 aug 2026 (hard deadline), record raw session footage/screenshots privately, keep growing ORD + LÄS content to feed ~4 months of daily use | manual | High (ongoing) |
 | ~~Review `flagged_synonyms` and promote valid entries to `accepted_synonyms`~~ — **obsolete 2026-07-24.** Both columns existed only to judge *typed* answers, and typing is gone. The table, the column and the existing rows are left in place (harmless, and they make the change cheap to undo), but nothing reads them. **Loose end worth closing:** the ORD content skills still spend effort generating `accepted_synonyms` for every new word, which is now dead work. | `.claude/commands/extract-hp-words.md`, `curate-ord-words` | Low |
-| **Agree an explicit commit strategy (discuss)** — raised by founder 2026-07-24. Today commits happen ad hoc, whenever Claude offers; the founder wants a stated rule instead. Questions to settle: commit per fix or per session? Do commits stack locally until a deliberate deploy moment (push = prod deploy)? How do we keep concerns separable when a sweep touches 30+ files at once (this session's em-dash pass entangled the copy fixes with everything else, forcing coarser commits than ideal)? What is the fixed pre-push checklist — migrations applied to prod Supabase, green `npm run build`, anything else? | process | Medium (needs founder decision) |
 | **ORD format-tell audit (discuss before acting)** — found 2026-07-24 while fixing `naturtroget`, whose correct answer was the only multi-word option among four single-word distractors (a guessable pattern; fixed to `realistiskt`). A sweep found **1 clearly comparable case left — `kommission` → "grupp av sakkunniga" vs four one-word compounds** — plus **~21 milder** two-word-answer / one-word-distractor rows (`extremiteter` → "armar och ben"). Not all are defects: some Swedish words have no single-word synonym (`katharsis`, `fontanell`, `unikum`), and real HP does use phrase options. **Open question to settle first: is the rule "options must match in form" or "the correct answer must never be the odd one out"?** That decision determines whether this is a 1-row fix or a ~22-row content pass. Also decide whether the ORD-writing skills get a length/form guard the way the LÄS skills already do. | `ord-database.csv`, `.claude/commands/extract-hp-words.md`, `curate-ord-words` | Medium (needs founder decision) |
 | ESLint cleanup pass — currently bypassed in build via `next.config.mjs`; clear unused vars, `any` types, and missing useEffect deps | repo-wide | Medium (post-launch) |
 | Session payload bloat — daily session stores full article bodies in JSONB; should mirror övningsprov and store IDs only | `src/app/api/session/build/route.ts` | Low |
