@@ -43,6 +43,9 @@
 
 const fs = require('fs');
 const path = require('path');
+// The content-quality rules live in las-checks.cjs so that this script and the
+// corpus sweep (lint-las-corpus.cjs) enforce the identical set. See that file.
+const { checkArticle, countWords, featuredWords, loadOrdIndex } = require('./las-checks.cjs');
 
 // ---- args -----------------------------------------------------------------
 const argv = process.argv.slice(2);
@@ -62,40 +65,7 @@ function warn(m) { hadWarn = true; console.warn('⚠ VARNING: ' + m); }
 function fail(m) { console.error('✗ FEL: ' + m); process.exit(1); }
 
 // ---- helpers --------------------------------------------------------------
-const countWords = (s) =>
-  String(s).trim().split(/\s+/).filter((t) => /[\p{L}\p{N}]/u.test(t)).length;
-
-// RFC4180 parse — needed for the curated guard, since a naive split(',') misreads
-// columns on rows with quoted commas (e.g. definitions) and falsely flags curated
-// words as past-HP.
-function parseCSV(s) {
-  const rows = [];
-  let row = [], field = '', i = 0, inQ = false;
-  while (i < s.length) {
-    const c = s[i];
-    if (inQ) {
-      if (c === '"') {
-        if (s[i + 1] === '"') { field += '"'; i += 2; continue; }
-        inQ = false; i++; continue;
-      }
-      field += c; i++; continue;
-    }
-    if (c === '"') { inQ = true; i++; continue; }
-    if (c === ',') { row.push(field); field = ''; i++; continue; }
-    if (c === '\r') { i++; continue; }
-    if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
-    field += c; i++;
-  }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
-  return rows;
-}
-
-// Accepts ["a","b"] or the {"a","b"} literal -> ["a","b"]
-function featuredWords(f) {
-  if (Array.isArray(f)) return f.map((w) => String(w).trim()).filter(Boolean);
-  if (typeof f === 'string') return (f.match(/"([^"]+)"/g) || []).map((s) => s.slice(1, -1));
-  return [];
-}
+// countWords / featuredWords / parseCSV now live in las-checks.cjs.
 
 function slugify(title) {
   return String(title)
@@ -127,77 +97,19 @@ catch (e) { fail('Kunde inte läsa/parsa payload-JSON: ' + e.message); }
 const existing = loadExisting(outDir);
 
 // ---- validate -------------------------------------------------------------
-const required = ['title', 'domain', 'genre', 'unit_position', 'difficulty', 'body', 'questions', 'vocab_highlights', 'featured_ord_words'];
-const missing = required.filter((k) => payload[k] === undefined || payload[k] === null || payload[k] === '');
-if (missing.length) fail('Saknar fält i payload: ' + missing.join(', '));
+// Every content rule (length-tell, position-tell, letter references, em-dash,
+// passage_anchor verbatim, vocab_highlights, distractor_types, length bands,
+// featured-word overlap + curated) lives in las-checks.cjs. The corpus sweep
+// runs the identical function, so an article that passes here passes there.
+const ordIndex = loadOrdIndex();
+if (!ordIndex) console.log('  (curated-koll hoppades över: kunde inte läsa ord-database.csv)');
 
-for (const k of ['questions', 'vocab_highlights', 'featured_ord_words']) {
-  if (!Array.isArray(payload[k]) || payload[k].length === 0) {
-    if (k === 'featured_ord_words' && typeof payload[k] === 'string') continue; // literal string allowed
-    fail(`${k} måste vara en icke-tom array`);
-  }
+const { errors, warnings } = checkArticle(payload, { ordIndex, existing });
+warnings.forEach(warn);
+if (errors.length) {
+  errors.forEach((m) => console.error('✗ FEL: ' + m));
+  process.exit(1);
 }
-
-payload.questions.forEach((q, idx) => {
-  if (!q.options || typeof q.options !== 'object') fail(`Fråga ${idx + 1}: saknar options-objekt`);
-  if (!(q.correct in q.options)) fail(`Fråga ${idx + 1}: 'correct'=${q.correct} finns inte bland options-nycklarna`);
-});
-
-// Question-quality guard — the tell AI HP-questions keep producing: the correct
-// answer is the longest option.
-//
-// NOTE (2026-07-24): this used to say option POSITION need not be checked because
-// the session/test/diagnostic pages shuffled options at render. That is no longer
-// true — LAS options are now rendered in authored order (shuffling was removed
-// because it silently invalidated every explanation that named a letter). The
-// stored letter now IS what the user sees, so position is checked below.
-payload.questions.forEach((q, idx) => {
-  const opts = q.options || {};
-  const clen = String(opts[q.correct] || '').trim().length;
-  const dlens = Object.keys(opts).filter((k) => k !== q.correct).map((k) => String(opts[k]).trim().length);
-  const maxD = dlens.length ? Math.max(...dlens) : 0;
-  if (dlens.length && clen > maxD) warn(`Fråga ${idx + 1}: rätt svar (${q.correct}) är längst (${clen} tecken mot ${maxD}) — längd-tell; gör minst en distraktor minst lika lång`);
-});
-
-// Position-tell guard. Options are no longer shuffled, so an article whose
-// answers all sit on one letter is guessable without reading. Hard-fails only on
-// the unambiguous case (every answer identical) and warns on 3-of-4, since with
-// so few questions per article a mild lean is just chance.
-const letters = payload.questions.map((q) => q.correct);
-if (letters.length >= 3) {
-  const counts = letters.reduce((m, l) => ((m[l] = (m[l] || 0) + 1), m), {});
-  const [top, n] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-  if (n === letters.length) fail(`alla ${letters.length} rätta svar ligger på ${top}. Alternativen shufflas inte längre — sprid ut de rätta svaren.`);
-  else if (n >= letters.length - 1) warn(`${n} av ${letters.length} rätta svar ligger på ${top} — sprid gärna ut dem.`);
-}
-
-// Letter-reference guard. An explanation that says "alltså svar D" is wrong the
-// moment anyone reorders the options, and it teaches nothing: the student should
-// learn WHY an answer is right, not which slot it sat in. Eight such explanations
-// had to be rewritten on 2026-07-24. Hard block.
-// The keyword is matched case-insensitively (it can start a sentence), but the
-// letter must be an UPPERCASE A-D. Real letter references always capitalise the
-// option ("svar D", "Alternativ B"); requiring uppercase avoids false positives
-// on ordinary Swedish where a keyword is followed by a word starting with a-d +
-// a non-ASCII vowel, e.g. "rubrik bär" / "svaret där" (the trailing å/ä/ö reads
-// as a word boundary to \b, so a case-insensitive [A-D] would match the "b").
-payload.questions.forEach((q, idx) => {
-  const m = String(q.explanation || '').match(/\b(?:[Ss]var(?:et)?|[Aa]lternativ(?:et)?|[Rr]ubrik(?:en)?|[Oo]ption)\s+[A-D]\b/);
-  if (m) fail(`fråga ${idx + 1}: förklaringen pekar på svaret med bokstav ("${m[0]}"). Beskriv vad som gör svaret rätt i stället.`);
-});
-
-// Em-dash-spärr (founder-regel): em-dash (—, U+2014) i genererad text är den
-// tydligaste AI-signaturen. Gäller brödtext + frågetext. Hård spärr.
-const EM_DASH = '—';
-const emDashHits = [];
-if (String(payload.body).includes(EM_DASH)) emDashHits.push('body');
-payload.questions.forEach((q, idx) => {
-  const fields = { stem: q.stem, explanation: q.explanation, ...(q.options || {}) };
-  for (const [name, val] of Object.entries(fields)) {
-    if (val != null && String(val).includes(EM_DASH)) emDashHits.push(`fråga ${idx + 1}.${name}`);
-  }
-});
-if (emDashHits.length) fail('em-dash (—) hittades i: ' + emDashHits.join(', ') + '. Em-dash är förbjuden i genererad text (AI-tell). Ersätt med punkt, komma eller kolon.');
 
 // ---- derive ---------------------------------------------------------------
 const existingIds = existing.map((e) => parseInt(e.data.id, 10)).filter((n) => !isNaN(n));
@@ -205,47 +117,10 @@ const nextId = payload.id != null ? payload.id : (existingIds.length ? Math.max(
 const wordCount = payload.word_count != null ? payload.word_count : countWords(payload.body);
 const questionCount = payload.question_count != null ? payload.question_count : payload.questions.length;
 
-// soft guards
-const expectedQ = payload.unit_position === 'kort' ? 2 : payload.unit_position === 'lång' ? 4 : null;
-if (expectedQ && questionCount !== expectedQ) warn(`unit_position=${payload.unit_position} förväntar ${expectedQ} frågor, men fick ${questionCount}`);
-if (payload.unit_position === 'kort' && (wordCount < 250 || wordCount > 400)) warn(`kort-text på ${wordCount} ord (förväntat 250–400)`);
-if (payload.unit_position === 'lång' && wordCount < 950) warn(`lång-text på ${wordCount} ord (förväntat ≥950)`);
+// Identity guards — these concern the id/title this run is about to claim, so
+// they stay here rather than in the shared per-article checker.
 if (existingIds.includes(nextId)) warn(`id ${nextId} finns redan i ${outDir}/`);
 if (existing.some((e) => e.data.title === payload.title)) warn(`En artikel med titeln "${payload.title}" finns redan — dubblett?`);
-
-// ORD-överlapp: varna om ett featured-ord redan är featured i en annan artikel.
-const featuredById = new Map(); // headord (gemener) -> Set(id)
-for (const e of existing) {
-  for (const w of featuredWords(e.data.featured_ord_words)) {
-    const key = w.toLowerCase();
-    if (!featuredById.has(key)) featuredById.set(key, new Set());
-    featuredById.get(key).add(e.data.id);
-  }
-}
-for (const w of featuredWords(payload.featured_ord_words)) {
-  const hits = featuredById.get(w.toLowerCase());
-  if (hits && hits.size) warn(`ordet "${w}" är redan featured i id ${[...hits].join(', ')}`);
-}
-
-// Curated-guard: featured-ord ska vara curated (migration 022). Past-HP-ord
-// tränas aldrig dagligen, så att featurea dem ger död ORD→LÄS-förstärkning.
-try {
-  const ordRows = parseCSV(fs.readFileSync('ord-database.csv', 'utf8').replace(/^﻿/, ''));
-  const oHead = ordRows[0];
-  const wIdx = oHead.indexOf('word');
-  const peIdx = oHead.indexOf('past_exams');
-  if (wIdx !== -1 && peIdx !== -1) {
-    const peByWord = new Map();
-    for (const r of ordRows.slice(1)) if (r[wIdx]) peByWord.set(r[wIdx].toLowerCase(), r[peIdx]);
-    for (const w of featuredWords(payload.featured_ord_words)) {
-      const pe = peByWord.get(w.toLowerCase());
-      if (pe === undefined) warn(`featured-ordet "${w}" finns inte i ord-database.csv`);
-      else if (pe !== 'curated') warn(`featured-ordet "${w}" är past-HP (past_exams=${pe}) — tränas inte i daglig ORD, ger död ORD→LÄS-förstärkning`);
-    }
-  }
-} catch (e) {
-  console.log('  (curated-koll hoppades över: kunde inte läsa ord-database.csv)');
-}
 
 // ---- build the full article record ----------------------------------------
 const article = {
