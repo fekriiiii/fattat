@@ -10,7 +10,42 @@
 
 ---
 
+**Founder dogfooding pass — four fixes from a notebook kept while abroad (2026-07-24, part 1)** — the founder used the app for a stretch and wrote down what broke.
+1. **LÄS vocab definitions had never rendered in production.** Tapping an underlined word in an article opened the tooltip but showed nothing. `seedLas` wrote each highlight's text under the key `definition_sv` while the UI (`VocabTooltip`) read `definition` — the seed script renamed the field on the way in. ~110 hand-written definitions across 13 articles had been invisible since the feature shipped. Fixed on both ends: the seed no longer renames, and `VocabHighlight` + the tooltip accept **either** key, so rows already in the DB start working **without a re-seed**. This is the *second* silent seed-mapping bug of this kind (`featured_ord_words` was never copied at all, found 2026-06-16) — a post-seed assertion comparing `las/*.json` against what actually landed in Postgres would have caught both, and is worth building before the corpus grows further.
+2. **"FSRS" was leaking into the UI in 9 places** — dashboard, onboarding, plan (×3), session-complete (×2), locked dashboard, and the privacy policy. Replaced with what the algorithm *does for the user* ("Vi väljer ut orden du är på väg att glömma"), matching the voice already used on the plan page. The privacy-policy instance was also a small compliance smell: a GDPR notice has to describe collected data in language the reader understands, so "FSRS-data" became "din repetitionshistorik". Code comments keep the real name.
+3. **Two ORD content fixes, one of which generalized.** `hektar` had an English word stranded in its example sentence ("Gården **encompassed** trettio hektar") — a sweep of all 877 example sentences found it was isolated. `naturtroget` had the vaguer problem the founder flagged ("mycket likt"), but the real defect was structural: the correct answer was the **only multi-word option** among four single-word distractors, so it was guessable without knowing the word. Changed to `realistiskt` (single word, same -t adjective form, already a vetted accepted synonym); "mycket likt" moved to `accepted_synonyms`. A corpus-wide scan found **1 clearly comparable case left (`kommission`)** and ~21 milder ones — logged as a to-build row because the rule ("options match in form" vs "correct answer is never the odd one out") is a founder decision, and some are unavoidable (`katharsis`, `fontanell` have no single-word synonym).
+4. **Em-dash ban, now Non-Negotiable Rule #9.** Removed 106 em-dashes from user-visible text (96 Swedish UI strings across 34 files, 4 internal error codes changed on both the API and matching side, 6 in the ORD notes column). Every replacement hand-authored — comma, period, colon or parentheses depending on what the sentence does; a mechanical swap produces broken Swedish. **173 in code comments left alone** (stripped at build time, never user-visible) and the rule says so explicitly so no future session wastes effort there. Two clarifications written into the rule: the em-dash (—) is an English mark with no place in Swedish, but the Swedish **tankstreck (–) is legitimate typography and is not banned** — and **LÄS article bodies are exempt**, because they imitate the real Swedish journalism HP draws its texts from, where tankstreck is normal (36 instances there, ~1 per 350 words, within normal range). The ban is fully in force on LÄS explanations, which are Fattat's own voice.
+
+Files: `scripts/seed.ts`, `src/types/database.ts`, `src/components/las/VocabTooltip.tsx`, `ord-database.csv`, plus 34 files touched by the copy pass. Typecheck + production build verified green. *North Star: goal #1 — three of these are trust cracks rather than missing features, which is most of what separates "best app" from "competent app": a vocabulary aid that silently did nothing, developer jargon in a student's results screen, and a question answerable by spotting the odd-looking option. The `naturtroget` find matters beyond one row — it means our ORD items can leak the answer through form, which directly undermines the claim that Fattat measures real ability.*
+
+---
+
 ## Closed items (removed from the "What's Still to Build" table)
+
+**Post-seed assertion — closed 2026-07-24, built.** `scripts/verify-las-seed.ts`
+(`npm run las:verify`) compares every `las/*.json` against the row it produced in Postgres:
+scalar fields, body verbatim, question count and per-question `correct` / options keys /
+`explanation` / `passage_anchor` / `distractor_types` keys, vocab-highlight words with
+**non-empty** definitions and `index != -1`, and `featured_ord_words`. It also reports orphan
+rows in the DB with no matching file, which is what a renamed title leaves behind. Written
+because two silent seed-mapping bugs had shipped undetected (`featured_ord_words` never copied,
+2026-06-16; `definition_sv` vs `definition` hiding ~110 definitions, 2026-07-24). Both would
+have been caught by it. First run confirmed four vocab highlights sitting at index -1 in
+production.
+
+**ORD format-tell audit — closed 2026-07-24, decided and applied.** The open question was
+whether the rule should be *"options must match in form"* or *"the correct answer must never be
+the odd one out"*. Settled by measuring the 537 real past-HP items in `ord-database.csv`: the
+correct answer is multi-word in **31.1%** of real items, is the *only* multi-word option in
+**1.1%**, and the only single-word option in **0.0%** (zero of 537). Form-matching is therefore
+not what HP does; uniqueness of form is the tell. Rule adopted: **at least one distractor must
+share the correct answer's word-count class.** This keeps `katharsis` / `fontanell` / `unikum`
+writable (no single-word synonym exists) and shrank the feared ~22-row pass to **8 curated
+rows**, all from one drifted batch (id 830–847, kultur), fixed by swapping one distractor each.
+Past-HP rows are exempt and were not touched: they reproduce real exams verbatim, and "fixing"
+them would falsify the source. Enforced by `scripts/lint-ord-corpus.cjs` (`npm run ord:lint`),
+which on its first run also caught `klausul` listing `paragraf` as both a distractor and an
+accepted synonym, making that item unanswerable.
 
 **`flagged_synonyms` review — closed 2026-07-24, obsolete.** Both `flagged_synonyms` and the
 `accepted_synonyms` column existed only to judge *typed* answers, and typing is gone. The table

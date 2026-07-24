@@ -86,10 +86,21 @@ function anchorSegments(s) {
 const EM_DASH = '—';
 
 // HP empirical length bands (analysis/_LAS_analys.md): långtext median ~1100,
-// span 800–1300. The floor is enforced at 950 because the skills target
-// 1000–1200; the ceiling exists because nothing previously stopped a runaway
-// 1600-word body, which is outside anything HP has ever printed.
-const LANG_MIN = 950;
+// span 800–1300.
+//
+// Two different thresholds, deliberately:
+//   LANG_TARGET (950) is what we aim at when WRITING. The skills target
+//     1000–1200 because that is HP's typvärde.
+//   LANG_MIN (800) is where a text stops resembling anything HP prints.
+//
+// The distinction exists so the corpus sweep does not nag forever about
+// legacy articles that are short of our target but still inside HP's real
+// range (2026-07-24 founder decision: articles 5 and 6, at 853 and 808 words,
+// stay as they are). A warning that will never be acted on is how a team
+// learns to ignore warnings, which is a far worse outcome at 85 articles than
+// at 24. Authoring still gets the stricter nudge — see `authoring` in ctx.
+const LANG_TARGET = 950;
+const LANG_MIN = 800;
 const LANG_MAX = 1300;
 const KORT_MIN = 250;
 const KORT_MAX = 400;
@@ -269,8 +280,16 @@ function checkArticle(a, ctx = {}) {
     warn(`kort-text på ${wordCount} ord (förväntat ${KORT_MIN}–${KORT_MAX})`);
   }
   if (a.unit_position === 'lång') {
-    if (wordCount < LANG_MIN) warn(`lång-text på ${wordCount} ord (förväntat ≥${LANG_MIN}, HP-median ~1100)`);
-    else if (wordCount > LANG_MAX) warn(`lång-text på ${wordCount} ord (över HP:s spann, tak ${LANG_MAX})`);
+    if (wordCount < LANG_MIN) {
+      // Below anything HP prints — flagged whoever is asking.
+      warn(`lång-text på ${wordCount} ord (under HP:s spann, golv ${LANG_MIN})`);
+    } else if (wordCount < LANG_TARGET && ctx.authoring) {
+      // Inside HP's range but under our writing target. Only surfaced while
+      // authoring, where it can still be acted on.
+      warn(`lång-text på ${wordCount} ord (mål ≥${LANG_TARGET}, HP-median ~1100)`);
+    } else if (wordCount > LANG_MAX) {
+      warn(`lång-text på ${wordCount} ord (över HP:s spann, tak ${LANG_MAX})`);
+    }
   }
 
   const questionCount = a.question_count != null ? Number(a.question_count) : questions.length;
@@ -411,6 +430,7 @@ module.exports = {
   featuredWords,
   parseCSV,
   loadOrdIndex,
+  LANG_TARGET,
   LANG_MIN,
   LANG_MAX,
   KORT_MIN,

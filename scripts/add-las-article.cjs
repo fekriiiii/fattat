@@ -104,7 +104,7 @@ const existing = loadExisting(outDir);
 const ordIndex = loadOrdIndex();
 if (!ordIndex) console.log('  (curated-koll hoppades över: kunde inte läsa ord-database.csv)');
 
-const { errors, warnings } = checkArticle(payload, { ordIndex, existing });
+const { errors, warnings } = checkArticle(payload, { ordIndex, existing, authoring: true });
 warnings.forEach(warn);
 if (errors.length) {
   errors.forEach((m) => console.error('✗ FEL: ' + m));
