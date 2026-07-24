@@ -69,6 +69,16 @@ function ResultsContent() {
           gap: null,
         })
       })
+      .finally(() => {
+        // This POST is what writes completed_at, which is what getOnboardingState
+        // reads to decide whether the app is still locked. The (app) layout is a
+        // server component, so without an explicit refresh the client keeps the
+        // RSC payload rendered back when the diagnostic was still incomplete —
+        // Plan and the other gated tabs stayed padlocked until a hard reload.
+        // Runs in .finally, not .then: a failed request can still have written
+        // the row, and refreshing when nothing changed costs nothing.
+        router.refresh()
+      })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const ordPct = ordTotal > 0 ? Math.round((ordCorrect / ordTotal) * 100) : 0
