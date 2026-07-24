@@ -13,7 +13,12 @@ export function MorphemeBreakdown({ word, className }: { word: string; className
   const d = decodeWord(word)
   if (!d) return null
 
-  const affix = d.parts.find((p) => p.gloss)
+  // A decode can carry two glossed affixes at once (o + använd + bar), and the
+  // hyphen has to sit on the side the affix actually attaches: a leading part
+  // is a prefix ("o‑"), anything later is a suffix ("‑bar").
+  const affixes = d.parts
+    .map((p, i) => ({ ...p, isPrefix: i === 0 }))
+    .filter((p) => p.gloss)
 
   return (
     <span className={cn('inline-flex flex-wrap items-baseline gap-x-1.5 text-[11px] leading-tight', className)}>
@@ -26,7 +31,10 @@ export function MorphemeBreakdown({ word, className }: { word: string; className
       </span>
       <span className="text-dark/25" aria-hidden>→</span>
       <span className="italic text-dark/55">
-        {d.paraphrase ?? <>‑{affix?.text} = {affix?.gloss}</>}
+        {d.paraphrase ??
+          affixes
+            .map((a) => `${a.isPrefix ? `${a.text}‑` : `‑${a.text}`} = ${a.gloss}`)
+            .join(', ')}
       </span>
     </span>
   )

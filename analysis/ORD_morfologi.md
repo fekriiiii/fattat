@@ -320,10 +320,58 @@ for one honest gloss; revisit with smarter glossing).
 Files: `src/lib/ord/morphology.ts` (new), `src/components/ord/MorphemeBreakdown.tsx`
 (new), `src/components/ord/OrdFeedback.tsx`, `src/components/ord/OrdFeedbackTyping.tsx`.
 
-**Next (v2/v3), on these same rails:** prefixes (negation `o-`/`miss-` first, with a
-base-word check), then compound-splitting (needs a free-morpheme lexicon), then a curated
-English-cognate table. Each strictly widens recall; the conservative-silence contract
-stays.
+**Next (v3), on these same rails:** compound-splitting, then a curated English-cognate
+table. Each strictly widens recall; the conservative-silence contract stays.
+
+---
+
+## Build status — v2 prefixes shipped (2026-07-24)
+
+The blocker v1 named was "a base-word check": you cannot tell `obefogad` (o + befogad)
+from `ornament` (opaque) without knowing whether the remainder is a real Swedish word.
+**SALDO answers it** — Språkbanken's morphological lexicon, 128 036 entries, CC-BY-4.0,
+queried through the open Karp API. Strip the prefix, ask whether the base exists with a
+compatible part of speech.
+
+**Resolved at build time, not runtime.** The decoder runs in the student's browser on
+every ORD feedback card, so it must be instant and offline, and the set of words it can
+ever see is fixed by `ord-database.csv`. `scripts/build-morph-prefixes.mjs` does the
+lookups once and writes `src/lib/ord/prefix-lexicon.ts`. Re-run it whenever the ORD
+corpus grows. This does not break v1's runtime-decode architecture: the generated file
+is a compiled-in dictionary, not a DB migration.
+
+**Result on the full corpus (4 562 deduped headwords + options): 60 → 170 confident
+decodes.** 110 prefix entries accepted out of 214 candidates.
+
+**The automated check is necessary but not sufficient, and the hand-review is where the
+real defects were caught.** Of 116 machine-accepted entries, **six were wrong** and are
+now in `SEMANTIC_REJECTS` with reasons:
+
+| Word | Why the split is wrong |
+|---|---|
+| `oförrätt` | `förrätt` is the first course of a meal |
+| `olat` | means "bad habit"; nothing to do with `lat` |
+| `olustig` | means "uneasy", not "not funny" |
+| `oförskämd` | from *skam*, not from `förskämd` (= spoiled food) |
+| `otäck` | base `täck` is archaic; a student reads it as *täcka* → "not covered" |
+| `oljudande` | here `o-` means *bad*, not *not* — `oljud` is no negation of `ljud` |
+| `omedelbar` | base ends in `-bar`, so chaining produced `o + medel + bar` |
+
+That last one was created *by* the new prefix→suffix chaining and is the reason to keep
+verifying against the whole corpus after every change, not just spot-checking.
+
+**Chaining is the nicest thing v2 bought:** `oanvändbar` → `o + använd + bar`, three
+morphemes, the exact word v1 had to stay silent on because an unhandled negation would
+have inverted the suffix meaning.
+
+**Two things v2 did NOT fix.** The base check does not replace v1's hand-tuned
+`FALSE_POSITIVES` list for suffixes, because `under`, `bar`, `över` and `var` are all
+real Swedish words — only `uppenbar` would have been caught. And `-sam` stays dropped.
+
+Files: `scripts/build-morph-prefixes.mjs` (new), `src/lib/ord/prefix-lexicon.ts`
+(new, generated), `src/lib/ord/morphology.ts`, `src/components/ord/MorphemeBreakdown.tsx`
+(the gloss fallback assumed a suffix and printed `‑o`; it now places the hyphen by
+position and renders both affixes on a chained decode).
 
 ---
 

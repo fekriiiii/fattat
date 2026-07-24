@@ -37,3 +37,6 @@ next-env.d.ts
 
 # playwright mcp scratch output (snapshots, console logs)
 .playwright-mcp/
+
+# review artefact from scripts/build-morph-prefixes.mjs (regenerated on demand)
+scripts/.morph-prefixes-report.txt
