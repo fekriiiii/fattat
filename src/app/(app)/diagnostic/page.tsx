@@ -279,6 +279,11 @@ export default function DiagnosticPage() {
           <ArticleReader
             article={currentArticle}
             onDoneReading={() => setReadArticleIds((prev) => new Set([...prev, currentArticle.id]))}
+            // Same rule as the övningsprov: the diagnostic is a measurement, and
+            // the baseline it produces decides the study plan. A word aid the
+            // real HP does not offer would flatter that first number and, worse,
+            // route a student to the wrong plan.
+            showVocab={false}
           />
         ) : question && !showingFeedback ? (
           <LasQuestion
