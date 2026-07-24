@@ -570,3 +570,20 @@ When each step is complete, this is how to verify it works:
 | Diagnostic | Complete 20 questions → results page shows score range + weakest domains → study_plans row created |
 | Interleaving | In a session: verify ORD appears before LÄS, verify ORD words span multiple domains |
 | No passive mode | Verify there is no "reveal answer" or "study mode" path anywhere in the app |
+
+---
+
+## Intelligent Session Behaviours
+
+> Moved here from `CLAUDE.md` on 2026-07-24.
+
+Three silent features — no UI toggles, user only sees the friendly result:
+
+**Smart Catch-up** (`src/lib/session/builder.ts` → `detectCatchUp()`)
+Triggers when away >2 days AND >30 overdue words. Replaces normal FSRS order with the 20 most fragile words (most lapses, lowest stability). Blue banner explains.
+
+**Fatigue Detection** (`src/stores/sessionStore.ts`)
+Triggers after an 8-answer ORD warmup, when either 5+ wrong in the last 7 ORD answers OR avg response time >12s over the last 3. Full-screen overlay offers to end session or continue.
+
+**Domain Gap Detection** (`src/stores/sessionStore.ts`)
+Triggers when 3 consecutive wrong ORD answers come from the same domain. Amber banner names the domain. LÄS article selection already prefers matching domain.
