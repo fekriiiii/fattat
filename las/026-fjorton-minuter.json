@@ -1,0 +1,92 @@
+{
+  "id": 26,
+  "title": "Fjorton minuter",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "medicin",
+  "genre": "reportage",
+  "word_count": 344,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Klockan är tjugo i sju på morgonen och kön utanför den vitmålade skolbyggnaden är redan sextio personer lång. De flesta har rest under natten. En kvinna i åttioårsåldern håller sin dotter i armen och tittar rakt fram utan att fokusera på något, eftersom hon inte har kunnat göra det på fyra år.\n\nInne i det som brukar vara ett klassrum har teamet byggt om verkligheten. Skolbänkarna är utburna, golvet är täckt av plast, och två operationsbord står under lampor som körts hit på ett flak. Ett fönster är förseglat med tejp. Sköterskan Amina Yusuf går längs med bordet och kontrollerar instrumentbrickorna en sista gång, en rutin hon upprepar mellan varje ingrepp för att fältet ska förbli sterilt.\n\nDet som ska göras är enkelt, och det är just därför de är här. Katarakt, grumlingen av ögats lins, är den vanligaste orsaken till blindhet i världen, och den går att åtgärda kirurgiskt på ett par kvartar. Linsen tas ut, en konstgjord lins sätts in, och synen kommer tillbaka nästan omedelbart. I höginkomstländer är ingreppet så vanligt att det knappt räknas som en operation. Här har kvinnan i kön väntat fyra år.\n\nKirurgen Daniel Okoth arbetar utan att titta upp. Han gör fjorton minuter per öga i genomsnitt, ibland tolv. Under en dag hinner teamet fyrtiotvå ingrepp, och de har fem dagar på sig innan lastbilen ska vidare.\n\nPatienterna får lokalbedövning, och de flesta beskriver efteråt att det var helt smärtfritt. Det som är svårt är inte ingreppet utan tiden runt det. Att konvalescera kräver att ögat hålls rent, att droppar tas fyra gånger om dagen i tre veckor, och att patienten kommer tillbaka på återbesök. Teamet är kvar i fem dagar. Återbesöket ligger om en månad, och då finns ingen lastbil.\n\nDet är denna glipa som Okoth återkommer till när han pratar om vad som egentligen behövs. Han säger det utan dramatik, mellan två patienter, med händerna redan i handsprit: att det inte råder någon brist på kirurger som kan operera. Det råder brist på någon som är kvar på tisdagen efter att de har åkt.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om den huvudsakliga svårigheten i verksamheten?",
+      "options": {
+        "A": "Att antalet ingrepp per dag begränsas av hur många bord som får plats.",
+        "B": "Att lokalbedövning gör att patienterna underskattar hur stort ingreppet är.",
+        "C": "Att kirurgerna arbetar för snabbt för att kvaliteten ska kunna upprätthållas.",
+        "D": "Att vården kräver en närvaro över tid som ett kringresande team inte har."
+      },
+      "correct": "D",
+      "passage_anchor": "Teamet är kvar i fem dagar. Återbesöket ligger om en månad, och då finns ingen lastbil. […] Det råder brist på någon som är kvar på tisdagen efter att de har åkt.",
+      "explanation": "Ingreppet i sig går snabbt och gör inte ont. Det som saknas är eftervården: droppar i tre veckor och ett återbesök om en månad, vid en tidpunkt då teamet sedan länge har rest vidare. Kirurgens slutreplik pekar ut just detta som bristen, inte antalet kirurger eller deras tempo.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "ytlig_nyckelordsläsning",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Operationen är den lätta delen",
+        "B": "Fyra års väntan på ett klassrumsgolv",
+        "C": "Katarakt: världens vanligaste blindhet",
+        "D": "Ett team på fem dagar i ett skolhus"
+      },
+      "correct": "A",
+      "passage_anchor": "Det som ska göras är enkelt, och det är just därför de är här. […] Det som är svårt är inte ingreppet utan tiden runt det.",
+      "explanation": "Reportagets båge går från hur snabbt och okomplicerat själva operationen är till att allt det svåra ligger utanför de fjorton minuterna. Väntetiden, sjukdomen och teamets schema är alla riktiga inslag i texten, men var och en täcker bara en del av den.",
+      "distractor_types": {
+        "B": "sant_för_en_del",
+        "C": "sant_för_en_del",
+        "D": "sant_för_en_del"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "sterilt",
+      "definition": "På ett sätt som är fritt från smittämnen och bakterier."
+    },
+    {
+      "word": "Katarakt",
+      "definition": "Grumling av ögats lins som försämrar synen gradvis."
+    },
+    {
+      "word": "kirurgiskt",
+      "definition": "Genom kirurgi eller operation som behandlingsmetod."
+    },
+    {
+      "word": "smärtfritt",
+      "definition": "Helt utan smärta eller obehag i kroppen."
+    },
+    {
+      "word": "konvalescera",
+      "definition": "Att tillfriskna gradvis efter sjukdom eller operation."
+    },
+    {
+      "word": "operera",
+      "definition": "Att kirurgiskt åtgärda eller behandla en patient genom snitt."
+    }
+  ],
+  "featured_ord_words": [
+    "sterilt",
+    "katarakt",
+    "kirurgiskt",
+    "smärtfri",
+    "konvalescera",
+    "operera"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

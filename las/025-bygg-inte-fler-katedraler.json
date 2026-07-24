@@ -1,0 +1,152 @@
+{
+  "id": 25,
+  "title": "Bygg inte fler katedraler",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "debatt",
+  "word_count": 957,
+  "difficulty": 2,
+  "question_count": 4,
+  "unit_position": "lång",
+  "past_hp": "",
+  "body": "I höstas invigdes ännu ett kulturhus. Det hade tagit nio år att bygga, kostat drygt en och en halv miljard, och fotograferna som samlats vid entrén fick precis den bild de kommit för: en fasad i vinklat glas, en trappa som svepte uppåt i två våningar, och en kommunalrådsdelegation som klippte band framför en skulptur i corténstål. Talen handlade om mod, om att våga satsa, om en byggnad som skulle sätta staden på kartan.\n\nJag har inget emot byggnaden. Jag har något emot vad den kostade i sådant som inte klipper band.\n\nSamma år som bygget beslutades lades tre av kommunens fem musikskolefilialer ned. Biblioteksfilialen i det stadsdelscentrum där behovet av just ett bibliotek är som störst har numera öppet tre eftermiddagar i veckan. Kulturskolans kö är fyra terminer lång för den som vill spela ett instrument som inte är gitarr. Ingen av dessa nedskärningar motiverades med kulturhuset, och formellt hade de olika budgetposter. Men de utspelade sig i samma kommun, under samma år, och den som påstår att de saknar samband får gärna förklara vilken annan förklaring som ligger närmare till hands.\n\nDetta är ett mönster, inte ett olycksfall. Prestigebygget har en egenskap som den löpande verksamheten aldrig kan få: det går att inviga. Det finns ett datum, en sax, ett band och en bild. En budgetpost som håller sex musiklärare anställda i tio år ger ingen sådan bild. Den kostar mer sammanlagt, den når fler människor, och den är politiskt osynlig. När kulturbudgeten sedan ska prioriteras väljer beslutsfattare det som går att se, och det som går att se är det som är monumentellt.\n\nFörsvararna har sina argument, och de förtjänar att tas på allvar. Det starkaste är att ett landmärke drar besökare. Museet i Bilbao brukar anföras som bevis: en nedgången industristad reste en praktfull byggnad av en världsberömd arkitekt och fick tillbaka investeringen i turism inom några år. Argumentet är inte påhittat. Det som sällan nämns är hur ofta försöket att upprepa det har misslyckats. Genomgångar av europeiska satsningar på ikonarkitektur under de senaste tre decennierna visar att en klar majoritet av projekten aldrig kom i närheten av de besökssiffror som låg till grund för kalkylen, och att flera av dem lämnade en driftskostnad som kommunen sedan fick bära i årtionden. Bilbao var inte en modell. Bilbao var ett undantag som såldes som en modell.\n\nDet andra argumentet är att stora byggnader skapar identitet och stolthet. Här finns något att hålla med om. En stad behöver platser som betyder något, och en byggnad kan gestalta en gemensam ambition på ett sätt som en budgetrad inte kan. Men frågan är inte om en enda byggnad kan göra det. Frågan är vad som händer när varje kommun i landet drar samma slutsats samtidigt. Sextio bombastiska kulturhus i sextio medelstora städer skapar ingen identitet alls. De skapar sextio likadana fasader i vinklat glas, och en bransch av konsulter som skriver samma besökskalkyl om och om igen.\n\nDet tredje argumentet är det svåraste: att detta är en falsk motsättning, att pengarna till huset kom ur en investeringsbudget som inte kunde ha använts till lärarlöner ändå. Rent tekniskt stämmer det ofta. Men en kommun som kan låna en och en halv miljard till en byggnad kan också omdisponera. Att en gräns mellan budgetposter existerar betyder inte att den är en naturlag, och det är påfallande hur sällan gränsen ifrågasätts när den råkar skydda det projekt som är i blickfånget.\n\nDet finns dessutom en kostnad som sällan står i kalkylen: den som börjar löpa dagen efter invigningen. Ett hus av det här slaget ska värmas, städas, bemannas och underhållas, och driftsbudgeten hämtas i regel ur samma kulturanslag som verksamheten. Ju dyrare huset är att äga, desto större del av anslaget binds upp innan en enda aktivitet har planerats. Efter tio år kan ett landmärke därför konkurrera ut precis det innehåll det var tänkt att rymma. Byggnaden står kvar och ser lika ståtlig ut som på invigningsdagen, medan programmet inuti den blir tunnare för varje år som går.\n\nJag menar inte att all storslagen arkitektur är slöseri, och jag skulle inte riva ett enda av de hus som redan står. Ett mästerverk kan vara värt sitt pris, och det finns byggnader som betalat tillbaka i mer än pengar. Invändningen gäller proportionen. När andelen av en kulturbudget som går till sten och glas växer medan andelen som går till människor som undervisar krymper, har man inte satsat på kulturen. Man har satsat på bilden av en satsning.\n\nDet finns ett enkelt test för vem en satsning egentligen är till för. Fråga hur många som kommer att röra vid den. En konsertsal med tolvhundra platser som är fylld fyrtio kvällar om året når färre människor under ett decennium än en kulturskola som varje vecka har femhundra barn i sina lokaler. Den folkliga kulturen har alltid haft svårare att väcka uppmärksamhet än den pompösa, av det enkla skälet att den är utspridd, otaktad och odramatisk. Den händer på tisdagar.\n\nDärför är detta inte en fråga om smak. Man kan älska modern arkitektur, gå på konserter varje vecka, och ändå tycka att en kommun som bygger ett hus för en och en halv miljard samtidigt som den stänger tre musikskolor har fattat ett dåligt beslut. Det är inte ett estetiskt omdöme. Det är ett räknestycke.\n\nDe kommande årens kulturbudgetar kommer att vara stramare än de senaste. Just därför är det värt att säga innan besluten fattas snarare än efteråt: nästa gång ett förslag om ett landmärke landar på bordet, be om jämförelsen. Vad hade samma summa gett om den lagts på det som redan finns och håller på att monteras ned? Om svaret är att den hade gett mer, då är landmärket inte en satsning på kultur. Det är en satsning på en invigning.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "ståndpunkt",
+      "stem": "Vad är författarens huvudsakliga invändning mot de stora kulturbyggena?",
+      "options": {
+        "A": "Att ikonarkitektur numera ser likadan ut i varje medelstor svensk stad.",
+        "B": "Att investeringsbudgetar av tekniska skäl inte får användas till löner.",
+        "C": "Att kommuner lånar till nya byggnader i stället för att avsätta medel i förväg.",
+        "D": "Att fördelningen mellan byggnader och verksamhet har förskjutits åt fel håll."
+      },
+      "correct": "D",
+      "passage_anchor": "Invändningen gäller proportionen. När andelen av en kulturbudget som går till sten och glas växer medan andelen som går till människor som undervisar krymper, har man inte satsat på kulturen.",
+      "explanation": "Texten är uttrycklig med att den varken vill riva befintliga hus eller döma ut storslagen arkitektur som sådan. Det som angrips är balansen mellan byggnader och löpande verksamhet. Att fasaderna liknar varandra är ett argument på vägen, och budgetteknikaliteten är en invändning författaren bemöter snarare än driver.",
+      "distractor_types": {
+        "A": "sant_för_en_del",
+        "B": "förkastat_alternativ",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "ståndpunkt",
+      "stem": "Hur förhåller sig författaren till exemplet med museet i Bilbao?",
+      "options": {
+        "A": "Han betvivlar att satsningen gav staden den turism som brukar tillskrivas den.",
+        "B": "Han anser att exemplet visar hur ikonarkitektur bör finansieras och drivas.",
+        "C": "Han menar att liknande satsningar numera är dyrare än de var på nittiotalet.",
+        "D": "Han godtar fallet men bestrider att det säger något om andra städers utsikter."
+      },
+      "correct": "D",
+      "passage_anchor": "Argumentet är inte påhittat. Det som sällan nämns är hur ofta försöket att upprepa det har misslyckats. […] Bilbao var inte en modell. Bilbao var ett undantag som såldes som en modell.",
+      "explanation": "Författaren ifrågasätter inte att det gick bra i Bilbao. Han bestrider slutsatsen att det därför går att upprepa, och stöder sig på att en klar majoritet av de europeiska försöken missade sina besökssiffror. Att betvivla turistintäkterna i Bilbao vore att avvisa själva fallet, vilket texten uttryckligen avstår från.",
+      "distractor_types": {
+        "A": "omvänd_riktning",
+        "B": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 3,
+      "type": "detalj_kausal",
+      "stem": "Vilken förklaring ger texten till att prestigebyggen prioriteras framför löpande verksamhet?",
+      "options": {
+        "A": "Att kulturskolornas köer är så långa att verksamheten ändå inte kan växa.",
+        "B": "Att arkitektkonsulter aktivt driver på kommunerna att beställa nya kalkyler.",
+        "C": "Att en byggnad kan invigas medan en driftsbudget inte kan bli en händelse.",
+        "D": "Att en byggnad över tid kostar mindre än sex lärartjänster i tio år gör."
+      },
+      "correct": "C",
+      "passage_anchor": "Prestigebygget har en egenskap som den löpande verksamheten aldrig kan få: det går att inviga. […] En budgetpost som håller sex musiklärare anställda i tio år ger ingen sådan bild.",
+      "explanation": "Förklaringen texten ger är politisk synlighet: bygget ger ett datum och en bild, verksamheten ger ingen. Texten säger tvärtom att verksamheten kostar mer sammanlagt och når fler, och konsulterna nämns som en följd av att många kommuner gör samma sak, inte som orsaken till att de gör det.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "rätt_fakta_påhittat_motiv",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 4,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Bilbao-effekten: ett undantag som blev en mall för svenska kommuner",
+        "B": "Det synliga vinner: om varför kulturpengar söker sig till fasader",
+        "C": "Musikskolan i kö: konsekvenserna av tre nedlagda kommunala filialer",
+        "D": "Identitet i glas och stål: vad en byggnad kan betyda för en stad"
+      },
+      "correct": "B",
+      "passage_anchor": "När kulturbudgeten sedan ska prioriteras väljer beslutsfattare det som går att se, och det som går att se är det som är monumentellt.",
+      "explanation": "Hela texten drivs av en enda mekanism: det som syns och kan invigas vinner över det som är utspritt och odramatiskt, och därför förskjuts pengarna mot byggnader. Bilbao, musikskolekön och identitetsargumentet är alla sanna delar av texten, men var och en täcker bara ett avsnitt av den.",
+      "distractor_types": {
+        "A": "sant_för_en_del",
+        "C": "sant_för_en_del",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "skulptur",
+      "definition": "Tredimensionellt konstverk format ur sten eller annat material."
+    },
+    {
+      "word": "monumentellt",
+      "definition": "Så storartat och bestående att det väcker djup beundran."
+    },
+    {
+      "word": "praktfull",
+      "definition": "Som är ståtlig och fylld av yttre skönhet eller pomp."
+    },
+    {
+      "word": "gestalta",
+      "definition": "Att forma och ge konkret uttryck åt en idé eller karaktär."
+    },
+    {
+      "word": "bombastiska",
+      "definition": "Som är pompösa och överdrivet uppblåsta i sitt uttryck."
+    },
+    {
+      "word": "i blickfånget",
+      "definition": "På den plats där alla blickar riktas."
+    },
+    {
+      "word": "mästerverk",
+      "definition": "Konstnärligt arbete av högsta kvalitet och betydelse."
+    },
+    {
+      "word": "folkliga",
+      "definition": "Som tilltalar bredare lager av befolkningen."
+    },
+    {
+      "word": "väcka uppmärksamhet",
+      "definition": "Att få andra att lägga märke till något särskilt."
+    },
+    {
+      "word": "pompösa",
+      "definition": "Som är överdrivet högtidliga och uppblåsta."
+    }
+  ],
+  "featured_ord_words": [
+    "skulptur",
+    "monumentell",
+    "praktfull",
+    "gestalta",
+    "bombastisk",
+    "i blickfånget",
+    "mästerverk",
+    "folklig",
+    "väcka uppmärksamhet",
+    "pompös"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

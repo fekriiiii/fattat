@@ -1,0 +1,94 @@
+{
+  "id": 23,
+  "title": "Tiden som domare",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "juridik",
+  "genre": "personlig_essä",
+  "word_count": 300,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Min mormor sparade allt. När hon dog hittade vi i en byrålåda ett kuvert med ett skuldebrev från 1971, undertecknat av en granne som för länge sedan flyttat och sedan dött. Summan var blygsam. Min mor höll papperet mot fönstret en stund och sa att det nog var för sent nu.\n\nHon hade rätt, juridiskt sett. En fordran som ingen kräver in upphör till slut att gälla. Preskription heter det, och regeln finns i varje rättsordning jag känner till. Först tyckte jag att det lät som en orättvisa satt i system. Skulden fanns ju. Papperet fanns. Att tiden ensam skulle kunna radera den kändes som att låta den som väntar längst vinna.\n\nMen ju mer jag tänkte på kuvertet, desto mindre säker blev jag. Vad skulle en domstol egentligen ha gjort med det? Grannen kunde inte längre höras. Ingen kunde säga om summan betalats tillbaka kontant en kväll för femtio år sedan, vilket i den tidens grannskap var det troligaste av allt. Bevisbördan ligger på den som kräver, och den som krävs har rätt att kunna försvara sig. Ett papper som överlever alla som visste vad det betydde är inte bevis. Det är en relik.\n\nDär någonstans vände min invändning. Regeln skyddar inte den som smiter undan. Den skyddar den som inte längre kan minnas, inte längre kan fråga någon, inte längre kan visa ett kvitto som kastades två decennier tidigare. Kravet på proportionalitet mellan vad rätten begär och vad en människa rimligen kan prestera gäller också i tiden.\n\nVi gjorde ingenting med skuldebrevet. Min mor lade tillbaka det i lådan, och när vi tömde huset gick det med i en kasse till återvinningen, tillsammans med kvitton och gamla kalendrar. Någon förlikning blev det aldrig. Det behövdes inte. Tiden hade redan gjort det arbete som ingen av oss ville göra.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om varför författarens invändning vänder?",
+      "options": {
+        "A": "Att skuldebrevets summa var för liten för att motivera en rättslig process.",
+        "B": "Att grannen sannolikt hade betalat tillbaka pengarna kontant en kväll.",
+        "C": "Att hennes mor redan hade avgjort saken när hon lade tillbaka brevet.",
+        "D": "Att ett krav förlorar sin grund när ingen längre kan pröva det."
+      },
+      "correct": "D",
+      "passage_anchor": "Grannen kunde inte längre höras. […] Ett papper som överlever alla som visste vad det betydde är inte bevis.",
+      "explanation": "Vändningen kommer när författaren frågar sig vad en domstol skulle kunna göra med papperet. Svaret är ingenting: den som skrev under är död, ingen kan säga om skulden betalats, och den som krävs kan därför inte försvara sig. Det är prövbarheten som har gått förlorad, inte skulden. Att summan var blygsam och att kontant återbetalning var troligt står visserligen i texten, men det är iakttagelser på vägen, inte det som får henne att byta uppfattning.",
+      "distractor_types": {
+        "A": "sant_för_en_del",
+        "B": "sant_men_fel_fråga",
+        "C": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "ståndpunkt",
+      "stem": "Vilken ståndpunkt driver författaren i texten?",
+      "options": {
+        "A": "Att den som väntar längst med att kräva in en gammal skuld till slut vinner.",
+        "B": "Att kontanta återbetalningar mellan grannar sällan lämnar några spår efter sig.",
+        "C": "Att en tidsgräns i rätten är en rimlighetsfråga snarare än en eftergift.",
+        "D": "Att beviskraven bör mildras när den som kunde intyga saken har dött."
+      },
+      "correct": "C",
+      "passage_anchor": "Kravet på proportionalitet mellan vad rätten begär och vad en människa rimligen kan prestera gäller också i tiden.",
+      "explanation": "Texten landar i att en tidsgräns inte är rätten som ger efter för slarv, utan rätten som håller sig till vad den faktiskt kan begära av en människa. Att den tålmodige vinner är den uppfattning författaren börjar i och uttryckligen överger. Förslaget att mildra beviskraven när ett vittne dött ligger nära men flyttar frågan: texten vill inte sänka kraven på bevisning, den vill att själva kravet ska upphöra.",
+      "distractor_types": {
+        "A": "förkastat_alternativ",
+        "B": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "skuldebrev",
+      "definition": "Skriftligt bevis på att någon är skyldig pengar."
+    },
+    {
+      "word": "fordran",
+      "definition": "Rätt att kräva betalning av någon annan."
+    },
+    {
+      "word": "Preskription",
+      "definition": "Att en rättslig fordran eller talan upphör efter viss tid."
+    },
+    {
+      "word": "Bevisbördan",
+      "definition": "Skyldigheten att styrka sin sak med tillräcklig bevisning."
+    },
+    {
+      "word": "relik",
+      "definition": "Kvarleva från en svunnen tid som saknar praktisk funktion."
+    },
+    {
+      "word": "proportionalitet",
+      "definition": "Rimligt förhållande mellan medel och mål i juridiskt beslut."
+    },
+    {
+      "word": "förlikning",
+      "definition": "Att parterna i en tvist kommer överens utan domstolsavgörande."
+    }
+  ],
+  "featured_ord_words": [
+    "preskription",
+    "bevisbörda",
+    "proportionalitet",
+    "förlikning"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

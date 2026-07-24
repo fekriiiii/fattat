@@ -1,0 +1,147 @@
+{
+  "id": 27,
+  "title": "Genombrottet som aldrig kommer",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "vetenskap",
+  "genre": "debatt",
+  "word_count": 952,
+  "difficulty": 3,
+  "question_count": 4,
+  "unit_position": "lång",
+  "past_hp": "",
+  "body": "Varje vecka läser jag att något har botats. En rubrik meddelar att forskare har hittat nyckeln till Alzheimers. Nästa vecka har någon knäckt koden för ålderdom. Tio år senare går jag fortfarande förbi samma äldreboende på väg till jobbet, och ingenting där inne har förändrats.\n\nJag vill inte skylla detta på journalisterna. Det vore bekvämt och delvis orättvist. Kedjan börjar tidigare, i pressmeddelandet från lärosätet, och ofta redan i den ansökan som forskaren själv skrev för att få pengar till studien. Alla led i kedjan har samma incitament, och ingen av dem har till uppgift att dämpa.\n\nTa ett typiskt fall. En grupp visar att en viss molekylär mekanism kan blockeras i odlade celler, och att blockeringen får en sjukdomsmarkör att sjunka. Det är ett riktigt fynd, publicerat efter granskning. Men det är utfört in vitro, alltså utanför en levande organism, och avståndet därifrån till en behandling som fungerar i en människa är inte ett steg utan flera. Substansen måste tas upp av kroppen, nå rätt vävnad, inte förgifta lever eller njure, och sedan visa effekt i en randomiserad studie på patienter. Historiskt faller mellan nittio och nittiofem procent av de kandidater som når klinisk prövning bort någonstans på vägen. Ändå är det första ledet, cellodlingen, som får rubriken.\n\nDen som vill se mekanismen tydligt kan följa ett enskilt fynd bakåt genom leden. En studie visar att möss lever längre om de får en viss substans i dricksvattnet. I artikelns sammanfattning står att effekten observerades hos hanmöss av en särskild stam, under kontrollerade betingelser, och att verkningssättet är okänt. I lärosätets pressmeddelande har försiktighetsorden fallit bort och rubriken talar om åldrandets gåta. I nyhetsnotisen dagen därpå har mössen försvunnit helt. Ingen har ljugit i något enskilt led. Varje omskrivning har bara strukit en reservation som kändes teknisk, och summan av fyra sådana strykningar är ett påstående som forskargruppen aldrig gjorde. Kommunikationsavdelningar mäts dessutom i genomslag och sällan i träffsäkerhet, vilket gör att den som formulerar sig mest återhållsamt får de sämsta siffrorna i sin egen uppföljning.\n\nDet finns ett ord som gör detta arbete åt oss, och det borde beläggas med karantän. Ordet är genombrott. Det saknar innehåll, det går inte att falsifiera, och det passar lika bra på ett verkligt paradigmskifte som på en marginell förbättring i en musmodell. När allt är ett genombrott är ingenting det.\n\nJag hör invändningen. Forskning behöver stöd, stöd kräver uppmärksamhet, och uppmärksamhet kräver att man berättar varför arbetet betyder något. Det är sant. Ingen får anslag genom att beskriva sitt projekt som ett litet bidrag till en lång kedja, även när det är precis vad det är, och även när långa kedjor är exakt hur vetenskap faktiskt fungerar. Problemet är inte att forskare kommunicerar. Problemet är vilken sorts påstående som belönas.\n\nOch kostnaden är inte bara att allmänheten blir besviken. Den drabbar forskningen inifrån. Ett fält som lovar för mycket bygger upp en skuld som förfaller. När behandlingen uteblir tio år senare drar anslagsgivare öronen åt sig, inte bara från den grupp som överdrev utan från hela området. Överdriften fungerar som en katalysator på kort sikt och som en broms på lång.\n\nDet finns dessutom en mer specifik skada. Patienter läser rubrikerna. Föräldrar till barn med en ovanlig sjukdom som beror på en enda mutation läser att sjukdomen nu går att korrigera i arvsmassan, och hör inte att korrigeringen gjordes i celler i en skål. Att sedan få höra av sin läkare att ingen behandling finns, och kanske inte kommer att finnas under barnets uppväxt, är en grymhet som ingen har avsett men som många har medverkat till.\n\nSjälva ordvalen bär ideologi. Vi talar om att en gen har hittats, som om den låg och väntade, och om att koden knäckts, som om biologin vore ett lås. Men den evolutionära processen har inte konstruerat ett chiffer åt oss att lösa. Den har lämnat efter sig ett lapptäcke av lösningar som fungerar tillräckligt bra, och där samma gen ofta gör flera olika saker beroende på sammanhang. Metaforen om koden lovar en tydlighet som ämnet inte har, och den gör varje delresultat till en bit i ett pussel som antas ha en färdig bild.\n\nVad borde göras i stället? Tre saker, och ingen av dem är dramatisk. För det första bör varje pressmeddelande som beskriver ett prekliniskt fynd säga i första stycket vilken sorts försök det gäller: celler, möss eller människor. Detta kostar ingenting och är redan praxis hos ett fåtal lärosäten. För det andra bör den som skriver om ett resultat ange om det har gått att replikera, och om ingen har försökt ännu bör även det stå. Ett enskilt fynd är en hypotes, inte en upptäckt. För det tredje bör vi sluta räkna framsteg exponentiellt. Antalet publicerade artiklar växer snabbt, men antalet godkända läkemedel per satsad forskningskrona har sjunkit i decennier. Volym är inte kunskap.\n\nJag är inte ute efter en gråare vetenskapsjournalistik. Tvärtom är den ärliga versionen mer intressant än den uppblåsta. Berättelsen om hur ett fynd först inte gick att upprepa, hur en grupp letade i två år efter felet och till slut hittade det i sitt eget protokoll, är en bättre historia än ännu ett genombrott. Den handlar om något som faktiskt hände.\n\nDet finns en risk med att skriva det här, och jag känner till den. Den som klagar på överdrifter riskerar att låta som om han förnekar att någonting alls går framåt. Så är det inte. De senaste decennierna har fört med sig verkliga och stora förändringar för människor med hiv, med vissa blodcancrar och med cystisk fibros. Just därför är det värt att vara noggrann. När allt beskrivs som ett genombrott blir de få verkliga genombrotten omöjliga att se, och de förtjänar bättre än att drunkna bland de andra.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "ståndpunkt",
+      "stem": "Vem eller vad riktar författaren i första hand sin kritik mot?",
+      "options": {
+        "A": "Vetenskapsjournalister som skriver rubriker utan att läsa studierna bakom dem.",
+        "B": "Forskare som medvetet överdriver sina resultat för att kunna behålla anslagen.",
+        "C": "Patientföreningar som sprider förhoppningar om behandlingar som inte finns.",
+        "D": "En kedja av aktörer som alla belönas för samma sorts överdrivna påstående."
+      },
+      "correct": "D",
+      "passage_anchor": "Kedjan börjar tidigare, i pressmeddelandet från lärosätet, och ofta redan i den ansökan som forskaren själv skrev […] Alla led i kedjan har samma incitament, och ingen av dem har till uppgift att dämpa.",
+      "explanation": "Texten avvisar uttryckligen att lägga skulden på journalisterna och pekar i stället ut ett incitament som löper genom ansökan, pressmeddelandet och rubriken. Kritiken gäller vilken sorts påstående som belönas, inte enskilda aktörers uppsåt. Patienter förekommer i texten som drabbade, inte som ansvariga.",
+      "distractor_types": {
+        "A": "förkastat_alternativ",
+        "B": "nära_men_inte_riktigt",
+        "C": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "ståndpunkt",
+      "stem": "Hur ser författaren på metaforen om att koden har knäckts?",
+      "options": {
+        "A": "Att den är användbar för lekmän men alltför oprecis för fackpublik.",
+        "B": "Att den bör ersättas av bilden av ett pussel med en färdig bild.",
+        "C": "Att den underskattar hur snabbt den molekylära biologin nu utvecklas.",
+        "D": "Att den utlovar en entydighet som det den beskriver saknar."
+      },
+      "correct": "D",
+      "passage_anchor": "Metaforen om koden lovar en tydlighet som ämnet inte har, och den gör varje delresultat till en bit i ett pussel som antas ha en färdig bild.",
+      "explanation": "Invändningen är att biologin inte är ett lås med en lösning: evolutionen har lämnat ett lapptäcke där samma gen gör olika saker i olika sammanhang. Pusselbilden är enligt texten en följd av samma felaktiga metafor, inte ett bättre alternativ, och kritiken gäller inte vem publiken är.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "B": "omvänd_riktning",
+        "C": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    },
+    {
+      "n": 3,
+      "type": "detalj_fakta",
+      "stem": "Vad framgår av texten om förhållandet mellan publicering och resultat?",
+      "options": {
+        "A": "Att antalet artiklar stiger snabbast inom de fält som lovar mest i förväg.",
+        "B": "Att omkring nittio procent av alla publicerade fynd inte går att replikera.",
+        "C": "Att artiklarna blir fler medan utbytet per forskningskrona har minskat.",
+        "D": "Att godkända läkemedel numera kräver fler prövningar än de gjorde förr."
+      },
+      "correct": "C",
+      "passage_anchor": "Antalet publicerade artiklar växer snabbt, men antalet godkända läkemedel per satsad forskningskrona har sjunkit i decennier. Volym är inte kunskap.",
+      "explanation": "Texten ställer två kurvor mot varandra: publikationerna stiger, utbytet per satsad krona faller. Siffran nittio till nittiofem procent i texten gäller kandidater som faller bort under klinisk prövning, inte fynd som inte går att upprepa, och det är den sortens förväxling frågan prövar.",
+      "distractor_types": {
+        "A": "rätt_fakta_påhittat_motiv",
+        "B": "nära_men_inte_riktigt",
+        "D": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    },
+    {
+      "n": 4,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Priset för att lova för mycket, och vem som till slut betalar det",
+        "B": "Från cellskål till patient: de många stegen ett läkemedel måste ta",
+        "C": "Tre förslag för en mer måttfull rapportering av forskningsresultat",
+        "D": "Kodmetaforen och dess grepp om hur vi talar om ärftlighet"
+      },
+      "correct": "A",
+      "passage_anchor": "Ett fält som lovar för mycket bygger upp en skuld som förfaller. […] När allt beskrivs som ett genombrott blir de få verkliga genombrotten omöjliga att se.",
+      "explanation": "Texten följer en enda tråd: överdriften lönar sig i stunden och kostar sedan, för anslagsgivarnas förtroende, för patienter som väntar, och till sist för de resultat som verkligen betyder något. Stegen från cellskål till patient, de tre förslagen och kodmetaforen är alla riktiga delar av texten men täcker var för sig bara ett avsnitt.",
+      "distractor_types": {
+        "B": "sant_för_en_del",
+        "C": "sant_för_en_del",
+        "D": "sant_för_en_del"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "molekylär",
+      "definition": "Som rör molekyler eller skeenden på molekylnivå."
+    },
+    {
+      "word": "in vitro",
+      "definition": "Som genomförs i laboratoriemiljö utanför en levande organism."
+    },
+    {
+      "word": "katalysator",
+      "definition": "Ämne som ökar hastigheten på en kemisk reaktion utan att förbrukas."
+    },
+    {
+      "word": "mutation",
+      "definition": "Förändring i arvsmassan som kan föras vidare till nästa generation."
+    },
+    {
+      "word": "arvsmassan",
+      "definition": "Helheten av en organisms genetiska information."
+    },
+    {
+      "word": "evolutionära",
+      "definition": "Som rör arters långsiktiga utveckling över många generationer."
+    },
+    {
+      "word": "gen",
+      "definition": "Ärftlig enhet som styr biologiska egenskaper hos en organism."
+    },
+    {
+      "word": "replikera",
+      "definition": "Att utföra en studie eller process på nytt under samma villkor."
+    },
+    {
+      "word": "exponentiellt",
+      "definition": "I en allt snabbare takt som följer en potens-funktion."
+    }
+  ],
+  "featured_ord_words": [
+    "molekylär",
+    "in vitro",
+    "katalysator",
+    "mutation",
+    "arvsmassa",
+    "evolutionär",
+    "gen",
+    "replikera",
+    "exponentiellt"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
