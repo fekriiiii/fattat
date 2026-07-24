@@ -412,6 +412,9 @@ export default function TestPage() {
           <ArticleReader
             article={currentArticle}
             onDoneReading={() => setReadArticleIds((prev) => new Set([...prev, currentArticle.id]))}
+            // Real HP offers no word definitions. Handing them out here would
+            // inflate the score this övningsprov exists to measure.
+            showVocab={false}
           />
         ) : question && !showingFeedback ? (
           <LasQuestion

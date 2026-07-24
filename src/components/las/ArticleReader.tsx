@@ -9,6 +9,15 @@ import { Button } from '@/components/ui/Button'
 interface Props {
   article: Article
   onDoneReading: () => void
+  /**
+   * Whether tapping an underlined word reveals its definition.
+   *
+   * Defaults to true (daily sessions, where the vocabulary aid is part of the
+   * teaching). Pass false in exam mode: the real HP gives no word definitions,
+   * so offering them during an övningsprov inflates the very score the
+   * övningsprov exists to measure.
+   */
+  showVocab?: boolean
 }
 
 interface TextSegment {
@@ -49,10 +58,15 @@ function buildSegments(body: string, highlights: VocabHighlight[]): TextSegment[
   return segments
 }
 
-// Splits segments into paragraphs on \n, renders each as its own <p>
+// Splits segments into paragraphs on \n, renders each as its own <p>.
+// `showVocab === false` renders the highlighted words as ordinary text: no
+// underline, no button, nothing to tap. Used in exam mode, where a word aid
+// the real HP does not offer would inflate the score the övningsprov exists to
+// measure.
 function renderSegmentsAsParagraphs(
   segments: TextSegment[],
-  onHighlight: (h: VocabHighlight) => void
+  onHighlight: (h: VocabHighlight) => void,
+  showVocab: boolean
 ) {
   // Flatten segments into tokens — either a highlight or a string chunk
   type Token = { type: 'highlight'; h: VocabHighlight; text: string } | { type: 'text'; text: string }
@@ -81,7 +95,7 @@ function renderSegmentsAsParagraphs(
     .map((para, pi) => (
       <p key={pi} className="text-[16px] text-dark/85 leading-[1.75]">
         {para.map((token, ti) =>
-          token.type === 'highlight' ? (
+          token.type === 'highlight' && showVocab ? (
             <button
               key={ti}
               onClick={() => onHighlight(token.h)}
@@ -97,7 +111,7 @@ function renderSegmentsAsParagraphs(
     ))
 }
 
-export function ArticleReader({ article, onDoneReading }: Props) {
+export function ArticleReader({ article, onDoneReading, showVocab = true }: Props) {
   const [timerRunning, setTimerRunning] = useState(true)
   const [done, setDone] = useState(false)
   const [activeHighlight, setActiveHighlight] = useState<VocabHighlight | null>(null)
@@ -134,13 +148,13 @@ export function ArticleReader({ article, onDoneReading }: Props) {
 
       {/* Article body */}
       <div className="px-5 py-5 flex flex-col gap-4">
-        {renderSegmentsAsParagraphs(segments, (h) => setActiveHighlight(h))}
+        {renderSegmentsAsParagraphs(segments, (h) => setActiveHighlight(h), showVocab)}
 
         <p className="text-[11px] text-dark/40 italic">
           Namn, personer, statistik och händelser i texten är påhittade och används enbart i övningssyfte.
         </p>
 
-        {article.vocab_highlights.length > 0 && (
+        {showVocab && article.vocab_highlights.length > 0 && (
           <p className="text-[11px] text-dark/55 italic">
             Tryck på understrukna ord för definition
           </p>
@@ -157,7 +171,7 @@ export function ArticleReader({ article, onDoneReading }: Props) {
       )}
 
       {/* Vocab tooltip */}
-      {activeHighlight && (
+      {showVocab && activeHighlight && (
         <VocabTooltip
           highlight={activeHighlight}
           onClose={() => setActiveHighlight(null)}
