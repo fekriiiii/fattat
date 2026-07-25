@@ -297,14 +297,34 @@ prompt with `preventDefault()` and then never call `prompt()` on this path. They
 are a web app, same as us, and they are leaking installs. Relevant next time the
 "should we build a native app?" question comes up (`docs/MONETIZATION_RESEARCH.md`).
 
-**Separate from all of the above:** ELF is the one delprov where nobody can seed
-from past exams. UHR redacts the English texts from published provpass because
-they are third-party licensed, which is why every file in our `Past_hp/` is
-"utan-elf". Their ELF is therefore self-written or reconstructed, same as ours
-would have to be. On ORD and LÄS they have a finished corpus of real exams we
-have to build our way toward; **on ELF and MEK the starting line is level**. That
-is the cheapest place for us to reach content parity if we ever extend past
-ORD/LÄS.
+**Separate from all of the above — ELF is our worst content asymmetry, not our
+best.** Every file in our `Past_hp/` is "utan-elf" because the archived provpass
+UHR keeps online have the English texts stripped (third-party licensed). The
+first draft of this entry concluded from that that nobody can seed ELF and the
+starting line is therefore level. **That was wrong.** Founder (2026-07-25):
+
+> UHR does release the ELF part, but only during roughly the first week after
+> each sitting. After that it comes down and only the redacted version remains.
+
+That inverts the finding. ORD and LÄS from past exams stay downloadable forever,
+so their corpus advantage there is one we can close whenever we spend the time.
+**ELF is a closing window, once per sitting, and every window before now is gone
+permanently.** hpappen has been operating for years, so they plausibly hold every
+ELF block from every sitting in that span. We hold zero, and no amount of work
+recovers them.
+
+**The action this creates, and it is dated.** The founder sits HP on **18 oktober
+2026** and the ELF texts go up in the week after. Capturing them is free, it is
+the first brick in an ELF corpus, and missing it costs another six months.
+
+- Verify the exact publication window *before* 18 okt, not after. "Roughly a
+  week" is founder recollection; if it is three days, a plan built on seven
+  misses it entirely.
+- Then capture every sitting from here on. This is a standing calendar item, not
+  a one-off.
+
+MEK is unaffected by any of this and remains genuinely level: it is in every
+archived provpass we already hold.
 
 ### Community, streaks, leaderboards
 

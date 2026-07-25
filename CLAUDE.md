@@ -243,6 +243,7 @@ Files: `scripts/build-morph-prefixes.mjs` (new), `src/lib/ord/prefix-lexicon.ts`
 | Session payload bloat — daily session stores full article bodies in JSONB; should mirror övningsprov and store IDs only | `src/app/api/session/build/route.ts` | Low |
 | Study partner pages | `src/app/(app)/partner/` | Low |
 | HP result popup — after exam_date + ~42 days, show a one-time dashboard popup: "Fick du ditt HP-resultat?" with a score slider + "Nej tack" dismiss. Writes to `reported_hp_score` on `user_profiles` (DB column already exists from migration 015). Replaces the removed profile form field. Trigger: Phase 3, ~late November 2026. | `src/components/dashboard/`, `src/app/api/profile/` | Phase 3 |
+| **Capture the ELF texts in the week after 18 okt 2026.** UHR publishes the ELF part of each provpass only for roughly the first week after the sitting, then removes it and leaves the redacted "utan-elf" version that fills `Past_hp/`. Every window before now is gone permanently, which is why we hold zero ELF material and an incumbent of several years plausibly holds all of it. **Verify the exact window before 18 okt, not after** (the "one week" is founder recollection; if it is three days a seven-day plan misses it). Then make it a standing per-sitting calendar item. | manual | **High — hard, dated, unrepeatable** |
 | Founder must-dos (ongoing) — HP-anmälan 11–18 aug 2026 (hard deadline), record raw session footage/screenshots privately, keep growing ORD + LÄS content to feed ~4 months of daily use | manual | High (ongoing) |
 
 ---
