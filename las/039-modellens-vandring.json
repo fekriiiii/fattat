@@ -1,0 +1,152 @@
+{
+  "id": 39,
+  "title": "Modellens vandring",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "vetenskap",
+  "genre": "akademisk",
+  "word_count": 990,
+  "difficulty": 3,
+  "question_count": 4,
+  "unit_position": "lång",
+  "past_hp": "",
+  "body": "Den matematiska biologins historia kan i hög grad skrivas som en historia om lånade verktyg. De ekvationer som i dag används för att beskriva hur en population växer, hur ett protein binder till sin målmolekyl eller hur ett läkemedelssvar avtar med tiden är i allt väsentligt formulerade inom fysiken och kemin, och de fördes över till biologin av forskare som var utbildade i de förra ämnena. Överföringen har varit utomordentligt framgångsrik. Den har också haft kostnader som sällan diskuteras i samma andetag.\n\nDet mest kända exemplet är hämtat från enzymkinetiken. När Leonor Michaelis och Maud Menten 1913 formulerade sambandet mellan substratkoncentration och reaktionshastighet gjorde de det med utgångspunkt i en modell som redan användes för att beskriva hur ytor adsorberar gas. Antagandet var att enzymet bildar ett tillfälligt komplex med sitt substrat, och att detta komplex sedan sönderfaller under det att produkten frigörs och enzymet återgår för att katalysera nästa omsättning. Formen på den resulterande kurvan är densamma som i fysikaliska sammanhang där ett begränsat antal platser ska fyllas.\n\nFramgången beror på att antagandet råkar vara riktigt. Ett enzym har ett begränsat antal aktiva säten, och när alla är upptagna kan hastigheten inte öka ytterligare. Modellen är därmed inte en analogi utan en beskrivning, och det är en distinktion som blir avgörande längre fram.\n\nEtt annat lån härrör från termodynamiken. De metoder som utvecklades för att destillera och rena ämnen byggde på antagandet att ett system som lämnas i fred rör sig mot jämvikt. Antagandet överfördes till biokemin, där det fungerar väl i provrör men sämre i celler. En levande cell befinner sig aldrig i jämvikt. Den upprätthåller en ordning genom ett ständigt flöde av energi, och en modell som förutsätter jämvikt kommer därför att beskriva ett tillstånd som organismen aktivt undviker. Att detta ändå fungerat i praktiken beror på att många delprocesser är snabba nog att kunna behandlas som om de vore i jämvikt, medan systemet som helhet inte är det.\n\nDärmed är den generella svårigheten formulerad. En modell överförs tillsammans med sina antaganden, men antagandena reser tystare än ekvationerna. Den som hämtar ett uttryck ur en lärobok i fysikalisk kemi hämtar samtidigt en föreställning om vad som utgör en enhet i systemet, vad som får försummas och vad som ska betraktas som konstant. Dessa föreställningar prövas sällan på nytt i det nya sammanhanget, av det enkla skälet att de inte står skrivna någonstans.\n\nExponentiell tillväxt utgör det tydligaste fallet. Att en population vars individer förökar sig oberoende av varandra växer med en konstant exponent är ovedersägligt inom modellens ramar, och uttrycket har ett stort värde som utgångspunkt. Svårigheten uppstår när det behandlas som en beskrivning av vad populationer faktiskt gör. Ingen population växer exponentiellt under någon längre tid, eftersom förutsättningen om oberoende individer upphör att gälla så snart resurser blir knappa. Uttryckets giltighet är villkorad, men villkoret framgår inte av ekvationen.\n\nEn besläktad svårighet rör tolkningen av förändringstakt. Att beskriva ett förlopp med hjälp av en derivata förutsätter att den storhet som studeras varierar kontinuerligt. Antalet individer i en population gör inte det. Att ändå använda kontinuerliga uttryck är en approximation som fungerar väl vid stora tal och sämre vid små, vilket har praktisk betydelse i just de fall där frågan är mest angelägen, exempelvis när en art står nära utdöende eller när en resistent bakteriestam utgörs av ett fåtal celler.\n\nDet är i det sista sammanhanget som modellernas begränsning har fått störst konsekvenser. Att en bakteriestam kan mutera och att en sådan förändring kan ge upphov till resistens är väl belagt. Frekvensen av sådana händelser beskrivs vanligen med en sannolikhet per celldelning. Men den beskrivningen förutsätter att varje delning är oberoende av alla andra, och nyare arbeten pekar mot att så inte är fallet, eftersom celler under stress förändrar sin egen mutationsbenägenhet. Modellen är inte fel. Den beskriver ett system som saknar just den egenskap som gör frågan intressant.\n\nMot detta har invänts att kritiken är oskarp. Varje modell utelämnar något, och en modell som inte utelämnade något skulle sakna värde. Invändningen är riktig och träffar en verklig svaghet i det slag av kritik som stannar vid att konstatera att verkligheten är mer komplicerad. Skillnaden ligger mellan förenklingar som är valda och förenklingar som är ärvda. En forskare som medvetet antar konstant mutationsfrekvens för att göra ett problem hanterbart har fattat ett beslut som kan omprövas. En forskare som antar det därför att uttrycket kom med antagandet inbyggt har inte fattat något beslut alls.\n\nAtt likställa de två fallen är därför en felslutning, även om de leder till samma ekvation. Skillnaden är inte matematisk utan epistemisk, och den visar sig först när modellen ger ett oväntat resultat: den förra forskaren vet var hon ska leta, den senare gör det inte.\n\nSlutsatsen bör därför inte bli att lånen var olyckliga. Den matematiska biologins produktivitet är svår att förklara på något annat sätt än att lånen i huvudsak varit lyckade, och de fall där ett uttryck visat sig vara en beskrivning snarare än en analogi har varit oproportionerligt fruktbara. Vad som följer är i stället ett metodkrav. När ett uttryck förs över från ett ämne till ett annat bör dess antaganden formuleras uttryckligen och prövas var för sig i det nya sammanhanget, i stället för att godtas förbehållslöst i kraft av att uttrycket har fungerat någon annanstans.\n\nEtt sådant krav låter sig formuleras enkelt men är kostsamt att uppfylla. Det förutsätter att den som lånar ett uttryck känner ursprungsämnet väl nog att veta vad som en gång antogs, och den kunskapen finns sällan hos den som har mest att vinna på lånet. Historiskt har den funnits hos enskilda forskare med dubbel utbildning, vilket kan förklara varför just de har haft ett så oproportionerligt inflytande på ämnets utveckling.\n\nDet kravet är inte nytt, och det är sällan uppfyllt. En trolig förklaring är att det arbete som krävs för att syntetisera en modells antaganden och pröva dem mot ett nytt system inte belönas i publiceringssystemet, medan tillämpningen av modellen gör det.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "detalj_fakta",
+      "stem": "Vad framgår av texten om Michaelis och Mentens modell från 1913?",
+      "options": {
+        "A": "Den utvecklades ur termodynamikens antagande att system som lämnas i fred rör sig mot jämvikt.",
+        "B": "Den vilar på ett antagande som visade sig gälla också för det biologiska system den fördes över till.",
+        "C": "Den beskriver hur ytor adsorberar gas och tillämpades senare på enzymer med vissa nödvändiga ändringar.",
+        "D": "Den ger en kurva vars form skiljer sig från den man får i motsvarande fysikaliska sammanhang."
+      },
+      "correct": "B",
+      "passage_anchor": "Framgången beror på att antagandet råkar vara riktigt. Ett enzym har ett begränsat antal aktiva säten, och när alla är upptagna kan hastigheten inte öka ytterligare. Modellen är därmed inte en analogi utan en beskrivning.",
+      "explanation": "Antagandet om ett begränsat antal platser råkar vara sant även för enzymet, vilket gör modellen till en beskrivning och inte en liknelse.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om varför ärvda antaganden är svårare att hantera än valda?",
+      "options": {
+        "A": "Att de betydligt oftare visar sig vara felaktiga när de väl prövas mot ett nytt biologiskt system.",
+        "B": "Att de leder till ekvationer som är matematiskt mindre precisa än de medvetet valda.",
+        "C": "Att de kräver kunskaper i fysikalisk kemi som få verksamma biologer i dag har med sig.",
+        "D": "Att de aldrig har varit föremål för något beslut och därför inte kan sökas upp i efterhand."
+      },
+      "correct": "D",
+      "passage_anchor": "En forskare som medvetet antar konstant mutationsfrekvens för att göra ett problem hanterbart har fattat ett beslut som kan omprövas. En forskare som antar det därför att uttrycket kom med antagandet inbyggt har inte fattat något beslut alls.",
+      "explanation": "Ett antagande som aldrig valts finns inte dokumenterat någonstans, och därför saknar forskaren en plats att leta på när modellen fallerar.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "B": "omvänd_riktning",
+        "C": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    },
+    {
+      "n": 3,
+      "type": "ståndpunkt",
+      "stem": "Hur förhåller sig författaren till invändningen att varje modell måste utelämna något?",
+      "options": {
+        "A": "Författaren godtar den och preciserar sin egen kritik så att den enbart avser oreflekterade förenklingar.",
+        "B": "Författaren avvisar den med hänvisning till att biologiska system i grunden är mer komplicerade än fysikaliska.",
+        "C": "Författaren menar att den träffar rätt och att kritiken mot lånade modeller därför bör överges helt.",
+        "D": "Författaren anser att den bara gäller modeller som beskriver system i jämvikt och inte övriga fall."
+      },
+      "correct": "A",
+      "passage_anchor": "Invändningen är riktig och träffar en verklig svaghet i det slag av kritik som stannar vid att konstatera att verkligheten är mer komplicerad. Skillnaden ligger mellan förenklingar som är valda och förenklingar som är ärvda.",
+      "explanation": "Författaren accepterar invändningen och drar i stället en gräns inom kritiken, mellan medvetna och ärvda förenklingar.",
+      "distractor_types": {
+        "B": "omvänd_riktning",
+        "C": "nära_men_inte_riktigt",
+        "D": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    },
+    {
+      "n": 4,
+      "type": "syfte_funktion",
+      "stem": "Vilken funktion fyller resonemanget om exponentiell tillväxt och derivata i texten?",
+      "options": {
+        "A": "Att visa att kontinuerliga uttryck ger sämre resultat ju mindre den studerade populationen är.",
+        "B": "Att belägga att matematiska verktyg från fysiken är olämpliga att använda inom biologin.",
+        "C": "Att förklara varför arter nära utdöende är svårare att modellera än stabila populationer.",
+        "D": "Att ge två exempel på hur ett uttrycks giltighetsvillkor inte syns i uttrycket självt."
+      },
+      "correct": "D",
+      "passage_anchor": "Uttryckets giltighet är villkorad, men villkoret framgår inte av ekvationen.",
+      "explanation": "Båda exemplen illustrerar textens genomgående tes: att antagandena följer med men inte syns, till skillnad från ekvationerna.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "omvänd_riktning",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "katalysera",
+      "definition": "Att med ett ämne öka hastigheten på en kemisk reaktion."
+    },
+    {
+      "word": "destillera",
+      "definition": "Att skilja vätskor åt genom uppvärmning och kondensation."
+    },
+    {
+      "word": "enhet",
+      "definition": "Tillstånd av att utgöra en sammanhängande helhet."
+    },
+    {
+      "word": "exponent",
+      "definition": "Tal som anger hur många gånger basen ska multipliceras med sig själv."
+    },
+    {
+      "word": "ovedersäglig",
+      "definition": "Som inte kan motbevisas eller bestridas."
+    },
+    {
+      "word": "derivata",
+      "definition": "Matematiskt mått på hur snabbt en funktion förändras."
+    },
+    {
+      "word": "mutera",
+      "definition": "Att genom genetisk förändring utveckla nya egenskaper."
+    },
+    {
+      "word": "likställa",
+      "definition": "Att behandla två eller flera saker som om de var lika."
+    },
+    {
+      "word": "förbehållslös",
+      "definition": "Utan reservation eller villkor av något slag."
+    },
+    {
+      "word": "syntetisera",
+      "definition": "Att med kemiska metoder framställa ett ämne av andra ämnen."
+    }
+  ],
+  "featured_ord_words": [
+    "katalysera",
+    "destillera",
+    "enhet",
+    "exponent",
+    "ovedersäglig",
+    "derivata",
+    "mutera",
+    "likställa",
+    "förbehållslös",
+    "syntetisera"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

@@ -1,0 +1,157 @@
+{
+  "id": 36,
+  "title": "Rummet där ingen tittar upp",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "medicin",
+  "genre": "personlig_essä",
+  "word_count": 986,
+  "difficulty": 3,
+  "question_count": 4,
+  "unit_position": "lång",
+  "past_hp": "",
+  "body": "Det finns ett ljud i väntrummet på beroendemottagningen som jag inte hörde de första åren. Det är ljudet av att ingen talar. På vårdcentralen där jag arbetade dessförinnan pratade folk med varandra om vädret och om väntetiden. Här sitter tolv personer i samma rum utan att någon tittar upp, och den som kommer in söker instinktivt den stol som står längst från de andra.\n\nJag har försökt förklara det för mig själv på flera sätt. Det enklaste är att människor med abstinens mår för dåligt för att småprata, och det är sant för en del av dem. Men det förklarar inte varför tystnaden håller i sig också hos dem som varit stabila i två år och kommer för ett recept. Något annat pågår i det rummet, och det tog mig lång tid att förstå att det inte var sjukdomen.\n\nMin första handledare sade en sak som jag då tyckte var självklar och som jag nu tänker på varje vecka. Han sade att den här patientgruppen är den enda där omgivningen anser sig ha rätt att döma, och att patienterna vet om det innan de kommer in genom dörren.\n\nJag kände igen bilden utifrån, men det tog år innan jag kände igen den i mig själv. Jag har suttit i det rummet och tänkt tankar jag inte skulle ha tänkt om patienten haft en hjärtsvikt. Jag har hört mig själv fråga om följsamhet i en ton som bar med sig en anklagelse, och sett hur svaret blev kortare. Man kan inte fråga en människa om något och samtidigt förebrå henne för svaret. Det är två olika samtal, och patienten hör vilket av dem som pågår.\n\nDet är obehagligt att skriva ned, men den avsky som ibland uppstår i vårdrum av det här slaget är inte en avvikelse hos enskilda medarbetare. Den finns i systemet, den finns i journalspråket och den finns i hur vi organiserar tiden. En patient med diabetes som inte tagit sitt insulin får en plan. En patient som återfallit i sitt bruk får en bedömning.\n\nJag har inte lyckats hitta något behandlingsverktyg som väger tyngre än det som händer när den asymmetrin försvinner. Den enda gången jag med säkerhet har sett en människa vända i sitt förlopp var när hon fick anförtro sig åt någon som inte redan hade bestämt sig om henne. Det var inte jag. Det var en sjuksköterska som frågade vad hon hade arbetat med tidigare, och sedan lyssnade i fyra minuter på ett svar som inte handlade om droger.\n\nDet låter tunt när jag skriver det. Fyra minuter, en fråga om ett tidigare arbete. Men jag har läst hennes journal från åren dessförinnan, och den består av bedömningar av hennes motivation gjorda av sjutton olika personer, varav ingen tycks ha frågat henne vad hon kunde.\n\nJag vill inte att detta ska läsas som att vänlighet botar beroende. Det gör den inte. Läkemedel botar inte heller, men de gör återfallet mindre sannolikt, och det är det bästa vi har. Vad jag menar är något smalare: att den värdighet en patient bär med sig ut ur rummet avgör om hon kommer tillbaka nästa gång, och att den som inte kommer tillbaka inte kan behandlas med någonting alls.\n\nDet är därför frågan inte är moralisk utan praktisk. Jag har kollegor som av princip vägrar diskutera bemötande, eftersom de menar att vård ska vila på evidens och inte på tonfall. Jag brukade tycka att de hade en poäng. Nu tänker jag att de har vänt på ordningen. Kvarstannandet i behandling är den variabel som starkast förutsäger utfall i den här gruppen, och bemötandet är den variabel som starkast förutsäger kvarstannandet. Det finns inget mjukt i den kedjan.\n\nMitt eget bryderi handlar om något annat, och jag har inte löst det. Jag vet inte hur mycket jag ska visa av att jag tror på en patient som just har återfallit för fjärde gången. Säger jag för lite blir jag ännu en i raden som slutat räkna med henne. Säger jag för mycket riskerar jag att lova en sak som inte står i min makt, och en människa som redan blivit sviken av flera system känner igen ett löfte som saknar täckning på en halv sekund.\n\nJag har landat i något nödtorftigt: att säga exakt vad jag vet och exakt vad jag inte vet. Att sannolikheten är emot henne. Att jag ändå tänker fortsätta. Att jag inte vet hur det går. Det är inte ett vackert budskap, men det har en egenskap som de vackrare saknar, nämligen att det håller nästa gång vi ses.\n\nDe gånger jag har varit nära att tappa fattningen har det aldrig varit inför en patient. Det har varit i korridoren efteråt, inför en kollega som beskrivit någon som omotiverad, ett ord som betyder att vi har slutat leta efter skälet. Jag har lärt mig att inte höja rösten där heller, eftersom en läkare som blir arg på sina kollegor för deras språk blir en läkare som ingen längre talar öppet inför.\n\nEn sak har blivit lättare med åren. Jag är inte längre rädd för att inte veta. Den aktning jag känner för den här patientgruppen bygger inte på några lyckade förlopp, för de är få. Den bygger på att jag har sett vad de flesta av dem bär på, och att de ändå kommer tillbaka till ett väntrum där ingen tittar upp, år efter år, för att sitta tolv stycken i tystnad och hoppas att det den här gången ska bli annorlunda.\n\nJag skulle vilja skriva att jag vet hur man gör det rummet tystare på ett annat sätt. Det gör jag inte. Men jag vet vad som gör det värre, och det är att fortsätta låtsas att tystnaden kommer från sjukdomen. Den kommer från oss. Det är den ödmjuka slutsats jag har att erbjuda efter fjorton år, och den är obekvämare än den låter, eftersom den innebär att den enda delen av problemet vi säkert rår över är vår egen.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om tystnaden i väntrummet?",
+      "options": {
+        "A": "Att den har sin grund i hur patienterna väntar sig att bli betraktade snarare än i deras tillstånd.",
+        "B": "Att den är kraftigast hos de patienter som befinner sig i abstinens och därför mår sämst av alla.",
+        "C": "Att den beror på att beroendemottagningens väntrum helt saknar den öppenhet en vårdcentral har.",
+        "D": "Att den avtar successivt efter hand som patienterna har varit stabila i behandling i ungefär två år."
+      },
+      "correct": "A",
+      "passage_anchor": "Men det förklarar inte varför tystnaden håller i sig också hos dem som varit stabila i två år och kommer för ett recept. Något annat pågår i det rummet, och det tog mig lång tid att förstå att det inte var sjukdomen.",
+      "explanation": "Att tystnaden består även hos stabila patienter utesluter sjukdomen som förklaring och pekar mot förväntan om att bli dömd.",
+      "distractor_types": {
+        "B": "sant_för_en_del",
+        "C": "nära_men_inte_riktigt",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "ståndpunkt",
+      "stem": "Hur bemöter författaren de kollegor som avfärdar bemötande som en fråga om tonfall?",
+      "options": {
+        "A": "Han menar att de underskattar hur snabbt en patient uppfattar ett löfte som saknar täckning.",
+        "B": "Han hävdar att evidenskravet i beroendevården är svagare än i andra delar av sjukvården.",
+        "C": "Han vänder på deras ordning och gör bemötandet till en förutsättning för att evidensen ska verka.",
+        "D": "Han medger att de har rätt i sak men anser att också patientens upplevelse måste tillmätas värde."
+      },
+      "correct": "C",
+      "passage_anchor": "Kvarstannandet i behandling är den variabel som starkast förutsäger utfall i den här gruppen, och bemötandet är den variabel som starkast förutsäger kvarstannandet. Det finns inget mjukt i den kedjan.",
+      "explanation": "Författaren argumenterar inte mot evidenskravet utan visar att bemötandet är ett led i den kedja som evidensen själv pekar ut.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "omvänd_riktning",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 3,
+      "type": "syfte_funktion",
+      "stem": "Vilken funktion fyller berättelsen om sjuksköterskans fråga i texten?",
+      "options": {
+        "A": "Den visar att en fyra minuter lång kontakt kan väga tyngre än sjutton bedömningar av motivation.",
+        "B": "Den utgör det bevis författaren behöver för att vänlighet ska kunna räknas som en behandlingsmetod.",
+        "C": "Den förklarar varför författaren har slutat läsa äldre journalanteckningar innan ett första besök.",
+        "D": "Den gör det abstrakta påståendet om asymmetri till något konkret och samtidigt mycket litet."
+      },
+      "correct": "D",
+      "passage_anchor": "Det låter tunt när jag skriver det. Fyra minuter, en fråga om ett tidigare arbete. Men jag har läst hennes journal från åren dessförinnan, och den består av bedömningar av hennes motivation gjorda av sjutton olika personer, varav ingen tycks ha frågat henne vad hon kunde.",
+      "explanation": "Episoden ger asymmetrin en konkret form, och författaren betonar själv hur liten handlingen var i förhållande till sin verkan.",
+      "distractor_types": {
+        "A": "ytlig_nyckelordsläsning",
+        "B": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 4,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Fjorton år på en beroendemottagning",
+        "B": "Den del av problemet som är vår egen",
+        "C": "Vad läkemedel mot beroende kan uträtta",
+        "D": "Ordet omotiverad och vad det döljer"
+      },
+      "correct": "B",
+      "passage_anchor": "Men jag vet vad som gör det värre, och det är att fortsätta låtsas att tystnaden kommer från sjukdomen. Den kommer från oss.",
+      "explanation": "Varje avsnitt återför frågan till vårdens eget beteende, och slutsatsen är att det är den enda delen författaren säkert rår över.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "C": "sant_för_en_del",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "abstinens",
+      "definition": "Kroppsliga och psykiska besvär när en beroendeframkallande substans försvinner."
+    },
+    {
+      "word": "förebrå",
+      "definition": "Att klandra någon för en handling eller försummelse."
+    },
+    {
+      "word": "avsky",
+      "definition": "Stark känsla av äckel eller motvilja inför något."
+    },
+    {
+      "word": "anförtro",
+      "definition": "Att berätta något hemligt för en person man litar på."
+    },
+    {
+      "word": "värdighet",
+      "definition": "Inre känsla av eget värde och respekt."
+    },
+    {
+      "word": "av princip",
+      "definition": "På grund av en bestämd uppfattning man håller fast vid."
+    },
+    {
+      "word": "bryderi",
+      "definition": "Tillstånd av förvirring eller besvärlig oro inför ett problem."
+    },
+    {
+      "word": "nödtorftig",
+      "definition": "Som bara räcker till för det allra nödvändigaste."
+    },
+    {
+      "word": "tappa fattningen",
+      "definition": "Att förlora självbehärskningen i en stressad situation."
+    },
+    {
+      "word": "aktning",
+      "definition": "Känsla av högaktning eller djup respekt för någon."
+    },
+    {
+      "word": "ödmjuk",
+      "definition": "Som inte tror sig vara förmer än andra."
+    }
+  ],
+  "featured_ord_words": [
+    "abstinens",
+    "förebrå",
+    "avsky",
+    "anförtro",
+    "värdighet",
+    "av princip",
+    "bryderi",
+    "nödtorftig",
+    "tappa fattningen",
+    "aktning",
+    "ödmjuk"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

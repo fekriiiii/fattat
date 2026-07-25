@@ -1,0 +1,87 @@
+{
+  "id": 38,
+  "title": "Klockan i sundet",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "litterär_prosa",
+  "word_count": 295,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Byn låg där bilderna hade sagt att den skulle ligga, med bodarna röda mot vattnet och näten hängda på gärdsgården som om någon nyss lagt dem där. Det var pittoreskt på ett sätt som gjorde Ellen tyst.\n\nKarin läste högt ur broschyren. En sägen om en kyrkklocka som sjunkit i sundet under en storm på 1600-talet och som fortfarande hördes ringa på nyårsnatten. Hon läste med den röst hon använde när hon tyckte om något och inte ville kännas vid det.\n\n\"Det står att den hörs tydligast när vintern är kall.\"\n\n\"Det står säkert.\"\n\nDe gick ned till bryggan. På avstånd hade näten sett ut som redskap. På nära håll var de nya, och maskorna var gjorda av ett plastmaterial som glänste blått. Under den nedersta bodens fönster satt en skylt med öppettider.\n\nEllen kände en förargelse som hon inte kunde placera. Det var inte lögnen. Ingen hade ljugit. Bodarna hade stått där, näten hade hängt där, klockan hade sjunkit eller inte sjunkit. Det var att allting stämde.\n\nEn äldre man kom gående med en hink. Karin frågade om klockan.\n\n\"Jo då\", sade han. \"Den hörs.\"\n\n\"Har ni hört den?\"\n\nHan såg på henne med ett uttryck som var vänligt och en aning groteskt, som om ansiktet arbetade med två saker samtidigt.\n\n\"Min far hörde den.\"\n\nSedan gick han vidare, och Ellen förstod att det var ett svar han hade gett förut, i samma ordning, med samma paus före den sista meningen.\n\nPå färjan tillbaka satt Karin med broschyren i knät och såg ut över vattnet. Ljuset över sundet var elegiskt på det vis som sena augustikvällar är, och Ellen tänkte att hon skulle ha velat höra klockan. Inte tro på den. Bara höra den, en enda gång, innan någon hann berätta vad det var.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om Ellens förargelse?",
+      "options": {
+        "A": "Den väcks av att näten vid bodarna visar sig vara nytillverkade i ett glänsande plastmaterial.",
+        "B": "Den riktar sig mot Karin, som läser högt ur broschyren i en röst hon själv inte vill kännas vid.",
+        "C": "Den beror på att hon misstänker att sägnen om klockan har satts i omlopp av rent kommersiella skäl.",
+        "D": "Den riktar sig mot att platsen infriar förväntningen så exakt att ingenting återstår att upptäcka."
+      },
+      "correct": "D",
+      "passage_anchor": "Det var inte lögnen. Ingen hade ljugit. Bodarna hade stått där, näten hade hängt där, klockan hade sjunkit eller inte sjunkit. Det var att allting stämde.",
+      "explanation": "Ellen utesluter själv lögnen som orsak och landar i att irritationen kommer av att verkligheten svarar mot bilden i varje detalj.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "ytlig_nyckelordsläsning",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Sägnen om den sjunkna kyrkklockan i sundet",
+        "B": "En by som inte riktigt höll måttet",
+        "C": "Att komma fram till något redan berättat",
+        "D": "Mannen med hinken nere vid bryggan"
+      },
+      "correct": "C",
+      "passage_anchor": "och Ellen tänkte att hon skulle ha velat höra klockan. Inte tro på den. Bara höra den, en enda gång, innan någon hann berätta vad det var.",
+      "explanation": "Både byn, sägnen och mannens svar är färdigformulerade innan Ellen kommer dit, och det är den upplevelsen texten kretsar kring.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "nära_men_inte_riktigt",
+        "D": "sant_för_en_del"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "pittoreskt",
+      "definition": "På ett bildmässigt vackert sätt."
+    },
+    {
+      "word": "sägen",
+      "definition": "Berättelse som spridits muntligt och rör verkliga eller mytiska händelser."
+    },
+    {
+      "word": "förargelse",
+      "definition": "Känsla av lätt vrede över något oönskat eller orättvist."
+    },
+    {
+      "word": "grotesk",
+      "definition": "Som är förvriden eller överdriven på ett ofta skrämmande sätt."
+    },
+    {
+      "word": "elegisk",
+      "definition": "Som är präglad av sorgsen vemodig stämning."
+    }
+  ],
+  "featured_ord_words": [
+    "pittoreskt",
+    "sägen",
+    "förargelse",
+    "grotesk",
+    "elegisk"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

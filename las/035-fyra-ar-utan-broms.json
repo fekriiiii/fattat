@@ -1,0 +1,87 @@
+{
+  "id": 35,
+  "title": "Fyra år utan broms",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "samhälle",
+  "genre": "debatt",
+  "word_count": 304,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "En svensk kommun kan inte bli av med sin styrande politiker. Det finns inget förfarande för det, ingen ordning att åberopa och ingen instans att vända sig till. Väljarna får ta ställning vart fjärde år, och däremellan är frågan stängd.\n\nDet beskrivs ofta som en styrka. En hel mandatperiod utan hot om avsättning ger möjlighet att fatta beslut som är impopulära i dag och riktiga om tio år, och det argumentet är inte svagt. Utan det skyddet skulle varje kommunal investering med lång horisont bli omöjlig att genomföra.\n\nMen skyddet är utformat som om det inte fanns någon skillnad mellan en politiker som är obekväm och en som är maktfullkomlig. Fullmäktige kan i dag entlediga en nämndordförande, men det kommunalråd som har sitt partis stöd sitter kvar oavsett vad revisionen skriver, oavsett vad förvaltningsdomstolen finner och oavsett hur många medarbetare som slutar. Det enda som biter är att partiet självt beslutar sig för att agera, och partier som nyss vunnit ett val har sällan lust att förklara varför deras egen kandidat borde avgå.\n\nJag föreslår inte folkomröstningar om enskilda personer. Jag föreslår en tröskel: att två tredjedelar av fullmäktige, i två beslut med minst tre månaders mellanrum, ska kunna avsätta ett kommunalråd. Två tredjedelar innebär att det inte räcker med en majoritet som är trött på någon. Tre månaders betänketid innebär att en enskild upprörd kväll inte får sista ordet.\n\nInvändningen blir att kommunalpolitiken därmed skulle bli instabil. Erfarenheten från Tyskland, där en liknande ordning finns i flera delstater, pekar åt motsatt håll. Möjligheten används nästan aldrig. Den verkar genom att existera.\n\nDet är just det som är poängen. En makt som ingen kan ta ifrån dig behöver inte försvaras med argument, och en förtroendevald som vet att ett enhälligt missnöje saknar verkan kommer i längden att lyssna sämre än en som vet motsatsen.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "ståndpunkt",
+      "stem": "Vad är författarens huvudsakliga invändning mot dagens ordning?",
+      "options": {
+        "A": "Att skyddet mot avsättning behandlar obekväma och maktfullkomliga politiker på exakt samma sätt.",
+        "B": "Att väljarna får ta ställning till kommunens styre endast vart fjärde år och inte däremellan.",
+        "C": "Att partierna hellre försvarar sin egen kandidat än förklarar varför just den bör lämna sin post.",
+        "D": "Att fullmäktige kan entlediga en nämndordförande men saknar samma verktyg mot revisionen."
+      },
+      "correct": "A",
+      "passage_anchor": "Men skyddet är utformat som om det inte fanns någon skillnad mellan en politiker som är obekväm och en som är maktfullkomlig.",
+      "explanation": "Författaren godtar skyddets syfte men menar att det saknar förmåga att skilja mellan två helt olika fall.",
+      "distractor_types": {
+        "B": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt",
+        "D": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om den tyska erfarenheten?",
+      "options": {
+        "A": "Att en möjlighet till avsättning leder till fler byten på ledande poster än vad kritikerna befarat.",
+        "B": "Att tvåtredjedelskravet i praktiken har visat sig vara för högt satt för att någonsin kunna uppnås.",
+        "C": "Att kommunalpolitiken i de tyska delstaterna är stabilare än den svenska av delvis andra skäl.",
+        "D": "Att en regel kan få verkan utan att tillämpas, eftersom den ändrar villkoren för den som styr."
+      },
+      "correct": "D",
+      "passage_anchor": "Möjligheten används nästan aldrig. Den verkar genom att existera.",
+      "explanation": "Att möjligheten sällan används är enligt författaren inte ett tecken på verkningslöshet utan på att den redan har haft effekt.",
+      "distractor_types": {
+        "A": "omvänd_riktning",
+        "B": "nära_men_inte_riktigt",
+        "C": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "mandatperiod",
+      "definition": "Tidsperiod under vilken en folkvald innehar sitt uppdrag."
+    },
+    {
+      "word": "maktfullkomlig",
+      "definition": "Som utövar sin makt utan hänsyn till andra eller till lag."
+    },
+    {
+      "word": "avgå",
+      "definition": "Att lämna ett ämbete eller uppdrag, ofta i förtid."
+    },
+    {
+      "word": "avsätta",
+      "definition": "Att tvinga någon att lämna ett ämbete eller en hög position."
+    },
+    {
+      "word": "enhällig",
+      "definition": "Som omfattar alla utan att någon röstar emot."
+    }
+  ],
+  "featured_ord_words": [
+    "mandatperiod",
+    "maktfullkomlig",
+    "avgå",
+    "avsätta",
+    "enhällig"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
