@@ -8,6 +8,8 @@ import { usePushNotifications } from '@/hooks/usePushNotifications'
 import { Button } from '@/components/ui/Button'
 import { Bell, BellOff } from 'lucide-react'
 import { ExamDatePicker } from '@/components/onboarding/ExamDatePicker'
+import { ProgramPicker, type ProgramPickerValue } from '@/components/onboarding/ProgramPicker'
+import { PROGRAMS, programTargetScore } from '@/data/programs'
 import type { UserProfile, UserStreak, SessionBalance } from '@/types/database'
 import { balanceLabel } from '@/lib/session/balance'
 
@@ -26,6 +28,12 @@ export function ProfileForm({ profile, email, sessionBalance: initialBalance }: 
   const [displayName, setDisplayName] = useState(profile?.display_name ?? '')
   const [examDate, setExamDate] = useState(profile?.exam_date ?? '')
   const [targetScore, setTargetScore] = useState(profile?.target_score ?? 1.3)
+  const [targetProgram, setTargetProgram] = useState<ProgramPickerValue>(() => {
+    const match = profile?.target_program
+      ? PROGRAMS.find((p) => p.name === profile.target_program)
+      : null
+    return match ? match.slug : 'custom'
+  })
   const [previousHpScore, setPreviousHpScore] = useState<number | null>(profile?.previous_hp_score ?? null)
   const [previousHpInput, setPreviousHpInput] = useState(profile?.previous_hp_score ?? 1.0)
   const [previousMekScore, setPreviousMekScore] = useState<number | null>(profile?.previous_mek_score ?? null)
@@ -38,6 +46,14 @@ export function ProfileForm({ profile, email, sessionBalance: initialBalance }: 
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
+  const selectedProgram = PROGRAMS.find((p) => p.slug === targetProgram) ?? null
+
+  function handleProgramChange(value: ProgramPickerValue) {
+    setTargetProgram(value)
+    const program = PROGRAMS.find((p) => p.slug === value)
+    if (program) setTargetScore(programTargetScore(program))
+  }
+
   async function handleSave() {
     setSaving(true)
     const supabase = createBrowserClient()
@@ -45,6 +61,7 @@ export function ProfileForm({ profile, email, sessionBalance: initialBalance }: 
       display_name: displayName.trim() || null,
       exam_date: examDate || null,
       target_score: targetScore,
+      target_program: selectedProgram?.name ?? null,
       previous_hp_score: previousHpScore,
       previous_mek_score: previousMekScore,
       previous_elf_score: previousElfScore,
@@ -104,19 +121,24 @@ export function ProfileForm({ profile, email, sessionBalance: initialBalance }: 
         <Field label="Provomgång">
           <ExamDatePicker value={examDate} onChange={setExamDate} />
         </Field>
-        <Field label={`Målresultat: ${targetScore.toFixed(2)} HP`}>
-          <input
-            type="range"
-            min={0.5}
-            max={2.0}
-            step={0.05}
-            value={targetScore}
-            onChange={(e) => setTargetScore(parseFloat(e.target.value))}
-            className="w-full accent-primary"
-          />
-          <div className="flex justify-between text-xs text-dark/35 mt-1">
-            <span>0.50</span><span>2.00</span>
-          </div>
+        <Field label={selectedProgram ? `Mål: ${selectedProgram.name}` : `Målresultat: ${targetScore.toFixed(2)} HP`}>
+          <ProgramPicker value={targetProgram} onChange={handleProgramChange} />
+          {targetProgram === 'custom' && (
+            <>
+              <input
+                type="range"
+                min={0.5}
+                max={2.0}
+                step={0.05}
+                value={targetScore}
+                onChange={(e) => setTargetScore(parseFloat(e.target.value))}
+                className="w-full accent-primary mt-2"
+              />
+              <div className="flex justify-between text-xs text-dark/35 mt-1">
+                <span>0.50</span><span>2.00</span>
+              </div>
+            </>
+          )}
         </Field>
         <Field label="Tidigare HP-resultat">
           <div className="flex flex-col gap-2">

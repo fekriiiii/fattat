@@ -109,6 +109,7 @@ export interface UserProfile {
   display_name: string | null
   exam_date: string | null
   target_score: number | null
+  target_program: string | null
   previous_hp_score: number | null
   previous_mek_score: number | null
   previous_elf_score: number | null

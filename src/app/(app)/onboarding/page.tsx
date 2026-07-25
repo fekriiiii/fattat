@@ -12,6 +12,8 @@ import { OrdFeedback } from '@/components/ord/OrdFeedback'
 import { cn } from '@/lib/utils/cn'
 import { useScrollToTop } from '@/hooks/useScrollToTop'
 import { ExamDatePicker } from '@/components/onboarding/ExamDatePicker'
+import { ProgramPicker, type ProgramPickerValue } from '@/components/onboarding/ProgramPicker'
+import { PROGRAMS, programTargetScore } from '@/data/programs'
 import type { Word } from '@/types/database'
 import type { OrdOption } from '@/components/ord/OrdQuestion'
 
@@ -67,6 +69,7 @@ export default function OnboardingPage() {
   // Form state
   const [displayName, setDisplayName] = useState('')
   const [examDate, setExamDate] = useState('')
+  const [targetProgram, setTargetProgram] = useState<ProgramPickerValue>('')
   const [targetScore, setTargetScore] = useState(1.3)
   const [previousHpScore, setPreviousHpScore] = useState<number | null>(null)
   const [previousHpInput, setPreviousHpInput] = useState(1.0)
@@ -135,6 +138,14 @@ export default function OnboardingPage() {
     setStep('target')
   }
 
+  const selectedProgram = PROGRAMS.find((p) => p.slug === targetProgram) ?? null
+
+  function handleProgramChange(value: ProgramPickerValue) {
+    setTargetProgram(value)
+    const program = PROGRAMS.find((p) => p.slug === value)
+    if (program) setTargetScore(programTargetScore(program))
+  }
+
   async function handleFinish() {
     setSaving(true)
     setError('')
@@ -147,6 +158,7 @@ export default function OnboardingPage() {
         display_name: displayName.trim() || null,
         exam_date: examDate || null,
         target_score: targetScore,
+        target_program: selectedProgram?.name ?? null,
         previous_hp_score: previousHpScore,
         previous_mek_score: previousMekScore,
         previous_elf_score: previousElfScore,
@@ -409,39 +421,50 @@ export default function OnboardingPage() {
           </FormStep>
         )}
 
-        {/* ── TARGET SCORE (REACTIVE) ── */}
+        {/* ── TARGET PROGRAM (REACTIVE) ── */}
         {step === 'target' && (
           <FormStep
-            title="Vad är ditt målresultat?"
-            subtitle="HP-resultatet går från 0.0 till 2.0. Genomsnittet är 0.9."
+            title="Vad drömmer du om?"
+            subtitle="Välj programmet du siktar på. Vi sätter ett målresultat med marginal ovanför senaste antagningspoäng."
           >
-            <div className="text-center mb-1">
-              <span className="text-5xl font-bold text-dark">{targetScore.toFixed(2)}</span>
-              <span className="text-xl text-dark/50 ml-1">HP</span>
-            </div>
-            <input
-              type="range"
-              min={0.5}
-              max={2.0}
-              step={0.05}
-              value={targetScore}
-              onChange={(e) => setTargetScore(parseFloat(e.target.value))}
-              className="w-full accent-primary"
-            />
-            <div className="flex justify-between text-xs text-dark/40">
-              <span>0.50</span>
-              <span>0.90 snitt</span>
-              <span>2.00</span>
-            </div>
+            <ProgramPicker value={targetProgram} onChange={handleProgramChange} />
 
-            <GapPreview
-              targetScore={targetScore}
-              examDate={examDate}
-              previousHpScore={previousHpScore}
-              totalWords={wordCount}
-            />
+            {targetProgram === 'custom' && (
+              <div className="flex flex-col gap-2">
+                <div className="text-center mb-1">
+                  <span className="text-5xl font-bold text-dark">{targetScore.toFixed(2)}</span>
+                  <span className="text-xl text-dark/50 ml-1">HP</span>
+                </div>
+                <input
+                  type="range"
+                  min={0.5}
+                  max={2.0}
+                  step={0.05}
+                  value={targetScore}
+                  onChange={(e) => setTargetScore(parseFloat(e.target.value))}
+                  className="w-full accent-primary"
+                />
+                <div className="flex justify-between text-xs text-dark/40">
+                  <span>0.50</span>
+                  <span>0.90 snitt</span>
+                  <span>2.00</span>
+                </div>
+              </div>
+            )}
 
-            <Button fullWidth onClick={() => setStep('intention')}>Fortsätt</Button>
+            {targetProgram !== '' && (
+              <>
+                <GapPreview
+                  targetScore={targetScore}
+                  examDate={examDate}
+                  previousHpScore={previousHpScore}
+                  totalWords={wordCount}
+                  programName={selectedProgram?.name ?? null}
+                />
+
+                <Button fullWidth onClick={() => setStep('intention')}>Fortsätt</Button>
+              </>
+            )}
           </FormStep>
         )}
 
@@ -491,6 +514,7 @@ export default function OnboardingPage() {
             displayName={displayName}
             examDate={examDate}
             targetScore={targetScore}
+            targetProgramName={selectedProgram?.name ?? null}
             previousHpScore={previousHpScore}
             previousMekScore={previousMekScore}
             previousElfScore={previousElfScore}
@@ -849,11 +873,13 @@ function GapPreview({
   examDate,
   previousHpScore,
   totalWords,
+  programName,
 }: {
   targetScore: number
   examDate: string
   previousHpScore: number | null
   totalWords: number
+  programName?: string | null
 }) {
   // Estimate ORD/LÄS baseline accuracy from previous HP (HP ≈ acc × 2),
   // or use the national-average baseline if the user skipped it.
@@ -879,12 +905,14 @@ function GapPreview({
       style={{ animation: 'fadeInUp 0.3s ease both' }}
     >
       <p className="text-xs font-bold uppercase tracking-wide text-primary/55 mb-3">
-        Plan i realtid
+        {programName ? `Din väg till ${programName}` : 'Plan i realtid'}
       </p>
 
       {alreadyThere ? (
         <p className="text-sm text-dark/70 leading-relaxed">
-          Du är redan på rätt nivå. Dagliga sessioner håller dig i form inför provet.
+          {programName
+            ? `Du ligger redan över antagningspoängen med marginal. Dagliga sessioner håller dig i form inför provet.`
+            : 'Du är redan på rätt nivå. Dagliga sessioner håller dig i form inför provet.'}
         </p>
       ) : (
         <>
@@ -923,6 +951,7 @@ function SummaryStep({
   displayName,
   examDate,
   targetScore,
+  targetProgramName,
   previousHpScore,
   previousMekScore,
   previousElfScore,
@@ -934,6 +963,7 @@ function SummaryStep({
   displayName: string
   examDate: string
   targetScore: number
+  targetProgramName: string | null
   previousHpScore: number | null
   previousMekScore: number | null
   previousElfScore: number | null
@@ -995,10 +1025,13 @@ function SummaryStep({
         />
         <SummaryRow
           label="Mål"
-          value={`${targetScore.toFixed(2)} HP`}
-          sub={previousHpScore !== null
-            ? `+${(targetScore - previousHpScore).toFixed(2)} HP att klättra`
-            : undefined
+          value={targetProgramName ?? `${targetScore.toFixed(2)} HP`}
+          sub={
+            targetProgramName
+              ? `${targetScore.toFixed(2)} HP${previousHpScore !== null ? `, +${(targetScore - previousHpScore).toFixed(2)} att klättra` : ''}`
+              : previousHpScore !== null
+                ? `+${(targetScore - previousHpScore).toFixed(2)} HP att klättra`
+                : undefined
           }
         />
         <SummaryRow
