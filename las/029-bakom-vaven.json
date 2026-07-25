@@ -1,0 +1,87 @@
+{
+  "id": 29,
+  "title": "Bakom väven",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "lyrik_prosa",
+  "word_count": 281,
+  "difficulty": 3,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Salen var kall på det sätt som bara stenrum är kalla, jämnt och utan årstid. Ljuset föll in genom två höga fönster och lade sig i sneda rektanglar över golvet. Där de nådde väggen hängde gobelängen.\n\nHon hade sett den som barn, och då hade den varit en skog. Hjortar, hundar, en ryttare med lyft arm. Nu såg hon trådarna. Det blå som en gång varit blått hade blivit grått, och det gröna hade dragit sig mot brunt, som om årtiondena andats på det. Ramen var ornamenterad med bladverk i förgylld gips, och i varje hörn satt en sirat vars mönster ingen längre kunde tyda.\n\nEn vaktmästare passerade i tysthet, med nyckelknippan samlad i handen för att den inte skulle slamra. Skylten under väven angav en ort, ett årtal och orden okänd mästare. Hon läste den två gånger utan att den blev mer upplysande.\n\nMellan väven och väggen fanns en springa på en handsbredd. Hon böjde sig in i den.\n\nDär hängde samma skog i färger som ingen hade rört. Blått var blått. Hjortens flank lyste. Men bilden fanns inte. Knutarna satt tätt och fransigt, ändarna hängde fritt, trådarna korsade varandra utan hänsyn till någon jakt. Det enda mönstret var arbetets eget: var vävaren hade stannat, var hon hade bytt garn, var hon hade misslyckats och börjat om på nytt. En rad låg snett i fjorton knutar och rätade sedan ut sig.\n\nNågon hade en gång velat föreviga en jakt.\n\nHon stod kvar tills kylan gick genom kappan. Utanför fönstren rörde sig ett moln, och rektanglarna på golvet slocknade och kom tillbaka. Jakten var lika avlägsen som den varit när hon var åtta år gammal. Kvinnan som knöt var det inte.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om gobelängens baksida?",
+      "options": {
+        "A": "Den visar jaktscenen tydligare än framsidan gör, eftersom ljuset i salen aldrig har nått fram dit.",
+        "B": "Färgerna på baksidan har behållit den lyster som framsidans färger sedan länge har förlorat.",
+        "C": "Den bekräftar att mästaren bakom väven förblev okänd även för sin egen samtid.",
+        "D": "Den bevarar spåren av tillverkningen tydligare än den bevarar det motiv som skulle framställas."
+      },
+      "correct": "D",
+      "passage_anchor": "Men bilden fanns inte. Knutarna satt tätt och fransigt, ändarna hängde fritt, trådarna korsade varandra utan hänsyn till någon jakt. Det enda mönstret var arbetets eget: var vävaren hade stannat, var hon hade bytt garn, var hon hade misslyckats och börjat om på nytt.",
+      "explanation": "Baksidan saknar bilden helt, men visar exakt var vävaren stannade, bytte garn och började om, alltså arbetets gång snarare än dess resultat.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "B": "sant_men_fel_fråga",
+        "C": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Ett barndomsminne som inte höll",
+        "B": "Hantverket som bilden döljer",
+        "C": "Vad ljuset gör med gamla textilier",
+        "D": "Den okände mästarens verk"
+      },
+      "correct": "B",
+      "passage_anchor": "Någon hade en gång velat föreviga en jakt. ... Jakten var lika avlägsen som den varit när hon var åtta år gammal. Kvinnan som knöt var det inte.",
+      "explanation": "Texten rör sig hela vägen från motivet till trådarna och slutar med att det är vävaren, inte jakten, som blivit närvarande.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "C": "sant_men_fel_fråga",
+        "D": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "ornamenterad",
+      "definition": "Försedd med dekorativa mönster eller utsmyckningar."
+    },
+    {
+      "word": "sirat",
+      "definition": "Konstfärdigt ornament eller dekorativt prydnadsverk."
+    },
+    {
+      "word": "i tysthet",
+      "definition": "Stillsamt och utan att väcka uppmärksamhet."
+    },
+    {
+      "word": "föreviga",
+      "definition": "Att bevara minnet av något genom konst eller skrift."
+    },
+    {
+      "word": "avlägsen",
+      "definition": "Som ligger långt borta i tid eller rum."
+    }
+  ],
+  "featured_ord_words": [
+    "ornamenterad",
+    "sirat",
+    "i tysthet",
+    "föreviga",
+    "avlägsen"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

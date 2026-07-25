@@ -1,0 +1,87 @@
+{
+  "id": 32,
+  "title": "Den saknade kroppsdelen",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "medicin",
+  "genre": "akademisk",
+  "word_count": 268,
+  "difficulty": 3,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Fantomsensationer efter amputation har beskrivits i den medicinska litteraturen sedan 1500-talet, men den teoretiska förklaringen har skiftat med varje generation. Under lång tid tillskrevs fenomenet retning i de avskurna nervändarna, en uppfattning som föreföll rimlig eftersom förnimmelsen lokaliseras till en kroppsdel som inte längre finns kvar.\n\nIakttagelser som inte låter sig förenas med den perifera modellen har efter hand fått större vikt. Att fantomsensationer uppträder även hos personer med medfödd avsaknad av en extremitet talar mot att upplevelsen skulle förutsätta nervbanor som en gång funnits i den saknade delen. Lika svårförenlig är iakttagelsen att beröring av ansiktet kan framkalla förnimmelser i en hand som amputerats, ett förhållande som brukar hänföras till att representationsområdena i somatosensoriska cortex gränsar till varandra.\n\nDen modell som numera dominerar utgår i stället från att hjärnan upprätthåller en representation av kroppen vilken inte omedelbart korrigeras när kroppen förändras. När en extremitet avlägsnas, oavsett om det sker till följd av trauma eller av nekros i samband med kärlsjukdom, kvarstår representationen medan det sensoriska inflödet upphör. Diskrepansen mellan förväntat och uteblivet inflöde antas ligga till grund för såväl de icke-smärtsamma förnimmelserna som för fantomsmärtan.\n\nKliniskt har modellen fått konsekvenser som är svåra att härleda ur den perifera förklaringen. Att tidig anpassning till en protes med sensorisk återkoppling förefaller minska besvären har rapporterats i flera uppföljningar, liksom att spegelterapi kan ge viss lindring. Effektstorlekarna är dock genomgående blygsamma och undersökningsgrupperna små, varför slutsatserna bör betraktas som preliminära.\n\nAtt en förnimmelse kan vara häpnadsväckande exakt lokaliserad till en kroppsdel som inte existerar utgör därmed inte längre en anomali som måste förklaras bort, utan något som följer av antagandena.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "detalj_kausal",
+      "stem": "Varför anses den perifera förklaringsmodellen otillräcklig?",
+      "options": {
+        "A": "Därför att förnimmelsen lokaliseras till en kroppsdel som inte längre finns kvar hos patienten.",
+        "B": "Därför att retningen i avskurna nervändar avtar med tiden medan fantomsmärtan består oförändrad.",
+        "C": "Därför att förnimmelser uppträder även när den saknade kroppsdelen aldrig har varit försedd med nerver.",
+        "D": "Därför att modellen förutsätter att kroppens representation i hjärnan korrigeras omedelbart efter ingreppet."
+      },
+      "correct": "C",
+      "passage_anchor": "Att fantomsensationer uppträder även hos personer med medfödd avsaknad av en extremitet talar mot att upplevelsen skulle förutsätta nervbanor som en gång funnits i den saknade delen.",
+      "explanation": "Vid medfödd avsaknad har det aldrig funnits några nervändar att retas, vilket den perifera modellen inte kan hantera.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "B": "nära_men_inte_riktigt",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "slutledning",
+      "stem": "Vad kan man utifrån texten sluta sig till om den modell som numera dominerar?",
+      "options": {
+        "A": "Den beskriver fantomsmärta som ett fel i kroppsrepresentationen vilket kan rättas med tillräckligt lång träning.",
+        "B": "Den har gett upphov till behandlingar vars effekt hittills endast har kunnat beläggas i mycket små undersökningar.",
+        "C": "Den förutsätter att kroppsrepresentationen byggs upp först sedan det sensoriska inflödet från en extremitet har upphört.",
+        "D": "Den gör fantomförnimmelsen till något väntat i stället för till ett undantag som behöver en egen förklaring."
+      },
+      "correct": "D",
+      "passage_anchor": "Att en förnimmelse kan vara häpnadsväckande exakt lokaliserad till en kroppsdel som inte existerar utgör därmed inte längre en anomali som måste förklaras bort, utan något som följer av antagandena.",
+      "explanation": "Eftersom representationen antas leva kvar utan inflöde blir förnimmelsen en direkt följd av modellen snarare än ett problem för den.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "B": "sant_men_fel_fråga",
+        "C": "omvänd_riktning"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "amputation",
+      "definition": "Kirurgiskt avlägsnande av en kroppsdel som en arm eller ett ben."
+    },
+    {
+      "word": "amputera",
+      "definition": "Att kirurgiskt avlägsna en kroppsdel som ett ben eller en arm."
+    },
+    {
+      "word": "nekros",
+      "definition": "Lokal celldöd i kroppens vävnader på grund av sjukdom eller skada."
+    },
+    {
+      "word": "protes",
+      "definition": "Konstgjord kroppsdel som ersätter en saknad eller skadad del."
+    },
+    {
+      "word": "häpnadsväckande",
+      "definition": "Så ovanligt eller storartat att det väcker stor förvåning."
+    }
+  ],
+  "featured_ord_words": [
+    "amputation",
+    "amputera",
+    "nekros",
+    "protes",
+    "häpnadsväckande"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
