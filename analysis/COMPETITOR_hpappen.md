@@ -258,27 +258,46 @@ Premium.
 Their newest exam is **April 2026, already in the app**. Ours is a corpus of 18
 self-written LÄS articles.
 
-### Provpass — but the answer button failed on ELF (2026-07-25, unconfirmed)
+### Provpass — the answer button is dead on ELF (2026-07-25, confirmed client-side)
 
 Founder ran an ELF block to diagnose his own weak delprov and **could not submit
 answers: tapping "svara" did nothing**. He worked around it by answering five
 items on his own and grading them outside the app.
 
-Recorded here because it lands on the surface this teardown calls their best, on
-the core interaction of a 299 kr/mån product. But **two caveats keep this
-provisional until the console is checked**, and both would change the reading:
+This lands on the surface this teardown calls their best-executed one, on the
+core interaction of a 299 kr/mån product. DevTools was run on the failing path
+(`/hem` → `/plugga` → `/plugga/elf` → `exercises?category=ELF`) and settles what
+it is:
 
-1. **It may be a paywall gate, not a bug.** Their free tier includes only the
-   most recent exam (Våren 2026 April) in full; older provpass are Premium. A
-   dead button on an older exam's ELF could be an entitlement block rendering
-   as silence rather than as a paywall. That would be a UX failure, not a
-   defect, and a much weaker finding.
-2. **n=1, one device, one session.** No repeat attempt yet.
+- **Console: no exception.** Only Chrome's own `beforeinstallprompt` notice and a
+  leftover `build api check called from component` debug log shipped to
+  production. Their code does not throw.
+- **Network (Fetch/XHR): nothing but PostHog.** Every request on the path is
+  `/e/?…ver=1.396.2&compression=gzip-js`, 0.1 kB, 200. **No call to their own
+  backend fires on click.**
 
-If the console shows a JS exception or a failing write (4xx/5xx on submit), it is
-a real defect and belongs in §3. If it shows a clean 401/403, it is item 1 above.
+**So it is not the paywall.** The obvious alternative reading was an entitlement
+gate rendering as silence (their free tier carries only the newest exam in full,
+older provpass are Premium), but a 401/403 requires a request, and no request is
+made. The failure is client-side, in their code.
 
-**What is not in doubt regardless:** ELF is the one delprov where nobody can seed
+One honest caveat: if their provpass runner buffers answers locally and syncs
+only at submission, absent network traffic would be normal and the defect would
+instead be the UI failing to advance. Both readings put it in their frontend, and
+neither is a paywall.
+
+The detail worth keeping: **their PostHog events did fire on the click.** Their
+own instrumentation is recording users pressing svara and not progressing. The
+data showing this is already in their funnel.
+
+Still n=1, one device, one session.
+
+**Unrelated but from the same capture:** they intercept Chrome's PWA install
+prompt with `preventDefault()` and then never call `prompt()` on this path. They
+are a web app, same as us, and they are leaking installs. Relevant next time the
+"should we build a native app?" question comes up (`docs/MONETIZATION_RESEARCH.md`).
+
+**Separate from all of the above:** ELF is the one delprov where nobody can seed
 from past exams. UHR redacts the English texts from published provpass because
 they are third-party licensed, which is why every file in our `Past_hp/` is
 "utan-elf". Their ELF is therefore self-written or reconstructed, same as ours
