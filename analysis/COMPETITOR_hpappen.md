@@ -258,6 +258,35 @@ Premium.
 Their newest exam is **April 2026, already in the app**. Ours is a corpus of 18
 self-written LÄS articles.
 
+### Provpass — but the answer button failed on ELF (2026-07-25, unconfirmed)
+
+Founder ran an ELF block to diagnose his own weak delprov and **could not submit
+answers: tapping "svara" did nothing**. He worked around it by answering five
+items on his own and grading them outside the app.
+
+Recorded here because it lands on the surface this teardown calls their best, on
+the core interaction of a 299 kr/mån product. But **two caveats keep this
+provisional until the console is checked**, and both would change the reading:
+
+1. **It may be a paywall gate, not a bug.** Their free tier includes only the
+   most recent exam (Våren 2026 April) in full; older provpass are Premium. A
+   dead button on an older exam's ELF could be an entitlement block rendering
+   as silence rather than as a paywall. That would be a UX failure, not a
+   defect, and a much weaker finding.
+2. **n=1, one device, one session.** No repeat attempt yet.
+
+If the console shows a JS exception or a failing write (4xx/5xx on submit), it is
+a real defect and belongs in §3. If it shows a clean 401/403, it is item 1 above.
+
+**What is not in doubt regardless:** ELF is the one delprov where nobody can seed
+from past exams. UHR redacts the English texts from published provpass because
+they are third-party licensed, which is why every file in our `Past_hp/` is
+"utan-elf". Their ELF is therefore self-written or reconstructed, same as ours
+would have to be. On ORD and LÄS they have a finished corpus of real exams we
+have to build our way toward; **on ELF and MEK the starting line is level**. That
+is the cheapest place for us to reach content parity if we ever extend past
+ORD/LÄS.
+
 ### Community, streaks, leaderboards
 
 They moved their community **from Discord into the app** 18 days ago. It is real
