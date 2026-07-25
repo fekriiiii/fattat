@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createServerClient } from '@/lib/supabase/server'
 import { getOnboardingState } from '@/lib/onboarding/state'
+import { isExamDue } from '@/lib/session/examSchedule'
 import { getWeakLasQuestionTypes } from '@/lib/session/builder'
 import type { Word, Article, SessionPayload } from '@/types/database'
 
@@ -29,6 +30,16 @@ export async function POST() {
 
   if (inProgress) {
     return NextResponse.json(await resumeExam(supabase, user.id, inProgress))
+  }
+
+  // Hard-gate: no in-progress exam to resume, so this would start a brand new
+  // one. The dashboard only shows the "Övningsprov" CTA when isExamDue() is
+  // true — without this check, typing /test into the URL bar bypassed that
+  // pacing entirely and started an exam any time, burning through the article
+  // pool ahead of schedule.
+  const due = await isExamDue(supabase, user.id)
+  if (!due) {
+    return NextResponse.json({ error: 'No exam scheduled yet' }, { status: 403 })
   }
 
   // ── Fresh test ─────────────────────────────────────────────────────────────
