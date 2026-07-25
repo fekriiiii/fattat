@@ -424,7 +424,7 @@ export default function OnboardingPage() {
         {/* ── TARGET PROGRAM (REACTIVE) ── */}
         {step === 'target' && (
           <FormStep
-            title="Vad drömmer du om?"
+            title="Vilket program siktar du på?"
             subtitle="Välj programmet du siktar på. Vi sätter ett målresultat med marginal ovanför senaste antagningspoäng."
           >
             <ProgramPicker value={targetProgram} onChange={handleProgramChange} />

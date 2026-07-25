@@ -1,4 +1,4 @@
-// Static table for program-first onboarding: "Vad drömmer du om?"
+// Static table for program-first onboarding: "Vilket program siktar du på?"
 //
 // hpScore is the latest HP admission cutoff (urvalsgräns) for the named
 // university, sourced from ednia.se antagningsstatistik (2025/2026 intake).
