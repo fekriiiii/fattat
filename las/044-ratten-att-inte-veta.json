@@ -1,0 +1,82 @@
+{
+  "id": 44,
+  "title": "Rätten att inte veta",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "juridik",
+  "genre": "debatt",
+  "word_count": 292,
+  "difficulty": 3,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Varje år tar svenska domstolar emot ett växande antal mål där bevisningen består av data som ingen av parterna kan granska. Mobilmasternas positionsloggar, betalappars transaktionslistor, bilarnas färdskrivare. Materialet är lagligen inhämtat, och där stannar prövningen i praktiken.\n\nJag har som försvarare fyra gånger begärt att få veta hur ett positionsunderlag räknats fram. Fyra gånger har svaret varit att metoden utgör en affärshemlighet hos leverantören. Domstolen har ändå lagt underlaget till grund för fällande dom.\n\nDet hävdas att invändningen är teknisk. I verkligheten är den elementär. Att åtala någon på ett underlag vars tillkomst är hemlig innebär att rätten att bemöta bevisningen töms på innehåll. Vi har accepterat att åklagaren får lägga fram ett resultat utan att redovisa hur det uppstått, något vi aldrig skulle acceptera av en människa i vittnesbåset.\n\nJämförelsen är inte retorisk. Ett vittne som vägrar förklara hur det kommit fram till sin iakttagelse får sin trovärdighet prövad omedelbart, och den som ljuger under ed riskerar straff för mened. En algoritm som gör samma sak kallas objektiv.\n\nInvändningen brukar mötas med att felmarginalerna är kända och små. Men en känd felmarginal säger något om systemet i genomsnitt, inte om det enskilda fallet. Det är precis den skillnad rättegångsbalken finns till för att upprätthålla.\n\nDomstolen kan ex officio begära in kompletterande utredning om ett underlag framstår som oklart. Den möjligheten används sällan, och skälet är inte formellt utan kulturellt: siffror läses som iakttagelser.\n\nJag begär ingen ny lagstiftning. Jag begär att befintlig rätt tillämpas, alltså att den som lägger fram ett underlag också ska kunna redogöra för hur det framställts, och att ett underlag som inte kan granskas inte heller ska kunna bära ett avgörande. Så länge domstolarna viker på den punkten är det inte tekniken som brister. Det är vi.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "ståndpunkt",
+      "stem": "Vad är författarens huvudsakliga ståndpunkt?",
+      "options": {
+        "A": "Att felmarginalerna i positionsdata är betydligt större än vad leverantörerna uppger.",
+        "B": "Att en bevisning som inte går att granska inte uppfyller de krav som redan gäller.",
+        "C": "Att det behövs ny lagstiftning som reglerar hur digitala underlag får användas.",
+        "D": "Att domstolarna saknar den tekniska kompetens som krävs för att värdera algoritmer."
+      },
+      "correct": "B",
+      "passage_anchor": "Jag begär ingen ny lagstiftning. Jag begär att befintlig rätt tillämpas, alltså att den som lägger fram ett underlag också ska kunna redogöra för hur det framställts",
+      "explanation": "Ankaret avvisar uttryckligen kravet på ny lag och formulerar i stället en tillämpning av regler som redan finns.",
+      "distractor_types": {
+        "A": "nära_men_inte_riktigt",
+        "C": "förkastat_alternativ",
+        "D": "sant_men_fel_fråga"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "slutledning",
+      "stem": "Vilken funktion fyller jämförelsen med ett vittne i argumentationen?",
+      "options": {
+        "A": "Den visar att muntlig bevisning numera värderas lägre än teknisk bevisning.",
+        "B": "Den visar att leverantörernas affärshemligheter väger tyngre än partens rätt.",
+        "C": "Den visar att kravet författaren ställer redan tillämpas på andra bevismedel.",
+        "D": "Den visar att algoritmer borde granskas av oberoende tekniska sakkunniga."
+      },
+      "correct": "C",
+      "passage_anchor": "Ett vittne som vägrar förklara hur det kommit fram till sin iakttagelse får sin trovärdighet prövad omedelbart, och den som ljuger under ed riskerar straff för mened. En algoritm som gör samma sak kallas objektiv.",
+      "explanation": "Jämförelsen bygger på att samma krav på redovisning redan ställs på vittnen, vilket gör undantaget för tekniska underlag inkonsekvent.",
+      "distractor_types": {
+        "A": "omvänd_riktning",
+        "B": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "lagligen",
+      "definition": "På ett sätt som stämmer med lagen."
+    },
+    {
+      "word": "åtala",
+      "definition": "Att inleda rättegång mot någon för brott."
+    },
+    {
+      "word": "mened",
+      "definition": "Att medvetet ljuga under ed inför rätten."
+    },
+    {
+      "word": "ex officio",
+      "definition": "På ämbetets vägnar, utan att någon begärt det."
+    }
+  ],
+  "featured_ord_words": [
+    "lagligen",
+    "åtala",
+    "mened",
+    "ex officio"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
