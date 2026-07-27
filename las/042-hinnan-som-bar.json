@@ -1,0 +1,152 @@
+{
+  "id": 42,
+  "title": "Hinnan som bär",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "vetenskap",
+  "genre": "populärvetenskap",
+  "word_count": 971,
+  "difficulty": 2,
+  "question_count": 4,
+  "unit_position": "lång",
+  "past_hp": "",
+  "body": "Att en skräddare kan gå på vatten har varit känt lika länge som någon har suttit vid en sjö en sommarkväll. Att förklara varför har tagit betydligt längre tid. Först under det senaste decenniet har mätmetoderna blivit tillräckligt känsliga för att frågan ska kunna besvaras med annat än en skiss på ett kollegieblock.\n\nVattnets ytspänning uppstår ur att molekylerna i vätskan dras mot varandra åt alla håll utom ett. Vid gränsen mot luften saknas grannar ovanför, och nettot blir en kraft riktad inåt som får gränsskiktet att uppföra sig som en tunn hinna. Hinnan är svag. Den bär omkring sjuttiotvå tusendels newton per meter vid tjugo graders temperatur. För en insekt som väger några milligram räcker det med god marginal.\n\nFenomenet fick sin första matematiska behandling av Thomas Young 1805 och av Pierre-Simon Laplace året därpå, oberoende av varandra. Deras ekvation binder samman tryckskillnaden över en krökt yta med spänningen och krökningens radie, och den står sig ännu. Vad den inte gör är att säga något om vad som händer när ytan rör sig fort. Young och Laplace beskrev en yta i vila.\n\nKarin Ohlsson, docent i strömningsmekanik vid Lunds tekniska högskola, har ägnat sex år åt att mäta hur ytan deformeras under ett ben som inte bryter igenom den.\n\n\"Vi föreställde oss länge att foten vilar ovanpå ytan ungefär som ett mynt på en spänd trumhinna\", säger hon. \"Bilden stämmer, men bara till hälften. En stor del av bärkraften kommer av att benet trycker ner ytan och skapar en grop. Vätskan som trängts undan vill tillbaka.\"\n\nSkillnaden är inte akademisk. Den avgör hur beräkningarna ska ställas upp, och den avgör vilka storheter som måste bestämmas. I den äldre modellen räcker det med vätskans densitet och spänningens värde vid ytan. I den nyare måste man dessutom känna gropens form över tid, vilket kräver en optisk uppställning med en upplösning på några mikrometer.\n\nOhlssons grupp löste det med en teknik som lånats från halvledarindustrin. En laserstråle sveper över ytan tvåtusen gånger i sekunden, och reflektionens vinkel förskjuts med djupet. Metoden kräver en kalibrering mot en yta med känd krökning före varje mätserie, eftersom även en temperaturdrift på en halv grad flyttar resultatet mer än den effekt man är ute efter.\n\nVad gruppen kunde påvisa var att skräddarens ben rör sig i två faser. Under den första sjunker benet successivt ner i ytan utan att bryta den, under ungefär åtta millisekunder. Under den andra skjuts benet uppåt av den återvändande vätskan, och det är i den fasen insekten alstrar merparten av sin framdrivning. Rörelsen är alltså inte ett kliv utan snarare ett studs.\n\nResultatet fick uppmärksamhet långt utanför biologin. Vid Chalmers arbetar en grupp under Peter Lindqvist med små sensorer som ska flyta på vattendrag och rapportera föroreningshalter i realtid. Sensorerna hade fastnat i ett gammalt problem: de tar sig fram med propellrar, propellrarna kräver batterier, och batterierna är det tyngsta som finns ombord.\n\n\"Ohlssons mätningar gav oss en siffra att räkna på\", säger Lindqvist. \"Vi visste att ytan bär. Vi visste inte hur mycket energi som går att hämta tillbaka ur den när den fjädrar.\"\n\nSambandet är inte enkelt. Ytans förmåga att fjädra beror på vätskans viskositet, alltså på hur trögt den flyter. I rent vatten är trögheten låg och gropen återgår snabbt. I vatten med hög halt av organiskt material dämpas rörelsen, och en del av energin försvinner som värme i stället för att komma sensorn till godo. Fältmätningar i Göta älv gav värden som varierade med en faktor tre mellan april och augusti. Under vårfloden, när älven för med sig löv och jordpartiklar från hela avrinningsområdet, sjönk utbytet till en nivå där sensorn hade behövt ligga still i flera timmar mellan varje förflyttning. I augusti, med lägre flöde och klarare vatten, räckte några minuter.\n\nTill det kommer föroreningarna. Tvättmedel och andra ytaktiva ämnen sänker spänningen dramatiskt. Några få milligram per liter räcker för att halvera den. Det är samma effekt som gör att diskmedel får fett att släppa från en stekpanna, och det är också förklaringen till att skräddare försvinner ur dammar nedströms vissa reningsverk.\n\n\"Vi mäter i praktiken föroreningsgraden med insekten\", säger Lindqvist. \"Om de är borta vet vi något, även om vi inte vet exakt vad.\"\n\nHär går forskarna isär. Ohlsson menar att sambandet mellan ytans spänning och artförekomst är för grovt för att duga som indikator. Andra faktorer, framför allt strömhastighet och tillgång på föda, förklarar minst lika mycket av variationen mellan lokalerna. Lindqvist håller med om invändningen i sak men menar att en grov signal som är gratis är bättre än en fin signal som kräver provtagning varje vecka.\n\nVid Uppsala universitet har en grupp under Marie Sandell prövat att vända på frågan. I stället för att mäta hur mycket en insekt kan bäras av ytan har de undersökt vid vilken punkt ytan ger vika. Gränsvärdet visade sig bero mindre på vikten än på hastigheten: ett ben som sätts ner långsamt bär nästan dubbelt så mycket som ett ben som sätts ner fort. Slutsatsen har praktisk betydelse för de flytande sensorerna, som måste klara att landa igen efter att ha lyfts av en våg.\n\nIngen av forskarna hävdar att bilden är entydig. Det som däremot står fast är att storheten går att bestämma. För tjugo år sedan var ytans spänning i fält något man uppskattade. I dag är den mätbar med en noggrannhet under en procent, och det ensamt har öppnat ett fält som tidigare tillhörde läroböckerna.\n\nKvar står den friktion som all tvärvetenskap producerar. Biologerna vill veta varför insekten beter sig som den gör. Ingenjörerna vill veta hur mycket kraft som går att hämta ut. Det är samma yta och samma ekvationer, men frågorna leder åt olika håll, och finansieringen följer sällan båda.\n\n\"Vi har lärt oss att skriva två ansökningar\", säger Ohlsson. \"En där skräddaren är huvudpersonen och en där hon är en metod.\"",
+  "questions": [
+    {
+      "n": 1,
+      "type": "detalj_fakta",
+      "stem": "Vad framgår av texten om varför Ohlssons metod måste kalibreras före varje mätserie?",
+      "options": {
+        "A": "Lasern sveper tvåtusen gånger i sekunden och slits därför ovanligt fort.",
+        "B": "Utan den skulle störningen bli större än den storhet som undersöks.",
+        "C": "Tekniken är hämtad från halvledarindustrin och byggd för helt andra material.",
+        "D": "Ytans krökning ändras under mätserien och måste därför följas löpande."
+      },
+      "correct": "B",
+      "passage_anchor": "Metoden kräver en kalibrering mot en yta med känd krökning före varje mätserie, eftersom även en temperaturdrift på en halv grad flyttar resultatet mer än den effekt man är ute efter.",
+      "explanation": "Ankaret säger att en halv grads drift flyttar resultatet mer än effekten man mäter, alltså att felet annars överstiger det sökta värdet.",
+      "distractor_types": {
+        "A": "ytlig_nyckelordsläsning",
+        "C": "sant_men_fel_fråga",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "detalj_kausal",
+      "stem": "Varför beskrivs skräddarens rörelse i texten som ett studs snarare än ett kliv?",
+      "options": {
+        "A": "Benet trycker ifrån mot ytan och lyfter kroppen rakt uppåt igen.",
+        "B": "Benet sjunker under ungefär åtta millisekunder utan att bryta igenom ytan.",
+        "C": "Rörelsen sker i två faser som tillsammans ger insekten dess framdrivning.",
+        "D": "Merparten av kraften kommer från vätskan som återvänder, inte från benet."
+      },
+      "correct": "D",
+      "passage_anchor": "Under den andra skjuts benet uppåt av den återvändande vätskan, och det är i den fasen insekten alstrar merparten av sin framdrivning.",
+      "explanation": "Ankaret lägger huvuddelen av framdrivningen hos den återvändande vätskan, vilket är just skillnaden mot ett kliv där kraften kommer från benet.",
+      "distractor_types": {
+        "A": "omvänd_riktning",
+        "B": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    },
+    {
+      "n": 3,
+      "type": "slutledning",
+      "stem": "Vad kan man sluta sig till om Lindqvists flytande sensorer utifrån texten?",
+      "options": {
+        "A": "Deras utbyte växlar med årstiden eftersom vattnets egenskaper gör det.",
+        "B": "De rapporterar föroreningshalter och drivs i dag fram av små propellrar.",
+        "C": "De kan mäta föroreningar genom att räkna hur många skräddare som finns.",
+        "D": "De fungerar sämst i rent vatten eftersom gropen där återgår för fort."
+      },
+      "correct": "A",
+      "passage_anchor": "I vatten med hög halt av organiskt material dämpas rörelsen, och en del av energin försvinner som värme i stället för att komma sensorn till godo. Fältmätningar i Göta älv gav värden som varierade med en faktor tre mellan april och augusti.",
+      "explanation": "Ankaret kopplar den energi sensorn kan hämta till vattnets halt av organiskt material, och visar att den varierar kraftigt över året.",
+      "distractor_types": {
+        "B": "sant_men_fel_fråga",
+        "C": "ytlig_nyckelordsläsning",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 4,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Skräddarens rörelse och de två faserna i ett enda steg",
+        "B": "Föroreningarnas effekt på vattenytans förmåga att bära små insekter",
+        "C": "En gammal yta som blev mätbar och genast fick nya användare",
+        "D": "Tvärvetenskapens svårighet att finansiera en och samma fråga två gånger"
+      },
+      "correct": "C",
+      "passage_anchor": "För tjugo år sedan var ytans spänning i fält något man uppskattade. I dag är den mätbar med en noggrannhet under en procent, och det ensamt har öppnat ett fält som tidigare tillhörde läroböckerna.",
+      "explanation": "Ankaret namnger textens genomgående rörelse: en storhet blev möjlig att mäta, och det drog omedelbart till sig forskare från andra fält.",
+      "distractor_types": {
+        "A": "sant_för_en_del",
+        "B": "sant_för_en_del",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "ytspänning",
+      "definition": "Kraft som håller samman en vätskeyta."
+    },
+    {
+      "word": "densitet",
+      "definition": "Massa per enhet av volym."
+    },
+    {
+      "word": "kalibrering",
+      "definition": "Inställning av ett mätinstrument mot känt värde."
+    },
+    {
+      "word": "påvisa",
+      "definition": "Att visa att något faktiskt stämmer."
+    },
+    {
+      "word": "successivt",
+      "definition": "Steg för steg och i ordning."
+    },
+    {
+      "word": "alstra",
+      "definition": "Att få något att uppstå."
+    },
+    {
+      "word": "viskositet",
+      "definition": "Ett mått på hur trögflytande något är."
+    },
+    {
+      "word": "mätbar",
+      "definition": "Möjlig att uttrycka i siffror."
+    },
+    {
+      "word": "entydig",
+      "definition": "Som bara kan tolkas på ett sätt."
+    },
+    {
+      "word": "friktion",
+      "definition": "Motverkande kraft mellan två ytor som glider."
+    }
+  ],
+  "featured_ord_words": [
+    "ytspänning",
+    "densitet",
+    "kalibrering",
+    "påvisa",
+    "successivt",
+    "alstra",
+    "viskositet",
+    "mätbar",
+    "entydig",
+    "friktion"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}

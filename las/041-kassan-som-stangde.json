@@ -1,0 +1,87 @@
+{
+  "id": 41,
+  "title": "Kassan som stängde",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "ekonomi",
+  "genre": "reportage",
+  "word_count": 274,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "När bankkontoret i Gnosjö slog igen en fredag i mars 2024 nådde nyheten aldrig riksmedierna. För de dryga tolvhundra invånarna i tätorten var det ändå en brytpunkt. Kontoret hade legat vid torget sedan 1961, och med det försvann den sista platsen i kommunen där en företagare kunde lämna in dagskassan över disk.\n\nAnna Wikström driver järnhandeln femtio meter därifrån. Hon räknar fortfarande kassan för hand varje kväll, en vana hon behållit i tjugosju år. Skillnaden är att sedlarna numera ligger kvar i kassaskåpet tills hon hinner köra de fyra milen till Värnamo.\n\n\"Jag hann öppna ett företagskonto på den nya banken i grevens tid\", säger hon. \"Två veckor senare hade jag fått åka dit ändå.\"\n\nRiksbanken har i flera utredningar pekat på att kontanthanteringen är ett föremål för marknadsmisslyckande. Varje enskild bank tjänar på att lägga ner sitt kassakontor, medan kostnaden hamnar på handlarna och på de kunder som saknar digitala alternativ. Enligt Länsstyrelsen i Jönköpings län har antalet platser för dagskasseinlämning i länet minskat från nittiotvå till elva sedan 2010.\n\nKommunalrådet Bengt Ohlsson menar att kommunen gjort vad den kunnat. Näringslivskontoret har försökt befrämja en lösning där flera handlare delar på en gemensam värdetransport, men transportbolagen sätter en prisnivå som gör upplägget olönsamt under tjugo anslutna butiker. I Gnosjö centrum finns nio.\n\nKvar blir de dagliga bestyren. Wikström stänger klockan sex, räknar, låser in och kör till Värnamo på söndagar när hon ändå ska handla. Sedan i höstas tar hon inte emot kontant betalning över tvåtusen kronor.\n\n\"Det är inte så att jag är emot Swish\", säger hon. \"Men var fjärde kund här är över sjuttiofem. De ska också kunna köpa en hink.\"",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man sluta sig till om Anna Wikströms verksamhet efter nedläggningen?",
+      "options": {
+        "A": "Nedläggningen har ändrat både hennes rutiner och villkoren hon säljer på.",
+        "B": "Hon räknar sin kassa för hand varje kväll sedan tjugosju år tillbaka.",
+        "C": "Hon har gått över till digitala betalningar för att slippa de långa resorna.",
+        "D": "Hon delar sedan i höstas en gemensam värdetransport med flera andra handlare."
+      },
+      "correct": "A",
+      "passage_anchor": "Skillnaden är att sedlarna numera ligger kvar i kassaskåpet tills hon hinner köra de fyra milen till Värnamo.",
+      "explanation": "Ankaret visar den ändrade rutinen, och längre ner framgår att hon dessutom satt ett tak för kontant betalning, alltså en ändring av själva villkoren för affären.",
+      "distractor_types": {
+        "B": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Järnhandlaren som fortfarande räknar sina sedlar för hand",
+        "B": "Swish och det kontantlösa samhällets segertåg på landsbygden",
+        "C": "När en lönsam nedläggning skickar räkningen till någon annan",
+        "D": "Kommunen som inte lyckades rädda sitt sista bankkontor"
+      },
+      "correct": "C",
+      "passage_anchor": "Varje enskild bank tjänar på att lägga ner sitt kassakontor, medan kostnaden hamnar på handlarna och på de kunder som saknar digitala alternativ.",
+      "explanation": "Ankaret formulerar den mekanism hela texten illustrerar: beslutet är rationellt för den som fattar det, medan kostnaden bärs av andra.",
+      "distractor_types": {
+        "A": "sant_för_en_del",
+        "B": "ytlig_nyckelordsläsning",
+        "D": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "vana",
+      "definition": "Inarbetat beteende som upprepas utan eftertanke."
+    },
+    {
+      "word": "i grevens tid",
+      "definition": "Precis i sista stund, nätt och jämnt i tid."
+    },
+    {
+      "word": "föremål",
+      "definition": "Sak som något riktas mot eller handlar om."
+    },
+    {
+      "word": "befrämja",
+      "definition": "Att aktivt gynna eller underlätta något."
+    },
+    {
+      "word": "bestyr",
+      "definition": "Praktiska göromål som återkommer och tar tid."
+    }
+  ],
+  "featured_ord_words": [
+    "vana",
+    "i grevens tid",
+    "föremål",
+    "befrämja",
+    "bestyr"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
