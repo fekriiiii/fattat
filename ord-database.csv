@@ -876,3 +876,63 @@
 878,med eftertryck,adv,med kraft,utan vikt,försiktigt avvaktande,oroligt tvekande,viskande mjukt,Med tydlig betoning som visar allvar och bestämdhet.,Han uttalade orden med eftertryck så ingen kunde missa budskapet.,kultur,2,curated,"emfatiskt,bestämt,kraftfullt",Fast uttryck
 879,i blickfånget,adv,centralt synlig,utanför sikten,gömd undan,bortom uppmärksamhet,vid sidan av,På den plats där alla blickar riktas.,Hon stod i blickfånget mitt på scenen när musiken började.,kultur,3,curated,"i centrum,iögonfallande,framträdande","Fast uttryck; bildligt"
 880,i ropet,annat,allmänt eftertraktad,bortglömd helt,opopulär nu,föråldrad redan,gömd undan,Mycket populär eller eftertraktad just nu.,Den unga författaren var i ropet hos kritikerna det året.,kultur,3,curated,"populär,modern,på modet",Fast uttryck; bildligt
+881,narkos,sb,bedövning,förlamning,yrsel,feber,kramp,Konstgjord sömn under ett kirurgiskt ingrepp.,Patienten fick narkos strax innan operationen kunde påbörjas.,medicin,1,curated,,Grekiskt lånord
+882,biverkning,sb,sidoeffekt,överdos,huvudvärk,motgift,verkningsgrad,Oönskad effekt av ett läkemedel.,Läkaren varnade för en vanlig biverkning av medicinen.,medicin,1,curated,,
+883,immun,adj,motståndskraftig,mottaglig,smittsam,infekterad,okänslig,Skyddad mot en viss sjukdom.,Efter sjukdomen var hon immun mot viruset i flera år.,medicin,1,curated,,
+884,klen,adj,svag,seg,frisk,gänglig,spröd,Utan kroppsliga krafter eller motståndskraft.,Han var klen redan som barn och blev ofta sjuk.,medicin,1,curated,,
+885,läka,vb,gro,svullna,värka,spricka,blöda,Att sakta bli hel igen efter skada.,Såret på armen började läka redan efter några dagar.,medicin,1,curated,,
+886,vårda,vb,sköta,bota,utreda,avlasta,övervaka,Att ta hand om någon som är sjuk.,Hon vårdade sin mor hemma under hela det sista året.,medicin,1,curated,,
+887,yrsel,sb,svindel,illamående,matthet,darrning,synfel,Känsla av att omgivningen snurrar runt.,Yrseln kom plötsligt när han reste sig ur sängen.,medicin,1,curated,,
+888,förkylning,sb,snuva,influensa,hosta,halsfluss,frossa,Lindrig infektion i näsa och hals.,En envis förkylning höll honom hemma hela den veckan.,medicin,1,curated,,
+889,blodpropp,sb,koagel,blåmärke,svullnad,blödning,bristning,Klump av stelnat blod i ett kärl.,En blodpropp i benet upptäcktes vid den akuta undersökningen.,medicin,1,curated,,
+890,remiss,sb,hänvisning,utlåtande,journal,intyg,kallelse,Skriftligt underlag som skickar patienten vidare.,Vårdcentralen skrev en remiss till hudkliniken redan samma dag.,medicin,2,curated,,
+891,ödem,sb,svullnad,blödning,utslag,förtvining,vätskebrist,Ansamling av vätska i kroppens vävnader.,Ödemet i vristerna gjorde det svårt att gå.,medicin,2,curated,,Grekiskt lånord
+892,immunitet,sb,motståndskraft,mottaglighet,överkänslighet,smittspridning,blodvärde,Kroppens skydd mot en viss smitta.,Vaccinet gav immunitet mot sjukdomen i minst fem år.,medicin,2,curated,,
+893,hypokondri,sb,inbillad sjuklighet,överdriven försiktighet,tvångstankar,svårmod,inbilskhet,Ständig oro för att vara sjuk.,Hans hypokondri fick honom att söka vård varje månad.,medicin,2,curated,,Grekiskt lånord
+894,obduktion,sb,likbesiktning,dissektion,balsamering,kremering,provtagning,Undersökning av en avliden kropp.,En obduktion visade att döden orsakats av en propp.,medicin,2,curated,,
+895,andnöd,sb,andfåddhet,hosta,kvävning,bröstsmärta,hyperventilering,Svårighet att få tillräckligt med luft.,Patienten fick andnöd redan vid en kort promenad.,medicin,2,curated,,
+896,kurera,vb,bota,lindra,vårda,operera,diagnosticera,Att göra någon helt frisk igen.,Läkarna lyckades kurera infektionen med en enkel antibiotikakur.,medicin,2,curated,,
+897,injicera,vb,spruta in,droppa in,inandas,svälja,applicera,Att föra in vätska med spruta.,Sköterskan injicerade medicinen direkt i patientens vänstra arm.,medicin,2,curated,,
+898,gå ur tiden,annat,avlida,tappa sansen,tillfriskna,försvagas,falla i glömska,Att sluta att leva.,Att gå ur tiden i sömnen ses som stillsamt.,medicin,2,curated,,Fast uttryck
+899,rehabilitering,sb,återanpassning,eftervård,upprättelse,omskolning,konvalescens,Träning tillbaka till funktion efter en skada.,Rehabiliteringen efter olyckan tog nästan ett helt år.,medicin,2,curated,,
+900,krämpa,sb,lindrig åkomma,svår sjukdom,skavank,lidande,plåga,Mindre men återkommande besvär i kroppen.,Åldern förde med sig en och annan krämpa.,medicin,2,curated,,Plural används oftast
+901,intravenöst,adv,direkt i blodet,genom munnen,utvärtes,under huden,muskulärt,Direkt in i en blodåder.,Vätskan gavs intravenöst under hela det första dygnet.,medicin,2,curated,,
+902,anamnes,sb,sjukdomshistoria,kliniskt fynd,journalanteckning,diagnos,prognos,Patientens berättelse om sina tidigare besvär.,Läkaren tog upp en noggrann anamnes före undersökningen.,medicin,3,curated,,Grekiskt lånord
+903,palpation,sb,undersökning med händerna,granskning av prover,avlyssning med stetoskop,bedövning,röntgning,Undersökning genom att känna med fingrarna.,Vid palpation kände läkaren en knöl i buken.,medicin,3,curated,,
+904,sepsis,sb,blodförgiftning,lunginflammation,blodbrist,feberkramp,immunbrist,Livshotande reaktion på infektion i blodet.,Sepsis utvecklades snabbt och krävde intensivvård samma natt.,medicin,3,curated,,Grekiskt lånord
+905,vanför,adj,rörelsehindrad,sängliggande,krokryggig,orörlig,svag i benen,Oförmögen att röra sig som andra.,Efter olyckan blev han vanför och behövde ständig hjälp.,medicin,3,curated,,Ålderdomligt
+906,degenerativ,adj,nedbrytande,uppbyggande,smittsam,ärftlig,tillfällig,Som gradvis bryter ner en vävnad.,Sjukdomen är degenerativ och förvärras långsamt med åren.,medicin,3,curated,,
+907,palliativ,adj,lindrande,botande,förebyggande,bedövande,akut,Som mildrar symtom utan att bota.,Vården övergick till palliativ behandling redan under hösten.,medicin,3,curated,,
+908,peroralt,adv,genom munnen,under huden,i blodådern,utvärtes,droppvis,Som tas via mun och mage.,Läkemedlet ska ges peroralt två gånger om dagen.,medicin,3,curated,,Latinskt lånord
+909,tillstöta,vb,inträffa,avta,utebli,avklinga,tillfriskna,Att komma till som oväntad komplikation.,Om komplikationer tillstöter måste patienten opereras på nytt.,medicin,3,curated,,Formellt register
+910,ambulant,adj,utan inläggning,med narkos,sängbunden,akut,på distans,Som sker utan att patienten läggs in.,Ingreppet gjordes ambulant och han åkte hem direkt.,medicin,3,curated,,Formellt register
+911,friktion,sb,motstånd,dragkraft,tyngd,tröghet,hastighet,Motverkande kraft mellan två ytor som glider.,Friktionen mellan däck och asfalt minskar kraftigt i regn.,vetenskap,1,curated,,
+912,kretslopp,sb,cykel,bana,flöde,kedja,spiral,Förlopp som ständigt återvänder till början.,Vattnets kretslopp drivs av solens värme och tyngdkraften.,vetenskap,1,curated,,
+913,fossil,sb,förstenad rest,gammalt ben,mineral,avlagring,sediment,Bevarat spår av en förhistorisk organism.,Ett fossil av en fisk hittades i kalkstenen.,vetenskap,1,curated,,
+914,pollinering,sb,befruktning,fröspridning,blomning,förökning,groning,Överföring av frömjöl mellan blommor.,Pollineringen sköts av bin under några veckor på våren.,vetenskap,1,curated,,
+915,naturlag,sb,grundregel,hypotes,formel,mätvärde,tumregel,Regel som alltid gäller i naturen.,Tyngdlagen är en naturlag som gäller överallt i universum.,vetenskap,1,curated,,
+916,teleskop,sb,stjärnkikare,mikroskop,spegel,sikte,kompass,Instrument för att se avlägsna himlakroppar.,Genom teleskopet syntes Saturnus ringar tydligt den natten.,vetenskap,1,curated,,
+917,avdunsta,vb,förånga,kondensera,frysa,rinna,stelna,Att övergå från vätska till gas.,Vattnet i skålen hann avdunsta under den varma dagen.,vetenskap,1,curated,,
+918,mätbar,adj,kvantifierbar,beräknelig,synlig,påtaglig,gripbar,Möjlig att uttrycka i siffror.,Effekten var liten men fullt mätbar i studien.,vetenskap,1,curated,,
+919,organisk,adj,från levande material,från döda mineraler,levande,naturlig,kolbaserad,Som kommer från levande varelser.,Jordens översta skikt består mest av organiskt material.,vetenskap,1,curated,,
+920,densitet,sb,täthet,tyngd,volym,massa,hårdhet,Massa per enhet av volym.,Blyets höga densitet gör klotet tungt trots storleken.,vetenskap,2,curated,,
+921,ytspänning,sb,hinna på vätskeytan,tryck under ytan,avdunstning,kapillärkraft,ånga,Kraft som håller samman en vätskeyta.,Ytspänningen gör att skräddaren kan gå på vattnet.,vetenskap,2,curated,,
+922,paradigm,sb,tankemönster,rådande synsätt,förebild,avvikelse,teoribygge,Härskande mönster för hur något förstås.,Upptäckten bröt mot tidens paradigm inom hela fysiken.,vetenskap,2,curated,,Grekiskt lånord
+923,kalibrering,sb,injustering,mätning,avläsning,rengöring,provtagning,Inställning av ett mätinstrument mot känt värde.,Vågen krävde noggrann kalibrering innan försöket kunde starta.,vetenskap,2,curated,,
+924,sediment,sb,bottenslam,grundvatten,bergsgrund,lera,mylla,Material som sjunkit och lagrats på botten.,Sedimentet på sjöns botten berättar om gamla utsläpp.,vetenskap,2,curated,,
+925,rön,sb,fynd,gissning,teori,utlåtande,avhandling,Ny kunskap som forskning kommit fram till.,De nya rönen förändrade synen på sjukdomen helt.,vetenskap,2,curated,,Formellt register
+926,härleda,vb,sluta sig till,räkna ut,gissa,bevisa,motbevisa,Att komma fram till genom logiska steg.,Formeln går att härleda ur två enkla antaganden.,vetenskap,2,curated,,
+927,påvisa,vb,belägga,antyda,motsäga,förmoda,bortse,Att visa att något faktiskt stämmer.,Studien kunde påvisa ett tydligt samband mellan faktorerna.,vetenskap,2,curated,,
+928,alstra,vb,frambringa,förbruka,lagra,omvandla,avleda,Att få något att uppstå.,Turbinen alstrar ström åt hela den lilla byn.,vetenskap,2,curated,,Formellt register
+929,hypotetisk,adj,antagen,bevisad,påhittad,säkerställd,trolig,Som bygger på ett obevisat antagande.,Resonemanget var hypotetiskt och saknade stöd i mätningar.,vetenskap,2,curated,,
+930,entydig,adj,otvetydig,mångtydig,oklar,preliminär,godtycklig,Som bara kan tolkas på ett sätt.,Resultatet var entydigt och lämnade inget utrymme för tvivel.,vetenskap,2,curated,,
+931,successivt,adv,gradvis,plötsligt,samtidigt,oregelbundet,slutligen,Steg för steg och i ordning.,Temperaturen sänktes successivt under hela det långa försöket.,vetenskap,2,curated,,
+932,viskositet,sb,motstånd mot flöde,lätthet att rinna,hårdhet,täthet,ytspänning,Ett mått på hur trögflytande något är.,Oljans viskositet ökar tydligt när temperaturen sjunker snabbt.,vetenskap,3,curated,,
+933,osmos,sb,vandring genom hinna,blandning av vätskor,indunstning,diffusion,filtrering,Vätskans rörelse genom ett halvgenomsläppligt skikt.,Osmos får rötterna att dra upp vatten ur jorden.,vetenskap,3,curated,,Grekiskt lånord
+934,axiom,sb,grundsats,slutledning,teorem,förmodan,bevisföring,Antagande som godtas utan bevis.,Geometrin vilar på ett fåtal mycket enkla axiom.,vetenskap,3,curated,,Grekiskt lånord
+935,anomali,sb,avvikande fall,vanligt mönster,felkälla,störning,regelbundenhet,Något som bryter mot det väntade.,Mätningen visade en anomali som ingen kunde förklara.,vetenskap,3,curated,,Grekiskt lånord
+936,reversibel,adj,omvändbar,bestående,obeveklig,upprepbar,ensidig,Möjlig att vända tillbaka igen.,Processen är reversibel och kan köras åt båda hållen.,vetenskap,3,curated,,
+937,vederhäftig,adj,tillförlitlig,omfattande,välvillig,övertygad,oantastlig,Som går att lita på.,Källan bedömdes som vederhäftig av samtliga tre granskare.,vetenskap,3,curated,,Formellt register
+938,vederlägga,vb,motbevisa,bekräfta,ifrågasätta,styrka,förtydliga,Att visa att ett påstående är falskt.,Försöket kunde vederlägga den gamla teorin på en punkt.,vetenskap,3,curated,,Formellt register
+939,tillnärmelsevis,adv,ungefär,exakt,knappast,fullständigt,delvis,Nästan men inte helt exakt.,Modellen stämmer tillnärmelsevis med de faktiskt uppmätta värdena.,vetenskap,3,curated,,Formellt register
+940,in situ,annat,på ursprunglig plats,i laboratorium,under mikroskop,utomhus,efteråt,På den plats där något hör hemma.,Fyndet undersöktes in situ innan det alls flyttades.,vetenskap,3,curated,,Fast uttryck
