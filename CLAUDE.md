@@ -201,6 +201,40 @@ Field schemas and the valid `domain` / `genre` enum values: `docs/CONTENT_SCHEMA
 
 ---
 
+## Content Runway — how much to write, and when to stop
+
+Two hard numbers in the code govern all content production. Both are ceilings, and neither moves
+by writing more content. Read this before planning any batch.
+
+**LÄS: one article per daily session.** `fetchArticles` returns exactly one
+([builder.ts:285](src/lib/session/builder.ts#L285)) and completed articles are filtered out, so
+**the bank is single-use**. If it empties, the session silently degrades to ORD-only. Target is
+therefore *one article per remaining day*: **83 articles for the 18 okt 2026 run**, against 48
+today (2026-07-27). ~36 to go.
+
+**ORD: five new words per session, hard-capped.** `MIN_NEW_WORDS_PER_SESSION = 5`, but
+`Math.min(5, limit/4)` uses it as a *maximum* ([engine.ts:148](src/lib/fsrs/engine.ts#L148)) —
+the name is misleading. Raising `daily_ord_quota` does **not** raise it. 83 days × 5 = **415 words
+is the absolute ceiling on what the founder can be introduced to**, and the bank already holds 400
+curated.
+
+### Two decisions that follow, so they are not re-litigated
+
+1. **Twelve articles per week, not per day** (decided 2026-07-27, founder proposed daily). Anything
+   past 83 is inventory that will never be opened before the exam, and that time is worth more as
+   training time. Three more batches during August finishes the job; then stop writing and train.
+   Twelve is also the proven batch size — bigger batches lower quality without raising output.
+2. **ORD curation from here is infrastructure for article writing, not vocabulary for the founder.**
+   Because of the 415 ceiling, new curated words widen the pool his 415 are drawn from but add
+   nothing to how much he can learn. They are curated so that LÄS articles have domain vocabulary
+   to feature. Do not justify an ORD batch by "more words to study" — that is not what it buys.
+
+If the founder ever needs to absorb more than 415 words, the lever is the constant in
+`engine.ts`, not the content pipeline. It has a real cost: more new words per day compounds the
+review backlog, and 5/day is a defensible pedagogical setting.
+
+---
+
 ## Recent Fixes
 
 Only the two most recent sessions live here. Everything older is in `docs/CHANGELOG.md`.
@@ -230,7 +264,7 @@ Files: `las/029–040*.json` (12 nya). `npm run las:lint` rapporterar **36/36 he
 
 | What | Where | Priority |
 |---|---|---|
-| **Fill the LÄS bank until it feeds ~4 months of daily training.** At **48 articles** (16 kompletta provpass-set, 2026-07-27) the founder still runs out of content before 18 okt. **The number that sets the pace:** a daily session consumes exactly one article ([builder.ts:285](src/lib/session/builder.ts#L285)) and completed articles are filtered out, so the bank is single-use. 48 articles cover 48 daily sessions, running dry in mid-September against an 18 okt exam. **~36 more articles (12 sets) are needed for full coverage, and 12 per batch is the proven unit** (bigger batches lower quality, they do not raise output) — this blocks the founder's own dogfooding, which is the entire proof for marketing v2. Nothing else competes for this time. Use `/batch-las-articles`; run `npm run las:lint` first to read the answer-letter balance, and `npm run las:verify` after seeding. | `las/` | **High — do first** |
+| **Fill the LÄS bank to 83 articles.** At **48** (16 provpass-set, 2026-07-27) the bank runs dry in mid-September against an 18 okt exam. **~36 to go, three batches of twelve, one batch per week during August.** The arithmetic and the two decisions behind that cadence are in *Content Runway* above; read it before planning a batch rather than re-deriving it. This blocks the founder's dogfooding, which is the entire proof for marketing v2. Use `/batch-las-articles`; run `npm run las:lint` first to read the answer-letter balance, and `npm run las:verify` after seeding. | `las/` | **High — do first** |
 | **Curate ORD words: juridik and kultur are now the empty ones.** The 12-article batch on 2026-07-27 consumed most of the free pool: only **37 of 400 curated words still lack an article home**, and the split has inverted. juridik has **1** left (`häkta`), kultur **3**, allmän **3**, while medicin has 18 and vetenskap 12. The next juridik or kultur article therefore has no domain vocabulary to feature. Run `/curate-ord-words` on those two before the next LÄS batch, same 30/40/30 difficulty split. | `ord-database.csv` | **High — blocks the next LÄS batch** |
 | **Fix 12 length-tell warnings on older curated ORD rows** (ids 571, 579, 593, 633, 643, 674, 676, 684, 716, 725, 765, 819). `node scripts/lint-ord-corpus.cjs` flags each: the correct answer is 7 to 13 characters longer than the longest distractor, so the answer is guessable from shape alone. Same defect class the LÄS guards keep catching. Repo-wide sweep, so it gets its own commit (commit rule 3). | `ord-database.csv` | Medium |
 | **Revisit tester recruitment earlier than late Aug 2026.** 10–20 people using the app weekly before October solves three things at once: content feedback, the n=1 proof problem, and the first seeds of distribution. Parked in June because the founder had too much on; the competitor teardown changed the risk calculus. | manual | **High — decide before mid-Aug** |
