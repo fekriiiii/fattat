@@ -1,0 +1,77 @@
+{
+  "id": 50,
+  "title": "Repetitionen",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "litterär_prosa",
+  "word_count": 315,
+  "difficulty": 2,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Dirigenten lade ner taktpinnen och bad andra fiolerna spela takt fyrtiotre igen. Det var tredje gången.\n\nElsa räknade in, satte stråken, och hörde redan i första åttondelen att det skulle bli fel på samma ställe. Hon spelade ändå. Runt henne spelade sjutton andra som alla visste vad som skulle hända, och som alla lät bli att säga det.\n\nDet blev fel på samma ställe.\n\nDirigenten sa ingenting den här gången. Han tittade ut mot salongen, som var tom och mörk och luktade damm, och lät tystnaden ligga tills någon längst bak i cellorna harklade sig.\n\nElsa var femtiotvå år och hade suttit i samma orkester i nitton av dem. Hon hade en gång, som tjugoåring i Wien, spelat en solokadens som hennes lärare kallade lyrisk på ett sätt han inte trodde gick att lära ut. Det hade varit sant. Hon hade också, samma år, förstått att det inte räckte.\n\nDet fanns en saga hon berättat för sin dotter om en fiol som spelade av sig själv om natten. Dottern var tjugosex nu och arbetade med logistik i Malmö.\n\n\"En gång till\", sa dirigenten. \"Utan mig.\"\n\nHan lade taktpinnen på notstället och satte sig på podiets kant, som en åhörare.\n\nDe spelade takt fyrtiotre utan honom. Ingen visste vem som skulle ge tonen, och därför gav ingen den, och därför började de på samma ställe utan att någon räknade. Elsa hörde stämman ovanför sig och stämman under och sin egen mitt emellan, och för första gången på nitton år hörde hon dem samtidigt.\n\nDet blev inte fel.\n\nDirigenten reste sig, tog upp taktpinnen och sa att de skulle ta det från början efter pausen. Ingen sa något om vad som just hänt.\n\nElsa la fiolen i lådan, gick ut i foajén och köpte kaffe ur automaten. Genom glasdörrarna såg hon en buss stanna och två personer stiga av.\n\nHon tänkte att hon skulle ringa sin dotter.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man sluta sig till om varför passagen lyckades när dirigenten satte sig ner?",
+      "options": {
+        "A": "Musikerna fick lyssna på varandra i stället för att följa en anvisning.",
+        "B": "Musikerna hade övat passagen tillräckligt många gånger för att kunna den.",
+        "C": "Dirigenten hade genom sin tystnad visat orkestern hur allvarligt läget var.",
+        "D": "Elsa tog över ansvaret för insatsen sedan ingen annan hade räknat in dem."
+      },
+      "correct": "A",
+      "passage_anchor": "Elsa hörde stämman ovanför sig och stämman under och sin egen mitt emellan, och för första gången på nitton år hörde hon dem samtidigt.",
+      "explanation": "Ankaret beskriver att uppmärksamheten flyttade från dirigenten till de andra stämmorna, vilket är det som skiljde försöket från de tre föregående.",
+      "distractor_types": {
+        "B": "nära_men_inte_riktigt",
+        "C": "sant_men_fel_fråga",
+        "D": "omvänd_riktning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik fångar textens innehåll bäst?",
+      "options": {
+        "A": "Fiolen som spelade av sig själv om natten",
+        "B": "Solokadensen i Wien och löftet som inte räckte",
+        "C": "Dirigenten som tappade greppet om sin egen orkester",
+        "D": "Att höra något först när ingen längre visar vägen"
+      },
+      "correct": "D",
+      "passage_anchor": "Ingen visste vem som skulle ge tonen, och därför gav ingen den, och därför började de på samma ställe utan att någon räknade.",
+      "explanation": "Ankaret visar att det var frånvaron av anvisning som skapade samspelet, vilket är scenens och därmed textens poäng.",
+      "distractor_types": {
+        "A": "ytlig_nyckelordsläsning",
+        "B": "sant_för_en_del",
+        "C": "nära_men_inte_riktigt"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "lyrisk",
+      "definition": "Känslosam och sångbar i uttrycket."
+    },
+    {
+      "word": "saga",
+      "definition": "Berättelse med inslag av det övernaturliga."
+    },
+    {
+      "word": "ge tonen",
+      "definition": "Att ange hur något ska utföras eller uppfattas."
+    }
+  ],
+  "featured_ord_words": [
+    "lyrisk",
+    "saga",
+    "ge tonen"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
