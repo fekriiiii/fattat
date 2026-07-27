@@ -1,0 +1,92 @@
+{
+  "id": 47,
+  "title": "Sångerna vid Hjälmaren",
+  "source_url": "",
+  "source_name": "Fattat",
+  "domain": "kultur",
+  "genre": "lyrik_prosa",
+  "word_count": 284,
+  "difficulty": 3,
+  "question_count": 2,
+  "unit_position": "kort",
+  "past_hp": "",
+  "body": "Min farfar kunde en klagovisa som ingen annan kunde. Den handlade om en flicka som drunknade i Hjälmaren år som ingen mindes, och den hade fjorton verser, och han sjöng den bara när han hade druckit precis lagom.\n\nJag har letat efter den. Jag har gått igenom Svenskt visarkiv och de tre banden med folkliga visor från Närke. Den finns inte. Åtta av verserna finns i en text från Kumla, men melodin är en annan, och de sex sista verserna är hans.\n\nEller: någons. Någon som gav dem vidare till någon som gav dem vidare.\n\nEn visa är inte ett föremål. Den är en rörelse mellan munnar, och varje mun ändrar något. Det som når mig är inte originalet utan summan av alla misstag.\n\nDet är därför jag har slutat leta.\n\nHan sjöng inte elegant. Rösten sprack på den femte versen, alltid på samma ställe, och han log alltid när den sprack. Jag trodde länge att det var för att han skämdes. Nu tror jag att sprickan var med i visan.\n\nEtt ode kräver en mottagare. En sonett kräver fjorton rader och en vändning. En klagovisa kräver bara att någon dött och att någon minns fel.\n\nJag kan tolv av verserna. Jag har försökt diktera dem åt min dotter, som är sju och som tycker att den är läskig, vilket den är.\n\nDe två jag glömt kommer inte tillbaka. Jag har suttit vid vattnet och väntat på dem som man väntar på en fågel man vet har flyttat.\n\nMen jag har börjat sjunga de tolv. Och rösten spricker, på den femte versen, på exakt samma ställe.\n\nJag hade aldrig tänkt besjunga någonting. Jag ville bara ha kvar honom.\n\nDet visade sig vara samma sak.",
+  "questions": [
+    {
+      "n": 1,
+      "type": "slutledning",
+      "stem": "Vad kan man sluta sig till om varför berättaren slutat leta efter visans original?",
+      "options": {
+        "A": "Arkiven i Närke har visat sig vara alltför ofullständiga för ändamålet.",
+        "B": "Ett original saknar mening för en visa som formas av att föras vidare.",
+        "C": "De två glömda verserna gick inte att återskapa ur den bevarade texten.",
+        "D": "Farfaderns melodi skilde sig från den som finns nedtecknad i Kumla."
+      },
+      "correct": "B",
+      "passage_anchor": "En visa är inte ett föremål. Den är en rörelse mellan munnar, och varje mun ändrar något. Det som når mig är inte originalet utan summan av alla misstag.",
+      "explanation": "Ankaret gör förändringen till visans själva väsen, vilket innebär att ett original inte är den sanna versionen utan bara en av många.",
+      "distractor_types": {
+        "A": "sant_men_fel_fråga",
+        "C": "nära_men_inte_riktigt",
+        "D": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    },
+    {
+      "n": 2,
+      "type": "huvudtanke",
+      "stem": "Vilken alternativ rubrik sammanfattar textens huvudinnehåll bäst?",
+      "options": {
+        "A": "Den drunknade flickan och de fjorton verserna från Hjälmaren",
+        "B": "Ett visarkiv som inte kunde ge svar på den ställda frågan",
+        "C": "Skillnaden mellan ett ode, en sonett och en enkel klagovisa",
+        "D": "Att ärva någon genom att upprepa hans fel utan att veta det"
+      },
+      "correct": "D",
+      "passage_anchor": "Men jag har börjat sjunga de tolv. Och rösten spricker, på den femte versen, på exakt samma ställe.",
+      "explanation": "Ankaret knyter ihop texten: arvet visar sig inte vara visan utan sprickan, alltså det som inte var avsett att föras vidare.",
+      "distractor_types": {
+        "A": "sant_för_en_del",
+        "B": "sant_för_en_del",
+        "C": "ytlig_nyckelordsläsning"
+      },
+      "notes": ""
+    }
+  ],
+  "vocab_highlights": [
+    {
+      "word": "klagovisa",
+      "definition": "Sång som uttrycker sorg eller saknad."
+    },
+    {
+      "word": "elegant",
+      "definition": "Smakfullt och behärskat utfört."
+    },
+    {
+      "word": "ode",
+      "definition": "Högstämd dikt riktad till någon eller något."
+    },
+    {
+      "word": "sonett",
+      "definition": "Dikt på fjorton rader med bestämt rimschema."
+    },
+    {
+      "word": "diktera",
+      "definition": "Att läsa upp något för någon att skriva ner."
+    },
+    {
+      "word": "besjunga",
+      "definition": "Att hylla något i sång eller dikt."
+    }
+  ],
+  "featured_ord_words": [
+    "klagovisa",
+    "elegant",
+    "ode",
+    "sonett",
+    "diktera",
+    "besjunga"
+  ],
+  "is_designed_content": true,
+  "notes": ""
+}
