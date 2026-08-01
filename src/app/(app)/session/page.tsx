@@ -162,10 +162,18 @@ export default function SessionPage() {
     start()
   }, [initSession, store, router, searchParams])
 
-  // Compute MCQ options for new words (so options are ready before the word renders)
+  // Compute MCQ options for EVERY word, new or review, so they are ready before
+  // the word renders.
+  //
+  // This used to bail out on review words (`if (!newWordIds.has(...)) return`),
+  // which was correct only while review words were answered by typing. Typing
+  // was removed on 2026-07-24 in favour of recognition-only MCQ, and the guard
+  // was left behind. The result was a silent dead end on every review word: the
+  // recall pause runs (it is gated on the inverse condition, see revealDelayMs
+  // below), the pause then hides itself, and the options list is empty, so the
+  // student is left staring at a word with nothing to click and no error.
   useEffect(() => {
     if (!currentWord) return
-    if (!newWordIds.has(currentWord.id)) return
     const raw = [
       { text: currentWord.correct_synonym, isCorrect: true },
       { text: currentWord.distractor_1, isCorrect: false },
