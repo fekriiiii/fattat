@@ -49,7 +49,8 @@ export async function POST() {
 
     const { ordWords, articles } = await buildDiagnosticSession(supabase)
 
-    // Create a diagnostic session record (no FSRS writes during diagnostic)
+    // Create a diagnostic session record. No FSRS writes happen here; the cards
+    // are seeded once at /api/diagnostic/complete, and only for curated words.
     const { data: session, error } = await supabase
       .from('study_sessions')
       .insert({ user_id: user.id, session_type: 'diagnostic' })

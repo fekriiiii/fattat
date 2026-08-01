@@ -207,11 +207,30 @@ async function seedFsrsFromDiagnostic(
     .in('word_id', wordIds)
 
   const alreadySeeded = new Set((existing ?? []).map((r: { word_id: string }) => r.word_id))
-  // FSRS cards: only seed for words without prior learning history (don't
-  // overwrite real progress). Session responses: log ALL answers so
-  // prediction_calibration (migration 015) and accuracy metrics see the full
-  // diagnostic, not just the new-words slice.
-  const toSeed = ordResponses.filter((r) => !alreadySeeded.has(r.wordId))
+
+  // The diagnostic MEASURES with the whole corpus, past-HP words included, and
+  // that is deliberate: real exam items are the most valid instrument for a
+  // baseline. But it must never LEARN from them. Daily sessions introduce only
+  // curated words (migration 022) because a past-HP headword can never reappear
+  // on a future exam — no headword ever repeats, per analysis/ORD_analys.md. A
+  // card seeded on such a word is unreviewable in any useful sense: it is not a
+  // new-word candidate, yet it comes back forever through the due-review path
+  // and spends the student's session on a word with zero chance of being tested.
+  //
+  // This is what filled the founder's first account with 61 dead cards out of 64.
+  const { data: curatedRows } = await supabase
+    .from('words')
+    .select('id')
+    .in('id', wordIds)
+    .contains('past_exams', ['curated'])
+  const curatedIds = new Set((curatedRows ?? []).map((r: { id: string }) => r.id))
+
+  // FSRS cards: only seed curated words without prior learning history (don't
+  // overwrite real progress). Session responses: log ALL answers, past-HP
+  // included, so prediction_calibration (migration 015) and accuracy metrics
+  // see the full diagnostic rather than the curated slice — the measurement is
+  // the whole point of the past-HP words being there.
+  const toSeed = ordResponses.filter((r) => !alreadySeeded.has(r.wordId) && curatedIds.has(r.wordId))
 
   const now = new Date()
 
